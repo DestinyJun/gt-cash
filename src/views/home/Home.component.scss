@@ -1,0 +1,22 @@
+.home{
+  width: 100vw;
+  height: 100vh;
+  background-image: url('../../assets/images/bg01.png');
+  background-repeat: no-repeat;
+  -webkit-background-size: 100% 100%;
+  background-size: 100% 100%;
+  background-position: center center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  flex-wrap: wrap;
+  .home-container{
+    width: 70%;
+    .home-badge{
+      /*display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;*/
+    }
+  }
+}

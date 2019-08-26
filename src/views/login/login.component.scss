@@ -35,16 +35,20 @@
       text-align: center;
       color: $bg_48907F;
       font-size: 1rem;
+      margin-bottom: 0.5rem;
       .form-control{
         position: relative;
         border-color: transparent;
-        background-color: #EFFBF1;
+        background-color: $bg_EFFBF1;
         color: $font_9ADCCF;
         font-size: 0.8rem;
         &::placeholder{
           color: $font_9ADCCF;
           font-size: 0.8rem;
         }
+      }
+      .form-control.is-invalid{
+        border-color: #dc3545;
       }
       .dropdown-toggle::after{
         position: absolute;
@@ -53,8 +57,9 @@
       }
       .dropdown-menu{
         width: 100%;
-        height: 30vh;
+        max-height: 30vh;
         transform: translate3d(0px, 170px, 0px)!important;
+        top: -17px!important;
         text-align: center;
         .dropdown-item{
           color: $bg_468E80;
@@ -71,9 +76,18 @@
       }
     }
     .form-check{
+      margin-bottom: 0.5rem;
       text-align: left;
+      margin-left: 0.3rem;
       .form-check-input{
         left: 35px;
+      }
+      label{
+        margin-bottom: 0;
+      }
+      span.align-middle{
+        font-size: 0.8rem;
+        color: $bg_468E80;
       }
     }
   }
