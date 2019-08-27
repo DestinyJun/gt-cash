@@ -1,0 +1,81 @@
+.market-cash{
+  height: 100%;
+  .market-cash-table{
+    height: 85%;
+    .table {
+      background-color: #EBEDE6;
+      td{
+        padding: 0.3rem;
+        vertical-align: middle;
+      }
+      tbody{
+        .icon-operate{
+          .iconfont{
+            color: #4C7292;
+            font-weight: 800;
+            font-size: 1.2rem;
+          }
+        }
+      }
+    }
+  }
+  .footer{
+    height: 15%;
+    overflow: hidden;
+    border-top: 2px solid #D3D4CF;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    position: relative;
+    background-color: #EBEDE6;
+    .footer-semicircle{
+      height: 100%;
+      width: 20%;
+      background-color: #416485;
+      left: 0;
+      top: 0;
+      padding-top: 2%;
+      padding-left: 3%;
+      border-bottom-right-radius: 100%;
+      text-align: left;
+    }
+    .footer-pay{
+      height: 100%;
+      width: 30%;
+      position: relative;
+      margin-left: 24%;
+      .footer-pay-content{
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        .custom-select{
+          width: auto;
+        }
+      }
+      .footer-pay-border{
+        height: 329%;
+        width: 87%;
+        left: -51%;
+        top: 0;
+        border-left-color: #D2D4CF;
+        border-left-width: 2px;
+        border-left-style: solid;
+        border-top-color: #D2D4CF;
+        border-top-width: 2px;
+        border-top-style: solid;
+        border-top-left-radius: 92%;
+      }
+    }
+    .footer-btn{
+      margin-right: 3%;
+      .btn-primary{
+        background-color: #416485;
+        border-color: #416485;
+      }
+    }
+  }
+}
