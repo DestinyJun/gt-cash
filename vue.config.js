@@ -1,6 +1,6 @@
 const webpack = require('webpack')
 module.exports = {
-  publicPath: '/gtcash',
+  publicPath: process.env.publicPath,
   configureWebpack: {
     plugins: [
       new webpack.ProvidePlugin({

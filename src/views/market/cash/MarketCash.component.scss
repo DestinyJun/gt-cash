@@ -2,18 +2,37 @@
   height: 100%;
   .market-cash-table{
     height: 85%;
-    .table {
+    position: relative;
+    .btn-warning{
+      right: 0;
+      bottom: 0;
+      z-index: 999;
+      display: none;
+    }
+    .mt-3{
+      height: calc(100% - 1rem);
       background-color: #EBEDE6;
-      td{
-        padding: 0.3rem;
-        vertical-align: middle;
+      position: relative;
+      .form-control{
+        left: -100px;
+        top: 0;
+        width: 50px;
+        border-color: transparent;
+        background-color: transparent;
       }
-      tbody{
-        .icon-operate{
-          .iconfont{
-            color: #4C7292;
-            font-weight: 800;
-            font-size: 1.2rem;
+      .table {
+        td{
+          padding: 0.3rem;
+          vertical-align: middle;
+        }
+        tbody{
+          .icon-operate{
+            cursor: pointer;
+            .iconfont{
+              color: #4C7292;
+              font-weight: 800;
+              font-size: 1.2rem;
+            }
           }
         }
       }
@@ -46,14 +65,16 @@
       position: relative;
       margin-left: 24%;
       .footer-pay-content{
+        z-index: 1;
         height: 100%;
         width: 100%;
         top: 0;
         left: 0;
-        display: flex;
+        display: inline-flex;
         align-items: center;
         .custom-select{
           width: auto;
+          cursor: pointer;
         }
       }
       .footer-pay-border{
@@ -79,3 +100,56 @@
     }
   }
 }
+//模态框改造
+.modal-content{
+  .modal-header{
+    border: none;
+  }
+  .modal-body{
+    .search{
+      display: flex;
+      justify-content: space-between;
+      .input-group{
+        .form-control{
+          font-size: 0.8rem;
+          display: inline-block;
+          padding: 5px 5px;
+          flex: none;
+          width: 70%;
+        }
+        .btn-info{
+          font-size: 0.8rem;
+        }
+      }
+    }
+    .table {
+      thead{
+        tr{
+          font-size: 0.85rem;
+        }
+      }
+      tbody{
+        tr{
+          cursor: pointer;
+          td{
+            padding: 0.3rem;
+            vertical-align: middle;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+  }
+  .modal-footer{
+    font-size: 0.8rem;
+    .form-control{
+      width: 40%;
+      padding: 0 5px;
+      font-size: 0.75rem;
+    }
+  }
+}
+.modal-backdrop{
+  background-color: transparent;
+}
+

@@ -12,6 +12,7 @@
 </script>
 <style lang="scss">
   @import "~bootstrap/scss/bootstrap";
+  @import "~bootstrap-vue/src/index";
   @import "./assets/fonts/iconfont.css";
   #app {
     font-family: 'simhei', Helvetica, Arial, sans-serif;

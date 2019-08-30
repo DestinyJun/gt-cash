@@ -88,7 +88,7 @@
     methods: {
       loginClick () {
         if (this.d_loginForm.user && this.d_loginForm.password) {
-          axios.post('http://192.168.28.207:8080/user/login',this.d_loginForm)
+          axios.post(`${process.env.VUE_APP_URL}/user/login`,this.d_loginForm)
             .then((response) => {
               const data = response.data
               if (data.code == 1000) {
@@ -119,7 +119,7 @@
         this.d_loginOptions = [{ merchatCode: null, merchatName: '请选择店铺...' }]
         let aTime;
         aTime = setTimeout(() => {
-          axios.post('http://192.168.28.207:8080/user/selectmerchatbyuser', { user: this.d_loginForm.user })
+          axios.post(`${process.env.VUE_APP_URL}/user/selectmerchatbyuser`, { user: this.d_loginForm.user })
             .then(function (response) {
               const data = response.data.data
               for(var i = 0, len = data.length; i < len; i++){
@@ -142,6 +142,7 @@
       }
     }
   }
+  console.log(process.env.VUE_APP_URL);
 </script>
 
 <style lang="scss">

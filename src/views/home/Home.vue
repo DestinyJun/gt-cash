@@ -6,7 +6,7 @@
       </div>
       <div class="home-badge">
         <div class="row">
-          <div v-for="item in d_homeNavs" class="col-md-4 mt-3 mt-md-3">
+          <div v-for="item in d_homeNavs" class="col-md-4 mt-3 mt-md-3" @click="homeNavClick(item.router)">
             <Badge
               width="100%"
               icon="icon iconfont iconcaidan"
@@ -35,9 +35,14 @@ export default {
         {title: '餐厅',subtitle: '收银入口',router: ''},
         {title: '权限管理',subtitle: '系统权限配置',router: ''},
         {title: '超市',subtitle: '库存管理入口',router: ''},
-        {title: '超市',subtitle: '收银入口',router: ''},
+        {title: '超市',subtitle: '收银入口',router: '/market/cash'},
         {title: '超市',subtitle: '查看报表',router: ''},
       ]
+    }
+  },
+  methods: {
+    homeNavClick(router) {
+      this.$router.push(router)
     }
   }
 }
