@@ -65,7 +65,6 @@
 </template>
 
 <script>
-  const axios  = require('axios')
   export default {
     name: 'Login',
     data: () => {
@@ -88,10 +87,11 @@
     methods: {
       loginClick () {
         if (this.d_loginForm.user && this.d_loginForm.password) {
-          axios.post(`${process.env.VUE_APP_URL}/user/login`,this.d_loginForm)
+          this.$http.post(`${process.env.VUE_APP_URL}/user/login`,this.d_loginForm)
             .then((response) => {
               const data = response.data
-              if (data.code == 1000) {
+              if (data.code === '1000') {
+                this.$localStorage.set('merchatCode', data.data.merchatCode)
                 this.$router.push('/home')
               }
             })
@@ -119,7 +119,7 @@
         this.d_loginOptions = [{ merchatCode: null, merchatName: '请选择店铺...' }]
         let aTime;
         aTime = setTimeout(() => {
-          axios.post(`${process.env.VUE_APP_URL}/user/selectmerchatbyuser`, { user: this.d_loginForm.user })
+          this.$http.post(`${process.env.VUE_APP_URL}/user/selectmerchatbyuser`, { user: this.d_loginForm.user })
             .then(function (response) {
               const data = response.data.data
               for(var i = 0, len = data.length; i < len; i++){

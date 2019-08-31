@@ -18,5 +18,11 @@ module.exports = {
         data: `@import "@/scss/gtStyle.scss";`
       }
     }
+  },
+  devServer: {
+    overlay: {
+      warnings: false,
+      errors: false
+    }
   }
 }
