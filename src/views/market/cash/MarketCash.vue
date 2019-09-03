@@ -276,6 +276,7 @@
         // 手动查询商品
         this.cashGoodsSelect(this.d_cashCodeOperate)
           .then((res) => {
+            console.log(res);
             if (res) {
               this.d_cashCodeGoods.push(res.data)
             } else {

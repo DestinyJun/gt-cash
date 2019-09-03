@@ -28,13 +28,18 @@ export default new Router({
       children: [
         {
           path: 'cash',
-          name: 'cash',
+          name: '超市收银',
           component: () => import('@/views/market/cash/MarketCash.vue')
         },
         {
           path: 'manager',
-          name: 'manager',
+          name: '超市库存管理',
           component: () => import('@/views/market/manager/MarketManager.vue')
+        },
+        {
+          path: 'storage',
+          name: '超市入库管理',
+          component: () => import('@/views/market/storage/MarketStorage.vue')
         }
       ]
     }

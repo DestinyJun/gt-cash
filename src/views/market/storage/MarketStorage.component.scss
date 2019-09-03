@@ -1,0 +1,15 @@
+.market-storage{
+  .header{
+    display: flex;
+    justify-content: space-between;
+  }
+}
+// 弹窗样式修改
+.modal-dialog{
+  .modal-header{
+    justify-content: center;
+  }
+  .modal-footer{
+    justify-content: center;
+  }
+}

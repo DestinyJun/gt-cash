@@ -34,9 +34,10 @@ export default {
         {title: '餐厅',subtitle: '管理入口',router: ''},
         {title: '餐厅',subtitle: '收银入口',router: ''},
         {title: '权限管理',subtitle: '系统权限配置',router: ''},
-        {title: '超市',subtitle: '库存管理入口',router: ''},
+        {title: '超市',subtitle: '库存管理入口',router: '/market/manager'},
+        {title: '超市',subtitle: '入库管理',router: '/market/storage'},
         {title: '超市',subtitle: '收银入口',router: '/market/cash'},
-        {title: '超市',subtitle: '查看报表',router: ''},
+        {title: '查看报表',subtitle: '系统报表信息',router: ''},
       ]
     }
   },

@@ -87,11 +87,11 @@
     methods: {
       loginClick () {
         if (this.d_loginForm.user && this.d_loginForm.password) {
-          this.$http.post(`${process.env.VUE_APP_URL}/user/login`,this.d_loginForm)
+          this.post(`/user/login`,this.d_loginForm)
             .then((response) => {
-              const data = response.data
-              if (data.code === '1000') {
-                this.$localStorage.set('merchatCode', data.data.merchatCode)
+              if (response.code === '1000') {
+                this.$localStorage.set('merchatCode', response.data.merchatCode)
+                this.$localStorage.set('userCode', response.data.userId)
                 this.$router.push('/home')
               }
             })
@@ -142,7 +142,6 @@
       }
     }
   }
-  console.log(process.env.VUE_APP_URL);
 </script>
 
 <style lang="scss">
