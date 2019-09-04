@@ -86,7 +86,7 @@
                 v-for="(item,index,) in d_cashCodeGoods" :key="index"
                 v-bind:class="{'table-info':item.active}" v-on:click="cashCodeGoodsClick(index)">
                 <th scope="row">{{index + 1}}</th>
-                <td>{{item.goodsName}}</td>
+                <td>{{item.active}}</td>
                 <td>{{item.goodsCode}}</td>
                 <td>{{item.unitPrice}}</td>
               </tr>

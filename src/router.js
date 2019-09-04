@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Market from './views/market/Market.vue'
+import Restaurant from './views/restaurant/Restaurant.vue'
+import Permission from './views/permission/Permission.vue'
 
 Vue.use(Router)
 
@@ -12,17 +14,17 @@ export default new Router({
     },
     {
       path: '/login',
-      name: 'login',
+      name: '登陆',
       component: () => import('@/views/login/Login.vue')
     },
     {
       path: '/home',
-      name: 'home',
+      name: '导航首页',
       component: () => import('@/views/home/Home.vue')
     },
     {
       path: '/market',
-      name: 'market',
+      name: '超市',
       redirect: '/market/cash',
       component: Market,
       children: [
@@ -40,6 +42,47 @@ export default new Router({
           path: 'storage',
           name: '超市入库管理',
           component: () => import('@/views/market/storage/MarketStorage.vue')
+        }
+      ]
+    },
+    {
+      path: '/restaurant',
+      name: '餐饮',
+      redirect: '/restaurant/cash',
+      component: Restaurant,
+      children: [
+        {
+          path: 'cash',
+          name: '餐饮收银',
+          component: () => import('@/views/restaurant/cash/RestaurantCash.vue')
+        },
+        {
+          path: 'manager',
+          name: '餐饮管理',
+          component: () => import('@/views/restaurant/manager/RestaurantManager.vue')
+        },
+      ]
+    },
+    {
+      path: '/permission',
+      name: '权限管理模块',
+      redirect: '/permission/account',
+      component: Permission,
+      children: [
+        {
+          path: 'account',
+          name: '账号管理',
+          component: () => import('@/views/permission/account/Account.vue')
+        },
+        {
+          path: 'limit',
+          name: '权限管理',
+          component: () => import('@/views/permission/limit/Limit.vue')
+        },
+        {
+          path: 'userlimit',
+          name: '用户权限分配',
+          component: () => import('@/views/permission/userlimit/Userlimit.vue')
         }
       ]
     }

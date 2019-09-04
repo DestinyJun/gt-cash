@@ -35,7 +35,11 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response){
   // 处理响应数据
   if (response.status === 200) {
-    return Promise.resolve(response);
+    if (response.data.code === '1000') {
+      return Promise.resolve(response);
+    } else {
+      return Promise.resolve(null);
+    }
   } else {
     return Promise.reject(response);
   }

@@ -3,13 +3,57 @@
     display: flex;
     justify-content: space-between;
   }
+  .content{
+    height: calc(100% - 54px);
+  }
+  .footer{
+    bottom: 10px;
+    right: 1rem;
+  }
+  .scan-code{
+    .form-control{
+      //left: -100px;
+      top: 0;
+      width: 50px;
+      border-color: transparent;
+      background-color: mediumvioletred;
+    }
+  }
 }
 // 弹窗样式修改
 .modal-dialog{
   .modal-header{
     justify-content: center;
   }
+  .modal-body{
+    .form-inline{
+      justify-content: space-between;
+    }
+    .table {
+      thead{
+        tr{
+          font-size: 0.85rem;
+        }
+      }
+      tbody{
+        tr{
+          cursor: pointer;
+          td{
+            padding: 0.3rem;
+            vertical-align: middle;
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+  }
   .modal-footer{
+    font-size: 0.8rem;
     justify-content: center;
+    .form-control{
+      width: 40%;
+      padding: 0 5px;
+      font-size: 0.75rem;
+    }
   }
 }

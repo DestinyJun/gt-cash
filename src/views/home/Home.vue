@@ -31,12 +31,14 @@ export default {
   data: () => {
     return {
       d_homeNavs: [
-        {title: '餐厅',subtitle: '管理入口',router: ''},
-        {title: '餐厅',subtitle: '收银入口',router: ''},
-        {title: '权限管理',subtitle: '系统权限配置',router: ''},
-        {title: '超市',subtitle: '库存管理入口',router: '/market/manager'},
-        {title: '超市',subtitle: '入库管理',router: '/market/storage'},
         {title: '超市',subtitle: '收银入口',router: '/market/cash'},
+        {title: '超市',subtitle: '入库管理',router: '/market/storage'},
+        {title: '超市',subtitle: '库存管理入口',router: '/market/manager'},
+        {title: '餐厅',subtitle: '收银入口',router: '/restaurant/cash'},
+        {title: '餐厅',subtitle: '管理入口',router: '/restaurant/manager'},
+        {title: '权限管理',subtitle: '账号管理',router: '/permission/account'},
+        {title: '权限管理',subtitle: '配置具体权限',router: '/permission/limit'},
+        {title: '权限管理',subtitle: '用户权限分配',router: '/permission/userlimit'},
         {title: '查看报表',subtitle: '系统报表信息',router: ''},
       ]
     }

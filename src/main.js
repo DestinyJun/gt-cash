@@ -10,10 +10,14 @@ import ToggleButton from 'vue-js-toggle-button'
 import PortalVue from 'portal-vue'
 import BootstrapVue from 'bootstrap-vue'
 import {get,post} from './util/api'
+import {reset_form,clone_obj,clone_copy} from './util/tools'
 
-//挂载请求方法到Vue原型上
+//挂载自定义方法到Vue原型上
 Vue.prototype.get = get;
 Vue.prototype.post = post;
+Vue.prototype.reset_form = reset_form;
+Vue.prototype.clone_obj = clone_obj;
+Vue.prototype.clone_copy = clone_copy;
 
 // 使用vue插件
 Vue.config.productionTip = false
