@@ -76,12 +76,12 @@ export default new Router({
         },
         {
           path: 'limit',
-          name: '权限管理',
+          name: '角色管理',
           component: () => import('@/views/permission/limit/Limit.vue')
         },
         {
           path: 'userlimit',
-          name: '用户权限分配',
+          name: '角色权限分配',
           component: () => import('@/views/permission/userlimit/Userlimit.vue')
         }
       ]

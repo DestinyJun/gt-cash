@@ -36,6 +36,7 @@
 
 <style lang="scss">
 .badge{
+  cursor: pointer;
   background-color: #fff;
   display: flex;
   padding: 8px;

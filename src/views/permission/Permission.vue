@@ -1,16 +1,32 @@
 <template>
   <div class="permission">
-    <h1>权限管理模块</h1>
-    <router-view></router-view>
+    <Header title="账户管理" :icon="['iconfanhui','icondianpu-copy']"></Header>
+    <div class="permission-content">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
 <script>
+  import Header from '@/components/Header.vue'
   export default {
-    name: 'Permission'
+    name: 'Permission',
+    components: {
+      Header
+    },
   }
 </script>
 
-<style scoped>
-
+<style lang="scss">
+.permission{
+  height: 100vh;
+  .permission-content{
+    height: calc(100vh - 60px);
+    background-image: url('../../assets/images/bg02.png');
+    background-repeat: no-repeat;
+    -webkit-background-size: 100% 100%;
+    background-size: 100% 100%;
+    background-position: center center;
+  }
+}
 </style>

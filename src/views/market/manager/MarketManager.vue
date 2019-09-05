@@ -127,8 +127,8 @@
           case 'del':
             this.$bvModal.msgBoxConfirm('您确定要是删除此商品吗？', {
               title: '删除提醒', // 标题
-              hideHeaderClose: false, // 是否隐藏头部关闭按钮
               centered: true, // 弹窗是否居中
+              hideHeaderClose: false, // 是否隐藏头部关闭按钮
               headerBgVariant: 'danger', // 头部背景
               headerTextVariant: 'light', // 头部文字
               headerCloseVariant: 'light', // 头部关闭按钮

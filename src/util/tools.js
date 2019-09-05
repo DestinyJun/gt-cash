@@ -1,3 +1,8 @@
+/**
+ *
+ * @param obj 需要置空的对象
+ * @returns {*}
+ */
 export function reset_form (obj) {
   for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) {
@@ -6,6 +11,10 @@ export function reset_form (obj) {
   }
   return obj
 }
+
+/**
+ * @param obj 需要clone对象
+*/
 export function clone_obj (obj) {
   const cloneA = {}
   for (const prop in obj) {
@@ -26,6 +35,19 @@ export function clone_copy (objA,objB) {
   for (const prop in objB) {
     if (objB.hasOwnProperty(prop)) {
       objA[prop] = objB[prop]
+    }
+  }
+}
+
+/**
+ *
+ * @param objA
+ * @param objB
+ */
+export function clone_copy_a (objA,objB) {
+  for (const prop in objB) {
+    if (objB.hasOwnProperty(prop)) {
+      objB[prop] = objA[prop]
     }
   }
 }

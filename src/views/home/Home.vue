@@ -37,8 +37,8 @@ export default {
         {title: '餐厅',subtitle: '收银入口',router: '/restaurant/cash'},
         {title: '餐厅',subtitle: '管理入口',router: '/restaurant/manager'},
         {title: '权限管理',subtitle: '账号管理',router: '/permission/account'},
-        {title: '权限管理',subtitle: '配置具体权限',router: '/permission/limit'},
-        {title: '权限管理',subtitle: '用户权限分配',router: '/permission/userlimit'},
+        {title: '权限管理',subtitle: '角色管理',router: '/permission/limit'},
+        {title: '权限管理',subtitle: '角色权限分配',router: '/permission/userlimit'},
         {title: '查看报表',subtitle: '系统报表信息',router: ''},
       ]
     }
