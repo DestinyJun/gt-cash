@@ -1,0 +1,44 @@
+.cash{
+  height: 100%;
+  .menu{
+    height: 100%;
+    background-color: #468E80;
+    .cash-header{
+      color: white;
+      p{
+        letter-spacing: 2px;
+      }
+    }
+    .cash-list{
+      .list-group{
+        align-items: center;
+        .list-group-item {
+          -webkit-transition:background-color 1s, -webkit-transform 1s;
+          transition:background-color 1s, transform 1s;
+          font-size: 0.9rem;
+          cursor: pointer;
+          &:first-child {
+            border-top-left-radius: 0.15rem;
+            border-top-right-radius: 0.15rem;
+          }
+          &:last-child {
+            border-top-left-radius: 0.15rem;
+            border-top-right-radius: 0.15rem;
+          }
+        }
+      }
+    }
+  }
+  .desk{
+    height: 80%;
+    .dest-dish{
+      width: 80%;
+    }
+    .dest-nums{
+      width: 20%;
+    }
+    img{
+      width: 100%;
+    }
+  }
+}

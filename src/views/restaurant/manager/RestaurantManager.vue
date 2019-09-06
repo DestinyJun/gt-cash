@@ -6,7 +6,12 @@
 
 <script>
   export default {
-    name: 'RestaurantManager'
+    name: 'RestaurantManager',
+    data: function () {
+      return {}
+    },
+    methods: {},
+    created () {}
   }
 </script>
 

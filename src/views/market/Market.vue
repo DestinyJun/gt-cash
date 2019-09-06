@@ -1,7 +1,7 @@
 <template>
   <div class="market">
-    <Header title="账户管理" :icon="['iconfanhui','icondianpu-copy']"></Header>
-    <div class="market-content">
+    <Header :title="this.$route.name" :icon="['iconfanhui','icondianpu-copy']"></Header>
+    <div class="content">
       <router-view></router-view>
     </div>
   </div>
@@ -23,7 +23,7 @@
 <style lang="scss">
   .market{
     height: 100vh;
-    .market-content{
+    .content{
       height: calc(100vh - 60px);
       background-image: url('../../assets/images/bg02.png');
       background-repeat: no-repeat;

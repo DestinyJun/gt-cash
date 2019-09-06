@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Market from './views/market/Market.vue'
 import Restaurant from './views/restaurant/Restaurant.vue'
 import Permission from './views/permission/Permission.vue'
+import Chart from './views/chart/Chart.vue'
 
 Vue.use(Router)
 
@@ -85,6 +86,12 @@ export default new Router({
           component: () => import('@/views/permission/userlimit/Userlimit.vue')
         }
       ]
+    },
+    {
+      path: '/chart',
+      name: '图表统计',
+      // redirect: '/permission',
+      component: Chart,
     }
   ]
 })

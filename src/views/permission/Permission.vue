@@ -1,7 +1,7 @@
 <template>
   <div class="permission">
-    <Header title="账户管理" :icon="['iconfanhui','icondianpu-copy']"></Header>
-    <div class="permission-content">
+    <Header :title="this.$route.name" :icon="['iconfanhui','icondianpu-copy']"></Header>
+    <div class="content">
       <router-view></router-view>
     </div>
   </div>
@@ -20,7 +20,7 @@
 <style lang="scss">
 .permission{
   height: 100vh;
-  .permission-content{
+  .content{
     height: calc(100vh - 60px);
     background-image: url('../../assets/images/bg02.png');
     background-repeat: no-repeat;

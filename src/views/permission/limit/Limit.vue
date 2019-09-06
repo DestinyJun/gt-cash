@@ -259,7 +259,7 @@
             this.clone_copy_a(item,this.d_limitUpdate)
             break
           case 'limit':
-            this.post('/authoritymanagement/permission/rolepermissionupdate',{roleId:item.id})
+            this.post('/authoritymanagement/permission/rolepermissiongetall',{roleId:item.id})
               .then((res) => {
                 this.d_limitPermission = res.data;
                 this.d_limitPermissionUpdate.roleId = item.id

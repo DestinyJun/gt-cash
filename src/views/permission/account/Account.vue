@@ -47,7 +47,7 @@
         </div>
         <div
           data-toggle="tooltip" data-placement="top" title="账户角色配置"
-          @click="$bvModal.show('modal-role');accountOperateClick(data.item,'destroy')"
+          @click="$bvModal.show('modal-role');accountOperateClick(data.item,'role')"
           class="bg-warning"
           style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
           <i class="icon iconfont iconquanxian text-light"></i>
@@ -168,25 +168,13 @@
     no-close-on-backdrop>
     <template slot="default">
       <b-form-checkbox
-        id="checkbox-1"
-        name="checkbox-1"
-        value="1"
-        unchecked-value="not_accepted">
-        admin
-      </b-form-checkbox>
-      <b-form-checkbox
-        id="checkbox-2"
-        name="checkbox-2"
-        value="2"
-        unchecked-value="not_accepted">
-        收银员
-      </b-form-checkbox>
-      <b-form-checkbox
-        id="checkbox-3"
-        name="checkbox-3"
-        value="3"
-        unchecked-value="not_accepted">
-        保安
+        v-for="item in d_accountRole"
+        :id="'checkbox'+item.id"
+        :name="'checkbox'+item.id"
+        value="true"
+        v-model="item.status"
+        unchecked-value="false">
+        {{item.roleName}}
       </b-form-checkbox>
     </template>
     <template slot="modal-footer" slot-scope="{ close }">
@@ -234,10 +222,16 @@
           userPhone: null,
         },
         d_accountPassword: {
+          // 密码修改
           id: null,
           password: null,
         },
-        d_accountRole: []
+        d_accountRole: [],
+        d_accountRoleUpdate: {
+          userId:null,
+          merchatCode:null,
+          roles: null
+        },
       }
     },
     methods: {
@@ -281,6 +275,16 @@
               })
               .catch((err) => console.log(err))
             break
+          case 'role':
+            console.log(this.d_accountRoleUpdate);
+            // 角色修改
+            this.post('/authoritymanagement/user/role/update',this.d_accountRoleUpdate)
+              .then((res) => {
+                console.log(res);
+                this.accountSelect()
+              })
+              .catch((err) => console.log(err))
+            break
         }
       },
       accountOperateClick(item,type) {
@@ -320,6 +324,19 @@
             break
           case 'password':
             this.clone_copy_a(item,this.d_accountPassword)
+            break
+          case 'role':
+            this.post('/authoritymanagement/user/role/select',
+              {userId:item.id,merchatCode:this.$localStorage.get('merchatCode')})
+              .then((res) => {
+                this.d_accountRole = res.data;
+                this.d_accountRoleUpdate.userId = item.id
+                this.d_accountRoleUpdate.merchatCode = this.$localStorage.get('merchatCode')
+                this.d_accountRoleUpdate.roles = this.d_accountRole
+              })
+              .catch((err) => {
+                this.d_accountRole = []
+              })
             break
         }
       },
