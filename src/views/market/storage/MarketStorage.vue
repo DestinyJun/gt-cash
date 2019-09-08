@@ -1,7 +1,7 @@
 <template>
   <div class="market-storage h-100">
     <!--头部-->
-    <div class="header pl-3 pr-3 pt-2 pb-2">
+    <div class="storage-header pl-3 pr-3 pt-2 pb-2">
       <span class="h4">商品入库</span>
       <div class="btn-group">
         <b-button variant="warning mr-2" @click="$bvModal.show('modal-center-search')">
