@@ -47,6 +47,17 @@ export default {
     homeNavClick(router) {
       this.$router.push(router)
     }
+  },
+  created() {
+    this.post(
+      '/user/getpermission',
+      {userId: this.$localStorage.get('userCode'),merchatCode: this.$localStorage.get('merchatCode')})
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
   }
 }
 </script>

@@ -212,6 +212,10 @@
           // res.data[0].active = true;
           this.d_cashMenuList = res.data
         })
+      this.post('/cateringcashier/getallgoodsinfo', {merchatCode:this.$localStorage.get('merchatCode')})
+        .then((res) => {
+          this.d_cashDishList = res.data
+        })
     }
   }
 </script>

@@ -7,7 +7,7 @@
       right: 0;
       bottom: 0;
       z-index: 999;
-      display: none;
+      display: block;
     }
     .mt-3{
       height: calc(100% - 1rem);
@@ -54,10 +54,11 @@
       background-color: #416485;
       left: 0;
       top: 0;
-      padding-top: 2%;
-      padding-left: 3%;
+      padding-left: 2%;
       border-bottom-right-radius: 100%;
-      text-align: left;
+      line-height: 100%;
+      display: flex;
+      align-items: center;
     }
     .footer-pay{
       height: 100%;
@@ -150,6 +151,6 @@
   }
 }
 .modal-backdrop{
-  background-color: transparent;
+  //background-color: transparent;
 }
 

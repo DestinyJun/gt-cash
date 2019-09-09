@@ -6,9 +6,15 @@
       <router-link to="/about">About</router-link>
     </div>-->
     <router-view></router-view>
+    <Loading v-if="$store.state.LOADING"></Loading>
   </div>
 </template>
 <script>
+  import Loading from './components/Loading'
+  export default {
+    name: 'App',
+    components: { Loading }
+  }
 </script>
 <style lang="scss">
   @import "~bootstrap/scss/bootstrap";

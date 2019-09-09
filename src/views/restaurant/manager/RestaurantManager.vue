@@ -208,7 +208,7 @@
         d_managerDishFields: [
           // 表头字段
           {number: '#'},
-          {goodsCode: '条码/自定义编码'},
+          {merchatGoodsCode: '条码/自定义编码'},
           {goodsName: '商品名称'},
           {unitPrice: '单价'},
           {purchasePrice: '成本价'},
@@ -231,7 +231,7 @@
           id: null,
           goodsName: null,
           unitPrice: null,
-          restaurantTypeCode: 1,
+          restaurantType: 1,
           purchasePrice: null,
           merchatGoodsCode: null,
         },
@@ -239,8 +239,16 @@
       }
     },
     methods: {
+      managerDishList() {
+        this.post('/cateringcashier/getallgoodsinfo',{merchatCode: this.$localStorage.get('merchatCode')})
+          .then((res) => {
+            this.d_managerDishList = res.data
+            console.log(res)
+          })
+          .catch((err) => {})
+      },
       managerSelectDish(name) {
-        // 查询菜品列表
+        // 根据关键字查询菜品列表
         this.post(
           '/cateringmanagement/findgoodsbyname',
           {name: name,merchatCode: this.$localStorage.get('merchatCode')})
@@ -258,16 +266,16 @@
           case 'add':
             this.post('/cateringmanagement/addgoods', this.d_managerDishAdd)
               .then((res) => {
-                this.managerSelectDish('红烧');
+                this.managerDishList();
               })
               .catch((err) => {
                 console.log();
               })
             break;
           case 'update':
-            this.post('/cateringmanagement/addgoods', this.d_managerDishAdd)
+            this.post('/cateringmanagement/updategoodsinfo', this.d_managerDishUpdate)
               .then((res) => {
-                this.managerSelectDish('红烧');
+                this.managerDishList();
               })
               .catch((err) => {
                 console.log();
@@ -276,16 +284,13 @@
           case 'del':
             this.post('/cateringmanagement/deletegoods', {id:item.id})
               .then((res) => {
-                this.managerSelectDish('红烧');
+                this.managerDishList();
               })
-              .catch((err) => {
-                console.log();
-              })
+              .catch((err) => {})
             break;
         }
       },
       managerDishOperate(item,type) {
-        console.log(item);
         switch(type) {
           case 'editor':
             this.clone_copy_a(item,this.d_managerDishUpdate)
@@ -296,23 +301,21 @@
       managerDishSearchChange: debounce(function (event) {
         // 菜品模糊查询
         if (event.value.length === 0) {
-          this.managerSelectDish('兰州');
+          this.managerDishList()
         } else {
-          this.managerSelectDish(event.value);
+          this.managerSelectDish(event.value)
         }
       },500),
     },
     created () {
       // 查询菜品列表
-      this.managerSelectDish('红烧');
+      this.managerDishList();
       // 菜品分类
       this.post('/cateringmanagement/addgoods/getgoodstype',{})
         .then((res) => {
           this.d_managerDishTypes = res.data
         })
-        .catch((err) => {
-          console.log();
-        })
+        .catch((err) => {})
     }
   }
 </script>

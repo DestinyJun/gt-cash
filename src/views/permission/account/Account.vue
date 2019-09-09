@@ -25,32 +25,36 @@
       </template>
       <template slot="[operate]" slot-scope="data">
         <div
-          data-toggle="tooltip" data-placement="top" title="编辑账户"
+          :id="'operate-update'+data.index"
           @click="$bvModal.show('modal-update');accountOperateClick(data.item,'editor')"
           class="bg-info"
           style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
           <i class="icon iconfont iconxiugai1 text-light"></i>
+          <b-tooltip :target="'operate-update'+data.index" variant="dark" placement="bottom">编辑账户</b-tooltip>
         </div>
         <div
-          data-toggle="tooltip" data-placement="top" title="删除账户"
+          :id="'operate-del'+data.index"
           @click="accountOperateClick(data.item,'del')"
           class="bg-danger ml-3 mr-3"
           style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
           <i class="icon iconfont iconshanchu text-light"></i>
+          <b-tooltip :target="'operate-del'+data.index" variant="dark" placement="bottom">删除账户</b-tooltip>
         </div>
         <div
-          data-toggle="tooltip" data-placement="top" title="账户密码修改"
+          :id="'operate-password'+data.index"
           @click="$bvModal.show('modal-password');accountOperateClick(data.item,'password')"
           class="bg-success mr-3"
           style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
           <i class="icon iconfont iconquanxian text-light"></i>
+          <b-tooltip :target="'operate-password'+data.index" variant="dark" placement="bottom">账户密码修改</b-tooltip>
         </div>
         <div
-          data-toggle="tooltip" data-placement="top" title="账户角色配置"
+          :id="'operate-role'+data.index"
           @click="$bvModal.show('modal-role');accountOperateClick(data.item,'role')"
           class="bg-warning"
           style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
           <i class="icon iconfont iconquanxian text-light"></i>
+          <b-tooltip :target="'operate-role'+data.index" variant="dark" placement="bottom">账户角色配置</b-tooltip>
         </div>
       </template>
     </b-table>

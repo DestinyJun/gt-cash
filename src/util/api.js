@@ -2,6 +2,7 @@
  * axios拦截器
  */
 import axios from 'axios'
+import store from '@/store'
 // 判断开发模式
 if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = process.env.VUE_APP_URL;
@@ -22,6 +23,7 @@ axios.defaults.timeout = 10000;
 
 // 请求拦截
 axios.interceptors.request.use(function (config) {
+  store.commit('showLoading')
   // 判断那些接口需要添加token，那些接口需要添加请求类型，判断token是否存在
   if (!(config.url.includes('/login'))) {
     config.headers.post['token'] = '456';
@@ -35,10 +37,15 @@ axios.interceptors.request.use(function (config) {
 axios.interceptors.response.use(function (response){
   // 处理响应数据
   if (response.status === 200) {
+    store.commit('hideLoading')
     if (response.data.code === '1000') {
-      return Promise.resolve(response);
+      if (!(response.data.data === null)) {
+        return Promise.resolve(response);
+      } else {
+        return Promise.reject(response);
+      }
     } else {
-      return Promise.resolve(null);
+      return Promise.reject(response);
     }
   } else {
     return Promise.reject(response);

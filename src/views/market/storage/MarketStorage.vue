@@ -23,12 +23,18 @@
     </div>
     <!--底部提交-->
     <div class="footer position-absolute">
+      <button
+        ref="storageCodeBtn"
+        @click="srCodeBtnClick()"
+        class="btn btn-warning mr-3">
+        点击扫码入库品
+      </button>
       <b-btn size="max-md-1g" variant="success pl-5 pr-5" @click="stStorageSubmit">提交入库</b-btn>
     </div>
     <!--扫码框-->
     <div class="scan-code">
       <input
-        ref="cashCodeInput"
+        ref="storageCodeInput"
         type="text"
         class="form-control position-absolute"
         @input="stCodeChange($event.target)"
@@ -311,9 +317,14 @@
           this.d_stCodeGoodsList = []
         })
       },
+      // 扫码输入切换
+      srCodeBtnClick: function () {
+        this.$refs.storageCodeInput.focus()
+        this.$refs.storageCodeBtn.style.display = 'none'
+      },
+      // 扫码输入切换
       srCodeInputBlur: function () {
-        // 扫码输入切换
-        // this.$refs.cashCodeBtn.style.display = 'block'
+        this.$refs.storageCodeBtn.style.display = 'inline-block'
       },
     },
     created () {

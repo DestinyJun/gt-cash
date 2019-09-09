@@ -60,13 +60,16 @@
       <div class="form-group">
         <button type="button" class="btn btn-block btn-primary" @click="loginClick()">登陆</button>
       </div>
+
     </form>
   </div>
 </template>
 
 <script>
+  import Loading from '../../components/Loading'
   export default {
     name: 'Login',
+    components: { Loading },
     data: () => {
       return {
         d_loginForm: {
