@@ -55,16 +55,17 @@
             </li>
             <li
               class="list-group-item d-flex justify-content-between align-items-center pt-1 pb-1 pl-2 pr-1"
-              v-for="item in d_cashOrderList"
+              v-for="(item,index) in d_cashOrderList"
+              :key="index"
             >
               <div class="name">
                 <p class="mb-0 text-left">{{item.goodsName}}</p>
                 <p class="text-danger mb-0 text-left">{{item.unitPrice}}</p>
               </div>
               <span class="badge badge-primary badge-pill operate">
-                <i class="icon iconfont iconziyuan" @click="cashOrderNumClick ('minus',item)"></i>
+                <i class="icon iconfont iconziyuan" @click="cashOrderNumClick ('minus',index)"></i>
                 <span class="nums mr-3 ml-3">{{item.num}}</span>
-                <i class="icon iconfont icon iconfont iconziyuan1" v-on:click="cashOrderNumClick('add',item)"></i>
+                <i class="icon iconfont icon iconfont iconziyuan1" @click="cashOrderNumClick('add',index)"></i>
               </span>
             </li>
           </ul>
@@ -83,7 +84,7 @@
         </span>
           </div>
           <div class="footer-btn">
-            <button class="btn btn-primary" @click="cashOrderSure()">确认收款成功</button>
+            <button class="btn btn-primary" @click="cashOrderSure()" :disabled="d_cashOrderList.length === 0">确认收款成功</button>
           </div>
         </div>
       </div>
@@ -105,18 +106,16 @@
         d_cashDishList: [], // 菜品列表
         d_cashOrderList: [], // 订餐列表
         d_cashOrderTotal: 0.00,   // 订餐总价
-        d_cashSelected: 1, // 已选收费方式
+        // 收费方式列表
         d_cashOptions: [
-          // 收费方式列表
-          { value: '1', text: '现金支付' },
-          { value: '2', text: '支付宝支付' },
-          { value: '3', text: '微信支付' },
+          { value: '现金支付', text: '现金支付' },
+          { value: '网上支付', text: '网上支付' },
         ],
+        // 订单确认收款
         d_cashOrderSure: {
-          // 订单确认收款
           userId: this.$localStorage.get('userCode'),
           merchatCode: this.$localStorage.get('merchatCode'),
-          payType: 1,
+          payType: '现金支付',
           date: null
         },
         rows: 100,
@@ -125,16 +124,16 @@
       }
     },
     methods: {
+      // 菜单分类选择操作
       cashMenuClick (item) {
-        // 菜品点击操作
         this.d_cashMenuList.map((val) => {
           val.active = false
         })
         item.active = true
         this.cashGetDishList(item.goodsTypeCode)
       },
+      // 根据菜品分类查询菜品数量
       cashGetDishList (type) {
-        // 根据菜品分类查询菜品数量
         this.post('/cateringcashier/getgoodslist', {
           restaurantType: type,
           merchatCode: this.$localStorage.get('merchatCode')
@@ -146,6 +145,7 @@
             this.d_cashDishList = []
           })
       },
+      // 菜品添加
       cashDishClick (item) {
         const goodsType = []
         if (this.d_cashOrderList.length === 0) {
@@ -170,13 +170,14 @@
           }
         }
       },
+      // 计算订单总价
       cashOrderTotal() {
-        // 计算订单总价
         this.d_cashOrderTotal = 0.00
         this.d_cashOrderList.map((val) => {
           this.d_cashOrderTotal += (parseFloat(val.unitPrice)*parseFloat(val.num))
         })
       },
+      // 确认订单支付
       cashOrderSure() {
         const data = []
         this.d_cashOrderList.map((val) => {
@@ -185,20 +186,59 @@
         this.d_cashOrderSure.date = data;
         this.post('/cateringcashier/pay',this.d_cashOrderSure)
           .then((res) => {
+            this.$bvModal.msgBoxOk(
+              '订单支付成功！',
+              {
+                title: '操作提醒', // 标题
+                centered: true, // 弹窗是否居中
+                hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                headerBgVariant: 'success', // 头部背景
+                headerTextVariant: 'light', // 头部文字
+                headerCloseVariant: 'light', // 头部关闭按钮
+                size: 'sm', // 框尺寸
+                buttonSize: 'sm', // 按钮尺寸
+                okTitle: '关闭', // 确认按钮内容
+                okVariant: 'danger', // 确认按钮样式
+                footerClass: ['p-3'],
+              })
+              .then(value => {})
+              .catch((err) => {})
             this.d_cashOrderTotal = 0.00
             this.d_cashOrderList = []
           })
           .catch((err) => {
-            console.log('请求出错');
+            this.$bvModal.msgBoxOk(
+              '订单支付失败，请重试！',
+              {
+                title: '操作提醒', // 标题
+                centered: true, // 弹窗是否居中
+                hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                headerBgVariant: 'success', // 头部背景
+                headerTextVariant: 'light', // 头部文字
+                headerCloseVariant: 'light', // 头部关闭按钮
+                size: 'sm', // 框尺寸
+                buttonSize: 'sm', // 按钮尺寸
+                okTitle: '关闭', // 确认按钮内容
+                okVariant: 'danger', // 确认按钮样式
+                footerClass: ['p-3'],
+              })
+              .then(value => {})
+              .catch((err) => {})
           })
       },
-      cashOrderNumClick(type,item) {
+      // 菜单数量操作
+      cashOrderNumClick(type,index) {
         switch (type) {
           case 'minus':
-            item.num = parseFloat(item.num)- 1
+            this.d_cashOrderList[index].num = parseFloat(this.d_cashOrderList[index].num)- 1
+            if (this.d_cashOrderList[index].num === 0) {
+              this.d_cashOrderList.splice(index,1)
+            }
+            this.cashOrderTotal()
             break
           case 'add':
-            item.num = parseFloat(item.num) + 1
+            this.d_cashOrderList[index].num = parseFloat( this.d_cashOrderList[index].num) + 1
+            this.cashOrderTotal()
             break
         }
       }
@@ -209,7 +249,6 @@
           res.data.map((val) => {
             val.active = false
           })
-          // res.data[0].active = true;
           this.d_cashMenuList = res.data
         })
       this.post('/cateringcashier/getallgoodsinfo', {merchatCode:this.$localStorage.get('merchatCode')})

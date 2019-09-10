@@ -6,8 +6,7 @@ import Permission from './views/permission/Permission.vue'
 import Chart from './views/chart/Chart.vue'
 
 Vue.use(Router)
-
-export default new Router({
+const routes = new Router({
   routes: [
     {
       path: '/',
@@ -79,19 +78,23 @@ export default new Router({
           path: 'limit',
           name: '角色管理',
           component: () => import('@/views/permission/limit/Limit.vue')
-        },
-        {
-          path: 'userlimit',
-          name: '角色权限分配',
-          component: () => import('@/views/permission/userlimit/Userlimit.vue')
         }
       ]
     },
     {
       path: '/chart',
       name: '图表统计',
-      // redirect: '/permission',
       component: Chart,
     }
   ]
 })
+routes.beforeEach((to, from, next) => {
+  let success = ['/home','login']
+  JSON.parse(Vue.localStorage.get('routers')).map((val) => {
+    success.push(val.permissionName)
+  })
+  if (success.includes(to.path)) {
+    next(true)
+  }
+})
+export default routes

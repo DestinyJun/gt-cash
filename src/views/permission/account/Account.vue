@@ -204,33 +204,35 @@
     data(){
       return {
         d_accountList: [], // 账户列表
+        // 账户列表表头字段
         d_accountFields: [
-          // 账户列表表头字段
           {number: '#'},
           {user: '账户'},
           {userName: '用户名'},
           {operate: '操作'},
         ],
+        // 账户添加对象
         d_accountAdd: {
-          // 账户添加对象
           user: null,
           userName: null,
           userPhone: null,
           password: null,
           merchatCode: this.$localStorage.get('merchatCode')
         },
+        // 账户添加对象
         d_accountUpdate: {
-          // 账户添加对象
           id: null,
           userName: null,
           userPhone: null,
         },
+        // 密码修改
         d_accountPassword: {
-          // 密码修改
           id: null,
           password: null,
         },
+        // 角色列表
         d_accountRole: [],
+        // 账户角色修改
         d_accountRoleUpdate: {
           userId:null,
           merchatCode:null,
@@ -239,8 +241,8 @@
       }
     },
     methods: {
+      // 账户列表查询
       accountSelect() {
-        // 账户列表查询
         this.post(
           '/authoritymanagement/account/index/select',
           {merchatCode:this.$localStorage.get('merchatCode')})
@@ -249,23 +251,57 @@
               this.d_accountList = res.data
             }
           })
-          .catch(err => console.log(err))
+          .catch(err => {})
       },
+      // 账户操作
       accountAdd(type) {
         switch(type) {
           case 'editor':
             // 账户修改
             this.post('/authoritymanagement/account/updateuserinfo',this.d_accountUpdate)
               .then((res) => {
+                this.$bvModal.msgBoxOk(
+                  '账户修改成功！',
+                  {
+                    title: '操作提醒', // 标题
+                    centered: true, // 弹窗是否居中
+                    hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                    headerBgVariant: 'success', // 头部背景
+                    headerTextVariant: 'light', // 头部文字
+                    headerCloseVariant: 'light', // 头部关闭按钮
+                    size: 'sm', // 框尺寸
+                    buttonSize: 'sm', // 按钮尺寸
+                    okTitle: '关闭', // 确认按钮内容
+                    okVariant: 'danger', // 确认按钮样式
+                    footerClass: ['p-3'],
+                  })
+                  .then(value => {})
+                  .catch((err) => {})
                 this.accountSelect()
               })
-              .catch((err) => console.log(err))
+              .catch((err) => {})
             break
           case 'add':
             // 账户添加
             this.post('/authoritymanagement/account/adduserinfo',this.d_accountAdd)
               .then((res) => {
-                console.log(res);
+                this.$bvModal.msgBoxOk(
+                  '账户添加成功！',
+                  {
+                    title: '操作提醒', // 标题
+                    centered: true, // 弹窗是否居中
+                    hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                    headerBgVariant: 'success', // 头部背景
+                    headerTextVariant: 'light', // 头部文字
+                    headerCloseVariant: 'light', // 头部关闭按钮
+                    size: 'sm', // 框尺寸
+                    buttonSize: 'sm', // 按钮尺寸
+                    okTitle: '关闭', // 确认按钮内容
+                    okVariant: 'danger', // 确认按钮样式
+                    footerClass: ['p-3'],
+                  })
+                  .then(value => {})
+                  .catch((err) => {})
                 this.d_accountAdd = this.reset_form(this.d_accountAdd)
                 this.accountSelect()
               })
@@ -275,19 +311,51 @@
             // 密码修改
             this.post('/authoritymanagement/account/updateuserinfopassword',this.d_accountPassword)
               .then((res) => {
+                this.$bvModal.msgBoxOk(
+                  '密码修改成功！',
+                  {
+                    title: '操作提醒', // 标题
+                    centered: true, // 弹窗是否居中
+                    hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                    headerBgVariant: 'success', // 头部背景
+                    headerTextVariant: 'light', // 头部文字
+                    headerCloseVariant: 'light', // 头部关闭按钮
+                    size: 'sm', // 框尺寸
+                    buttonSize: 'sm', // 按钮尺寸
+                    okTitle: '关闭', // 确认按钮内容
+                    okVariant: 'danger', // 确认按钮样式
+                    footerClass: ['p-3'],
+                  })
+                  .then(value => {})
+                  .catch((err) => {})
                 this.accountSelect()
               })
               .catch((err) => console.log(err))
             break
           case 'role':
-            console.log(this.d_accountRoleUpdate);
             // 角色修改
             this.post('/authoritymanagement/user/role/update',this.d_accountRoleUpdate)
               .then((res) => {
-                console.log(res);
+                this.$bvModal.msgBoxOk(
+                  '角色修改成功！',
+                  {
+                    title: '操作提醒', // 标题
+                    centered: true, // 弹窗是否居中
+                    hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                    headerBgVariant: 'success', // 头部背景
+                    headerTextVariant: 'light', // 头部文字
+                    headerCloseVariant: 'light', // 头部关闭按钮
+                    size: 'sm', // 框尺寸
+                    buttonSize: 'sm', // 按钮尺寸
+                    okTitle: '关闭', // 确认按钮内容
+                    okVariant: 'danger', // 确认按钮样式
+                    footerClass: ['p-3'],
+                  })
+                  .then(value => {})
+                  .catch((err) => {})
                 this.accountSelect()
               })
-              .catch((err) => console.log(err))
+              .catch((err) => {})
             break
         }
       },
@@ -354,7 +422,6 @@
             '/authoritymanagement/account/key/select',
             {key: event.value,merchatCode: this.$localStorage.get('merchatCode')})
             .then((res) => {
-              console.log(res);
               this.d_accountList = res.data
             })
             .catch(err => {})

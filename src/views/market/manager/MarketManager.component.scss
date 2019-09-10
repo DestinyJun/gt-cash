@@ -1,9 +1,16 @@
+.manager{
+  height: 100%;
+  .content{
+    margin-top: 10px;
+    height: calc(100% - 70px);
+  }
+}
+//模态框改造
 .modal-dialog{
   .footer-center{
     justify-content: center!important;
   }
 }
-//模态框改造
 .modal-content{
   .modal-header{
     border: none;

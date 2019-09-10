@@ -3,7 +3,7 @@
     <i class="icon iconfont mr-3" :class="[icon[0]]" @click="routerBack"></i>
     <i class="icon iconfont mr-3" :class="[icon[1]]"></i>
     <span>{{title}}</span>
-    <img src="@/assets/images/xz.jpg" class="rounded-circle float-right" alt="头像">
+    <!--<img src="@/assets/images/xz.jpg" class="rounded-circle float-right" alt="头像">-->
   </div>
 </template>
 

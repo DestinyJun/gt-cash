@@ -5,7 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    LOADING: false // 控制请求加载动画状态
+    LOADING: false, // 控制请求加载动画状态
   },
   mutations: {
     // 改变状态的函数

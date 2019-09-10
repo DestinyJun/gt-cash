@@ -39,15 +39,13 @@ axios.interceptors.response.use(function (response){
   if (response.status === 200) {
     store.commit('hideLoading')
     if (response.data.code === '1000') {
-      if (!(response.data.data === null)) {
-        return Promise.resolve(response);
-      } else {
-        return Promise.reject(response);
-      }
-    } else {
+      return Promise.resolve(response);
+    }
+    else {
       return Promise.reject(response);
     }
   } else {
+    store.commit('hideLoading')
     return Promise.reject(response);
   }
 }, function (error){

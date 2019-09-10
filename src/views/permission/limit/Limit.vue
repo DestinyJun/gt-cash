@@ -201,23 +201,41 @@
             // 角色添加
             this.post('/authoritymanagement/role/addnewrole',this.d_limitAdd)
               .then((res) => {
+                this.$bvToast.toast('角色添加成功！', {
+                  title: `操作提醒`,
+                  variant: 'success',
+                  solid: true,
+                  autoHideDelay: 2000
+                })
                 this.d_limitAdd = this.reset_form(this.d_limitAdd)
                 this.limitSelect()
               })
               .catch((err) => console.log(err))
             break
           case 'editor':
-            // 角色修改
+            // 角色信息修改
             this.post('/authoritymanagement/role/name/update',this.d_limitUpdate)
               .then((res) => {
+                this.$bvToast.toast('角色信息修改成功！', {
+                  title: `操作提醒`,
+                  variant: 'success',
+                  solid: true,
+                  autoHideDelay: 2000
+                })
                 this.limitSelect()
               })
               .catch((err) => console.log(err))
             break
           case 'limit':
+            // 权限修改
             this.post('/authoritymanagement/role/permission/update',this.d_limitPermissionUpdate)
               .then((res) => {
-                console.log(res);
+                this.$bvToast.toast('权限修改成功！', {
+                  title: `操作提醒`,
+                  variant: 'success',
+                  solid: true,
+                  autoHideDelay: 2000
+                })
               })
               .catch((err) => console.log(err))
             break

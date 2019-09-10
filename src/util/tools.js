@@ -41,8 +41,8 @@ export function clone_copy (objA,objB) {
 
 /**
  *
- * @param objA
- * @param objB
+ * @param objA Object  被复制的对象
+ * @param objB Object  需要赋值的对象
  */
 export function clone_copy_a (objA,objB) {
   for (const prop in objB) {

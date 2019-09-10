@@ -91,12 +91,19 @@
       loginClick () {
         if (this.d_loginForm.user && this.d_loginForm.password) {
           this.post(`/user/login`,this.d_loginForm)
-            .then((response) => {
-              if (response.code === '1000') {
-                this.$localStorage.set('merchatCode', response.data.merchatCode)
-                this.$localStorage.set('userCode', response.data.userId)
-                this.$router.push('/home')
-              }
+            .then((res) => {
+              this.$localStorage.set('merchatCode', res.data.merchatCode)
+              this.$localStorage.set('userCode', res.data.userId)
+              this.post(
+                '/user/getpermission',
+                {userId: res.data.userId,merchatCode: res.data.merchatCode})
+                .then((res) => {
+                  this.$localStorage.set('routers', JSON.stringify(res.data))
+                })
+                .catch((err) => {
+                  console.log(err);
+                })
+              this.$router.push('/home')
             })
             .catch((err) => {
               console.log(err);

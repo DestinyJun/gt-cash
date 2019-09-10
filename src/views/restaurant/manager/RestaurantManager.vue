@@ -14,7 +14,7 @@
         <div class="form-group mb-2 mr-0" @click="$bvModal.show('modal-add')" style="cursor: pointer">
           <b-btn variant="success pl-3 pr-3" size="sm">
             <i class="icon iconfont iconjia1"></i>
-            新增商品</b-btn>
+            新增菜品</b-btn>
         </div>
       </div>
     </div>
@@ -38,20 +38,6 @@
             style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
             <i class="icon iconfont iconshanchu text-light"></i>
           </div>
-          <!--<div
-            data-toggle="tooltip" data-placement="top" title="账户密码修改"
-            @click="$bvModal.show('modal-password');accountOperateClick(data.item,'password')"
-            class="bg-success mr-3"
-            style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
-            <i class="icon iconfont iconquanxian text-light"></i>
-          </div>
-          <div
-            data-toggle="tooltip" data-placement="top" title="账户角色配置"
-            @click="$bvModal.show('modal-role');accountOperateClick(data.item,'role')"
-            class="bg-warning"
-            style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
-            <i class="icon iconfont iconquanxian text-light"></i>
-          </div>-->
         </template>
       </b-table>
     </div>
@@ -66,7 +52,22 @@
         <div class="form-group row">
           <label for="goodsName" class="col-sm-4 col-form-label">菜品名称：</label>
           <div class="col-sm-8">
-            <input type="text" id="goodsName" class="form-control" v-model="d_managerDishAdd.goodsName">
+            <input type="text" id="goodsName" class="form-control"
+              @input="managerDishNameChange($event.target.value)"
+              v-model="d_managerDishAdd.goodsName">
+            <div v-if="d_managerDishMainShow" style="width: calc(100% - 2rem);
+              position: absolute;
+              z-index: 1097;
+              top: 40px;
+              left: 1rem;
+              cursor: pointer;
+              background: rgba(50,50,50,0.5);
+              max-height: 200px;
+              overflow: auto;">
+              <p class="mb-0 pl-2 pt-2 pb-2 text-light" v-for="item in d_managerDishMain" @click="managerDishMainClick(item)">
+                {{item.goodsName}}
+              </p>
+            </div>
           </div>
         </div>
         <!--菜品单价-->
@@ -101,16 +102,14 @@
               <input
                 type="radio" id="addType1"
                 name="haveCapacity" class="custom-control-input"
-                value="1" v-model="d_managerDishAdd.addType"
-                @input="stHaveCapacityChange($event)">
+                value="1" v-model="d_managerDishAdd.addType">
               <label class="custom-control-label" for="addType1">是</label>
             </div>
             <div class="custom-control custom-radio custom-control-inline ml-5">
               <input
                 type="radio" id="addType2"
                 name="haveCapacity" class="custom-control-input"
-                value="0" v-model="d_managerDishAdd.addType"
-                @input="stHaveCapacityChange($event)">
+                value="0" v-model="d_managerDishAdd.addType">
               <label class="custom-control-label" for="addType2">否</label>
             </div>
           </div>
@@ -204,7 +203,12 @@
     name: 'RestaurantManager',
     data: function () {
       return {
-        d_managerDishList: [],
+        d_managerDishMainShow: false,
+        d_managerDishMain: [
+          {goodsCode: "1113",
+            goodsName: "红烧牛肉面"}
+        ],  // 主库菜品
+        d_managerDishList: [], // 菜品列表
         d_managerDishFields: [
           // 表头字段
           {number: '#'},
@@ -215,8 +219,8 @@
           {restaurantTypeName: '所属类别'},
           {operate: '操作'},
         ],
+        // 菜品添加参数
         d_managerDishAdd: {
-          // 菜品添加
           goodsCode: -1,
           goodsName: null,
           unitPrice: null,
@@ -226,6 +230,7 @@
           merchatGoodsCode: null,
           merchatCode: this.$localStorage.get('merchatCode'),
         },
+        // 菜品膝修改参数
         d_managerDishUpdate: {
           // 菜品修改
           id: null,
@@ -239,42 +244,71 @@
       }
     },
     methods: {
+      // 菜品列表查询
       managerDishList() {
         this.post('/cateringcashier/getallgoodsinfo',{merchatCode: this.$localStorage.get('merchatCode')})
           .then((res) => {
             this.d_managerDishList = res.data
-            console.log(res)
           })
           .catch((err) => {})
       },
+      // 根据关键字查询菜品列表
       managerSelectDish(name) {
-        // 根据关键字查询菜品列表
         this.post(
           '/cateringmanagement/findgoodsbyname',
           {name: name,merchatCode: this.$localStorage.get('merchatCode')})
           .then((res) => {
-            console.log(res.data);
             this.d_managerDishList = res.data
           })
-          .catch((err) => {
-            console.log();
-          })
+          .catch((err) => {})
       },
+      // 菜品增删改
       managerDishAdd(type,item) {
-        // 菜品增删改
         switch (type) {
           case 'add':
             this.post('/cateringmanagement/addgoods', this.d_managerDishAdd)
               .then((res) => {
+                this.$bvModal.msgBoxOk(
+                  '添加成功！',
+                  {
+                    title: '操作提醒', // 标题
+                    centered: true, // 弹窗是否居中
+                    hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                    headerBgVariant: 'success', // 头部背景
+                    headerTextVariant: 'light', // 头部文字
+                    headerCloseVariant: 'light', // 头部关闭按钮
+                    size: 'sm', // 框尺寸
+                    buttonSize: 'sm', // 按钮尺寸
+                    okTitle: '关闭', // 确认按钮内容
+                    okVariant: 'danger', // 确认按钮样式
+                    footerClass: ['p-3'],
+                  })
+                  .then(value => {})
+                  .catch((err) => {})
                 this.managerDishList();
               })
-              .catch((err) => {
-                console.log();
-              })
+              .catch((err) => {})
             break;
           case 'update':
             this.post('/cateringmanagement/updategoodsinfo', this.d_managerDishUpdate)
               .then((res) => {
+                this.$bvModal.msgBoxOk(
+                  '修改成功！',
+                  {
+                    title: '操作提醒', // 标题
+                    centered: true, // 弹窗是否居中
+                    hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                    headerBgVariant: 'success', // 头部背景
+                    headerTextVariant: 'light', // 头部文字
+                    headerCloseVariant: 'light', // 头部关闭按钮
+                    size: 'sm', // 框尺寸
+                    buttonSize: 'sm', // 按钮尺寸
+                    okTitle: '关闭', // 确认按钮内容
+                    okVariant: 'danger', // 确认按钮样式
+                    footerClass: ['p-3'],
+                  })
+                  .then(value => {})
+                  .catch((err) => {})
                 this.managerDishList();
               })
               .catch((err) => {
@@ -282,30 +316,66 @@
               })
             break;
           case 'del':
-            this.post('/cateringmanagement/deletegoods', {id:item.id})
-              .then((res) => {
-                this.managerDishList();
+            this.$bvModal.msgBoxConfirm(
+              '您确定要是删除此菜品吗？',
+              {
+                title: '删除提醒', // 标题
+                centered: true, // 弹窗是否居中
+                hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                headerBgVariant: 'danger', // 头部背景
+                headerTextVariant: 'light', // 头部文字
+                headerCloseVariant: 'light', // 头部关闭按钮
+                size: 'sm', // 框尺寸
+                buttonSize: 'sm', // 按钮尺寸
+                okTitle: '取消', // 确认按钮内容
+                okVariant: 'danger', // 确认按钮样式
+                cancelTitle: '确认',// 取消按钮内容
+                cancelVariant: 'success',// 确取消按钮样式
+                footerClass: ['p-3'],
+              })
+              .then(value => {
+                if (!value) {
+                  this.post('/cateringmanagement/deletegoods', {id:item.id})
+                    .then((res) => {
+                      this.managerDishList();
+                    })
+                    .catch((err) => {})
+                }
               })
               .catch((err) => {})
             break;
         }
       },
+      // 编辑菜品选择
       managerDishOperate(item,type) {
         switch(type) {
           case 'editor':
             this.clone_copy_a(item,this.d_managerDishUpdate)
-            console.log(this.d_managerDishUpdate);
             break
         }
       },
+      // 菜品模糊查询
       managerDishSearchChange: debounce(function (event) {
-        // 菜品模糊查询
         if (event.value.length === 0) {
           this.managerDishList()
         } else {
           this.managerSelectDish(event.value)
         }
       },500),
+      // 主库菜品模糊查询
+      managerDishNameChange: debounce(function (event) {
+        this.post('/cateringmanagement/addgoods/getgoodsbyname',{name: event})
+          .then((res) => {
+            this.d_managerDishMain = res.data
+            this.d_managerDishMainShow = true
+          })
+      },800),
+      // 主库菜品选择
+      managerDishMainClick(item) {
+        this.d_managerDishMainShow = false
+        this.d_managerDishAdd.goodsName = item.goodsName
+        this.d_managerDishAdd.merchatGoodsCode = item.goodsCode
+      }
     },
     created () {
       // 查询菜品列表

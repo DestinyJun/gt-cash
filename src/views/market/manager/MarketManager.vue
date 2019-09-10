@@ -1,9 +1,5 @@
 <template>
-  <div class="market-manager">
-    <!--标题-->
-    <div class="title pt-2">
-      <span class="h2">商品管理</span>
-    </div>
+  <div class="manager">
     <!--搜索框-->
     <div class="saerch pt-3 pl-3">
       <div class="input-group w-50">
@@ -12,7 +8,7 @@
       </div>
     </div>
     <!--表格内容-->
-    <div class="content pl-3 pr-3 mt-3">
+    <div class="content pl-3 pr-3 overflow-auto">
       <b-table outlined hover responsive="sm" :items="d_mnGoods" :fields="d_mFields">
         <template slot="[selected]" slot-scope="data">
           <div class="custom-control custom-checkbox">
@@ -100,6 +96,9 @@
           userCode:null,
           merchatCode:null,
           goodsName:null,
+        },
+        d_mnUpdate: {
+
         }
       }
     },
@@ -123,6 +122,7 @@
         // 商品操作事件
         switch (type) {
           case 'editor':
+            console.log(item);
             break
           case 'del':
             this.$bvModal.msgBoxConfirm(
@@ -136,21 +136,36 @@
               headerCloseVariant: 'light', // 头部关闭按钮
               size: 'sm', // 框尺寸
               buttonSize: 'sm', // 按钮尺寸
-              okTitle: '是的', // 确认按钮内容
-              okVariant: 'success', // 确认按钮样式
-              cancelTitle: '取消',// 取消按钮内容
-              cancelVariant: 'danger',// 确取消按钮样式
+              okTitle: '取消', // 确认按钮内容
+              okVariant: 'danger', // 确认按钮样式
+              cancelTitle: '确认',// 取消按钮内容
+              cancelVariant: 'success',// 确取消按钮样式
               footerClass: ['p-3'],
             })
               .then(value => {
-                if (value) {
+                if (!value) {
                   this.post(
                     '/supermarketmanagement/supermarketstorage/goods/delete',
                     {id:item.id,goodsType:item.goodsType})
                     .then((res) => {
-                      if (res.code === '1000') {
+                      this.$bvModal.msgBoxOk(
+                        '删除成功！',
+                        {
+                          title: '操作提醒', // 标题
+                          centered: true, // 弹窗是否居中
+                          hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                          headerBgVariant: 'success', // 头部背景
+                          headerTextVariant: 'light', // 头部文字
+                          headerCloseVariant: 'light', // 头部关闭按钮
+                          size: 'sm', // 框尺寸
+                          buttonSize: 'sm', // 按钮尺寸
+                          okTitle: '确定', // 确认按钮内容
+                          okVariant: 'info', // 确认按钮样式
+                          footerClass: ['p-3'],
+                        })
+                        .then(value => {})
+                        .catch((err) => {})
                         this.mnSelectGoodList()
-                      }
                     })
                 }
               })
@@ -164,6 +179,9 @@
                 this.d_destroy[prop] = item[prop]
               }
             }
+            this.post('',{})
+              .then((res) => {})
+              .catch((res) => {})
             break
         }
       },
