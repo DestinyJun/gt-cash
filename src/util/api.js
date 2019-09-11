@@ -18,8 +18,12 @@ else if (process.env.NODE_ENV === 'production') {
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 // axios.defaults.headers.post['token'] = '123456789';
 
+//设置的请求次数，请求的间隙
+axios.defaults.retry = 4;
+axios.defaults.retryDelay = 1000;
+
 // 全局设置超时时间
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 3000;
 
 // 请求拦截
 axios.interceptors.request.use(function (config) {
@@ -35,20 +39,34 @@ axios.interceptors.request.use(function (config) {
 });
 // 响应拦截
 axios.interceptors.response.use(function (response){
-  // 处理响应数据
+  // 处理200响应数据错误
   if (response.status === 200) {
     store.commit('hideLoading')
+    // 处理服务器本身错误
     if (response.data.code === '1000') {
       return Promise.resolve(response);
     }
     else {
-      return Promise.reject(response);
+      store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
+      return Promise.resolve(response);
     }
   } else {
     store.commit('hideLoading')
-    return Promise.reject(response);
+    window.alert('链接服务器失败，请稍后重试！')
+    return Promise.resolve(response);
   }
-}, function (error){
+},function (error){
+  store.commit('hideLoading')
+  // 请求超时处理
+  if(error.message.includes('timeout')){   // 判断请求异常信息中是否含有超时timeout字符串
+    const confirm = window.confirm('网络请求超时，请重试！')
+    if (confirm) {
+      location.reload()
+      return Promise.resolve(error);
+    } else {
+      return Promise.reject(error); // 错误信息
+    }
+  }
   // 处理响应失败
   return Promise.reject(error);
 });

@@ -4,6 +4,7 @@ import Market from './views/market/Market.vue'
 import Restaurant from './views/restaurant/Restaurant.vue'
 import Permission from './views/permission/Permission.vue'
 import Chart from './views/chart/Chart.vue'
+import Error from './views/error/error.vue'
 
 Vue.use(Router)
 const routes = new Router({
@@ -85,16 +86,36 @@ const routes = new Router({
       path: '/chart',
       name: '图表统计',
       component: Chart,
+    },
+    {
+      path: '/error',
+      name: 'error',
+      component: Error,
+    },
+    {
+      path: '**',
+      redirect: '/login'
     }
   ]
 })
 routes.beforeEach((to, from, next) => {
-  let success = ['/home','login']
-  JSON.parse(Vue.localStorage.get('routers')).map((val) => {
-    success.push(val.permissionName)
-  })
-  if (success.includes(to.path)) {
+  if ((to.path === '/login') ||(to.path === '/error')) {
     next(true)
+  }
+  else if (Vue.localStorage.get('userCode')){
+    if (to.path === '/home') {
+      next(true)
+    } else {
+      let success = []
+      JSON.parse(Vue.localStorage.get('routers')).map((val) => {
+        success.push(val.permissionName)
+      })
+      if (success.includes(to.path)) {
+        next(true)
+      } else {
+        next({path: '/error'})
+      }
+    }
   }
 })
 export default routes

@@ -94,15 +94,6 @@
             .then((res) => {
               this.$localStorage.set('merchatCode', res.data.merchatCode)
               this.$localStorage.set('userCode', res.data.userId)
-              this.post(
-                '/user/getpermission',
-                {userId: res.data.userId,merchatCode: res.data.merchatCode})
-                .then((res) => {
-                  this.$localStorage.set('routers', JSON.stringify(res.data))
-                })
-                .catch((err) => {
-                  console.log(err);
-                })
               this.$router.push('/home')
             })
             .catch((err) => {
@@ -150,6 +141,11 @@
           this.d_loginError.password_error = '';
         }
       }
+    },
+    created () {
+      this.$localStorage.remove('userCode')
+      this.$localStorage.remove('merchatCode')
+      this.$localStorage.remove('routers')
     }
   }
 </script>

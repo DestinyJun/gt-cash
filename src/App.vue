@@ -4,13 +4,15 @@
       <router-view></router-view>
     <!--</transition>-->
     <Loading v-if="$store.state.LOADING"></Loading>
+    <ErrorRemind :options="$store.state.REMIND"></ErrorRemind>
   </div>
 </template>
 <script>
   import Loading from './components/Loading'
+  import ErrorRemind from './components/ErrorRemind'
   export default {
     name: 'App',
-    components: { Loading }
+    components: { Loading,ErrorRemind }
   }
 </script>
 <style lang="scss">

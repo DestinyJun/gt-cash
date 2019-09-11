@@ -5,11 +5,11 @@ import store from './store'
 import VueLocalStorage from 'vue-localstorage'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import {get,post} from './util/api'
 import 'bootstrap'
 import ToggleButton from 'vue-js-toggle-button'
 import PortalVue from 'portal-vue'
 import BootstrapVue from 'bootstrap-vue'
-import {get,post} from './util/api'
 import {reset_form,clone_obj,clone_copy,clone_copy_a} from './util/tools'
 
 //挂载自定义方法到Vue原型上
