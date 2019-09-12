@@ -48,12 +48,13 @@ axios.interceptors.response.use(function (response){
     }
     else {
       store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
-      return Promise.resolve(response);
+      return Promise.reject(response);
     }
   } else {
+    console.log(response);
     store.commit('hideLoading')
     window.alert('链接服务器失败，请稍后重试！')
-    return Promise.resolve(response);
+    return Promise.reject(response);
   }
 },function (error){
   store.commit('hideLoading')

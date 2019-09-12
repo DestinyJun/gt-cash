@@ -1,20 +1,22 @@
 <template>
   <div class="error-remind" v-if="options.show">
-    <div class="msg">
-      <div class="msg-title bg-danger pl-2">
-        <span class="h6 mb-0 text-light">错误提醒</span>
-        <span class="icon iconfont iconcross-fill text-light" @click="errorClose()"></span>
-      </div>
-      <div class="msg-content bg-light pt-3">
-        <p>
-          错误码：{{options.code}}
-        </p>
-        <p>错误信息：{{options.msg}}</p>
-      </div>
-      <div class="msg-footer bg-light">
-        <b-btn size="sm" variant="warning light pl-5 pr-5">请重试</b-btn>
-      </div>
+    <transition name="fade">
+      <div class="msg">
+    <div class="msg-title bg-danger pl-2">
+      <span class="h6 mb-0 text-light">错误提醒</span>
+      <span class="icon iconfont iconcross-fill text-light" @click="errorClose()"></span>
     </div>
+    <div class="msg-content bg-light pt-3">
+      <p>
+        错误码：{{options.code}}
+      </p>
+      <p>错误信息：{{options.msg}}</p>
+    </div>
+    <div class="msg-footer bg-light">
+      <b-btn size="sm" variant="warning light pl-5 pr-5" @click="errorClose()">关闭</b-btn>
+    </div>
+  </div>
+    </transition>
   </div>
 </template>
 
@@ -54,8 +56,8 @@
   justify-content: center;
   align-items: center;
   .msg{
-    width: 30vw;
-    height: 20vw;
+    width: 25rem;
+    height: 15rem;
     .msg-title{
       height: 20%;
       display: flex;
@@ -80,6 +82,11 @@
       align-items: center;
     }
   }
-
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 1s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

@@ -67,6 +67,7 @@
 
 <script>
   import Loading from '../../components/Loading'
+  var debounce = require('lodash.debounce')
   export default {
     name: 'Login',
     components: { Loading },
@@ -87,6 +88,7 @@
         d_loginShopSelect: '请选择店铺...'
       }
     },
+    validations: {},
     methods: {
       loginClick () {
         if (this.d_loginForm.user && this.d_loginForm.password) {
@@ -115,12 +117,12 @@
       loginSwitchChange () {
         console.log('222');
       },
-      loginUserChange() {
+      loginUserChange: debounce(function () {
         const that = this;
         this.d_loginOptions = [{ merchatCode: null, merchatName: '请选择店铺...' }]
         let aTime;
         aTime = setTimeout(() => {
-          this.$http.post(`${process.env.VUE_APP_URL}/user/selectmerchatbyuser`, { user: this.d_loginForm.user })
+          this.$http.post(`/user/selectmerchatbyuser`, { user: this.d_loginForm.user })
             .then(function (response) {
               const data = response.data.data
               for(var i = 0, len = data.length; i < len; i++){
@@ -131,16 +133,7 @@
               console.log(error);
             });
         }, 500)
-      },
-      loginFormCheck(e) {
-        console.log(e);
-        if (this.d_loginForm.user) {
-          this.d_loginError.user_error = '';
-        }
-        if (this.d_loginForm.password) {
-          this.d_loginError.password_error = '';
-        }
-      }
+      }, 800)
     },
     created () {
       this.$localStorage.remove('userCode')

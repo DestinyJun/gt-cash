@@ -2,9 +2,12 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+
+/***************第三方工具插件*******************/
 import VueLocalStorage from 'vue-localstorage'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import Vuelidate from 'vuelidate'
 import {get,post} from './util/api'
 import 'bootstrap'
 import ToggleButton from 'vue-js-toggle-button'
@@ -23,6 +26,7 @@ Vue.prototype.clone_copy_a = clone_copy_a;
 // 使用vue插件
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios) // axios请求插件
+Vue.use(Vuelidate) // 表单校验插件
 Vue.use(ToggleButton) // switch开关插件
 Vue.use(VueLocalStorage) // session storage插件
 Vue.use(PortalVue) // bootstrap-vue支持插件

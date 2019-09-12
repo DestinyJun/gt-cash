@@ -31,7 +31,7 @@
                 <p class="price mb-0 text-danger">{{item.unitPrice}}</p>
               </div>
             </div>
-            <p class="text-center" v-if="!(d_cashDishList.length > 0)">暂无菜品，敬请期待！</p>
+            <p class="text-center w-100" v-if="!(d_cashDishList)">此分类暂无菜品，敬请期待！</p>
             <div class="dish-pagination position-absolute">
               <b-pagination
                 limit='5'
