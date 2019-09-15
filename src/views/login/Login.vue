@@ -94,13 +94,13 @@
         if (this.d_loginForm.user && this.d_loginForm.password) {
           this.post(`/user/login`,this.d_loginForm)
             .then((res) => {
+              console.log(res);
               this.$localStorage.set('merchatCode', res.data.merchatCode)
               this.$localStorage.set('userCode', res.data.userId)
+              this.$localStorage.set('APPKEY', res.data.APPKEY)
               this.$router.push('/home')
             })
-            .catch((err) => {
-              console.log(err);
-            })
+            .catch((err) => {})
           return true
         }
         if (!this.d_loginForm.user) {

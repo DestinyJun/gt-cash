@@ -62,7 +62,7 @@
         </span>
       </div>
       <div class="footer-btn">
-        <button class="btn btn-primary" @click="cashPaySure()">确认收款成功</button>
+        <button class="btn btn-primary" @click="cashPaySure()" :disabled="d_cashGoods.length === 0">确认收款成功</button>
       </div>
     </div>
     <!--手动查询商品-->
@@ -193,7 +193,7 @@
           case 'minus':
             this.d_cashGoods[index].num = parseInt(this.d_cashGoods[index].num) - 1
             this.cashCalculateTotal()
-            if (this.d_cashGoods[index].num === '0') {
+            if (this.d_cashGoods[index].num == '0') {
               this.d_cashGoods.splice(index, 1)
             }
             break
@@ -324,39 +324,33 @@
         this.d_cashPaySure.data = data;
         this.post('/supermarketmanagement/supermarketcashier/goods/pay',this.d_cashPaySure)
           .then((res) => {
-            this.$bvModal.msgBoxOk('收钱成功！', {
-              title: '支付提醒',
-              size: 'sm',
-              buttonSize: 'sm',
-              hideHeaderClose: false, // 是否隐藏头部关闭按钮
-              headerBgVariant: 'success', // 头部背景
-              headerTextVariant: 'light', // 头部文字
-              headerCloseVariant: 'light', // 头部关闭按钮
-              okTitle: '关闭',
-              okVariant: 'info',
-              headerClass: 'p-2 border-bottom-0',
-              footerClass: 'p-2 border-top-0',
-              centered: true
-            })
+            this.$bvModal.msgBoxConfirm(
+              '订单支付成功！是否打印小票？',
+              {
+                title: '操作提醒', // 标题
+                centered: true, // 弹窗是否居中
+                hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                headerBgVariant: 'success', // 头部背景
+                headerTextVariant: 'light', // 头部文字
+                headerCloseVariant: 'light', // 头部关闭按钮
+                size: 'sm', // 框尺寸
+                buttonSize: 'sm', // 按钮尺寸
+                cancelTitle: '关闭',
+                cancelVariant: 'danger', // 确认按钮样式
+                okTitle: '打印', // 确认按钮内容
+                okVariant: 'success', // 确认按钮样式
+                footerClass: ['p-3'],
+              })
+              .then(value => {
+                if(value) {
+                  window.open(`${process.env.VUE_APP_URL}/printpdf/cateringcashier?merchatCode=${this.$localStorage.get('merchatCode')}&orderNum=${res.data}`)
+                }
+              })
+              .catch((err) => {})
             this.d_cashGoods = []
             this.d_cashTotal = 0.00
           })
-          .catch((err) => {
-            this.$bvModal.msgBoxOk('收钱失败，请重试！', {
-              title: '支付提醒',
-              size: 'sm',
-              buttonSize: 'sm',
-              hideHeaderClose: false, // 是否隐藏头部关闭按钮
-              headerBgVariant: 'danger', // 头部背景
-              headerTextVariant: 'light', // 头部文字
-              headerCloseVariant: 'light', // 头部关闭按钮
-              okTitle: '关闭',
-              okVariant: 'info',
-              headerClass: 'p-2 border-bottom-0',
-              footerClass: 'p-2 border-top-0',
-              centered: true
-            })
-          })
+          .catch(() => {})
       }
     }
   }

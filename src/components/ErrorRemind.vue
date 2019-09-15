@@ -13,7 +13,7 @@
       <p>错误信息：{{options.msg}}</p>
     </div>
     <div class="msg-footer bg-light">
-      <b-btn size="sm" variant="warning light pl-5 pr-5" @click="errorClose()">关闭</b-btn>
+      <b-btn size="sm" variant="warning light pl-5 pr-5" @click="errorClose()">{{options.code === '1005'?'点击重新登陆':'关闭'}}</b-btn>
     </div>
   </div>
     </transition>
@@ -37,6 +37,11 @@
     },
     methods: {
       errorClose() {
+        switch(this.options.code) {
+          case '1005':
+            this.$router.push('/login')
+            break
+        }
         this.$store.commit('remindChange',{show:false,code:'',msg:''})
       }
     }

@@ -12,6 +12,7 @@
 
 <style lang="scss">
 .loading{
+  z-index: 2099;
   position: fixed;
   top: 0;
   left: 0;

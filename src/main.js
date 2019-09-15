@@ -3,16 +3,24 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-/***************第三方工具插件*******************/
+// storage
 import VueLocalStorage from 'vue-localstorage'
+// axios
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import Vuelidate from 'vuelidate'
 import {get,post} from './util/api'
-import 'bootstrap'
+// Vuelidate
+import Vuelidate from 'vuelidate'
+// ECharts  手动引入 ECharts 各模块来减小打包体积
+// import ECharts from 'vue-echarts'
+// import 'echarts/lib/chart/line'
+// vue switch
 import ToggleButton from 'vue-js-toggle-button'
 import PortalVue from 'portal-vue'
+// bootstrap
+import 'bootstrap'
 import BootstrapVue from 'bootstrap-vue'
+// tool 自定义工具函数
 import {reset_form,clone_obj,clone_copy,clone_copy_a} from './util/tools'
 
 //挂载自定义方法到Vue原型上
@@ -31,6 +39,9 @@ Vue.use(ToggleButton) // switch开关插件
 Vue.use(VueLocalStorage) // session storage插件
 Vue.use(PortalVue) // bootstrap-vue支持插件
 Vue.use(BootstrapVue) // bootstrap-vue UI插件
+
+// 注册vue-echarts组件
+// Vue.component('v-chart', ECharts)
 
 // 定义全局筛选器
 Vue.filter('twoDecimals',(value) => {

@@ -13,7 +13,7 @@ else if (process.env.NODE_ENV === 'debug') {
 else if (process.env.NODE_ENV === 'production') {
   axios.defaults.baseURL = process.env.VUE_APP_URL;
 }
-
+// VueLocalStorage.get('someNumber')
 // 全局设置头部信息
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 // axios.defaults.headers.post['token'] = '123456789';
@@ -30,7 +30,7 @@ axios.interceptors.request.use(function (config) {
   store.commit('showLoading')
   // 判断那些接口需要添加token，那些接口需要添加请求类型，判断token是否存在
   if (!(config.url.includes('/login'))) {
-    config.headers.post['token'] = '456';
+    config.headers.post['APPKEY'] = localStorage.getItem('APPKEY');
   }
   return config;
 }, function (error) {
@@ -45,13 +45,15 @@ axios.interceptors.response.use(function (response){
     // 处理服务器本身错误
     if (response.data.code === '1000') {
       return Promise.resolve(response);
+    } else if (response.data.code === '1005') {
+      store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
+      return Promise.reject(response);
     }
     else {
       store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
       return Promise.reject(response);
     }
   } else {
-    console.log(response);
     store.commit('hideLoading')
     window.alert('链接服务器失败，请稍后重试！')
     return Promise.reject(response);

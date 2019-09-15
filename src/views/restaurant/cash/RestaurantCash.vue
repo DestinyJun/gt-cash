@@ -186,8 +186,8 @@
         this.d_cashOrderSure.date = data;
         this.post('/cateringcashier/pay',this.d_cashOrderSure)
           .then((res) => {
-            this.$bvModal.msgBoxOk(
-              '订单支付成功！',
+            this.$bvModal.msgBoxConfirm(
+              '订单支付成功！是否打印小票？',
               {
                 title: '操作提醒', // 标题
                 centered: true, // 弹窗是否居中
@@ -197,34 +197,22 @@
                 headerCloseVariant: 'light', // 头部关闭按钮
                 size: 'sm', // 框尺寸
                 buttonSize: 'sm', // 按钮尺寸
-                okTitle: '关闭', // 确认按钮内容
-                okVariant: 'danger', // 确认按钮样式
+                cancelTitle: '关闭',
+                cancelVariant: 'danger', // 确认按钮样式
+                okTitle: '打印', // 确认按钮内容
+                okVariant: 'success', // 确认按钮样式
                 footerClass: ['p-3'],
               })
-              .then(value => {})
+              .then(value => {
+                if(value) {
+                  window.open(`${process.env.VUE_APP_URL}/printpdf/cateringcashier?merchatCode=${this.$localStorage.get('merchatCode')}&orderNum=${res.data}`)
+                }
+              })
               .catch((err) => {})
             this.d_cashOrderTotal = 0.00
             this.d_cashOrderList = []
           })
-          .catch((err) => {
-            this.$bvModal.msgBoxOk(
-              '订单支付失败，请重试！',
-              {
-                title: '操作提醒', // 标题
-                centered: true, // 弹窗是否居中
-                hideHeaderClose: false, // 是否隐藏头部关闭按钮
-                headerBgVariant: 'success', // 头部背景
-                headerTextVariant: 'light', // 头部文字
-                headerCloseVariant: 'light', // 头部关闭按钮
-                size: 'sm', // 框尺寸
-                buttonSize: 'sm', // 按钮尺寸
-                okTitle: '关闭', // 确认按钮内容
-                okVariant: 'danger', // 确认按钮样式
-                footerClass: ['p-3'],
-              })
-              .then(value => {})
-              .catch((err) => {})
-          })
+          .catch(() => {})
       },
       // 菜单数量操作
       cashOrderNumClick(type,index) {

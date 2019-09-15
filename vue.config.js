@@ -7,7 +7,7 @@ module.exports = {
         $: 'jquery',
         jQuery: 'jquery',
         'windows.jQuery': 'jquery'
-      })
+      }),
     ]
   },
   css: {
@@ -18,5 +18,10 @@ module.exports = {
         data: `@import "@/scss/gtStyle.scss";`
       }
     }
-  }
+  },
+  outputDir: 'dist/gtcash',
+  transpileDependencies: [
+    'vue-echarts',
+    'resize-detector'
+  ]
 }
