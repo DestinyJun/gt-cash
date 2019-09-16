@@ -9,10 +9,7 @@
       <div class="form-group">
         <span>请先登录以进行管理</span>
       </div>
-      <!--请输入用户名
-      v-bind:class="{ 'is-invalid': !!d_loginError.user_error }"
-       v-on:onchange="loginFormCheck(e)"
-      -->
+      <!--用户名-->
       <div class="form-group">
         <label for="user" class="sr-only"></label>
         <input
@@ -143,6 +140,6 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   @import "login.component";
 </style>

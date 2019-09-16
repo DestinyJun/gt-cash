@@ -11,6 +11,7 @@
 </script>
 
 <style lang="scss">
+  /*loading组件*/
 .loading{
   z-index: 2099;
   position: fixed;

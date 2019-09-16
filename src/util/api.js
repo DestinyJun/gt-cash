@@ -27,10 +27,13 @@ axios.defaults.timeout = 3000;
 
 // 请求拦截
 axios.interceptors.request.use(function (config) {
-  store.commit('showLoading')
+  if (!config.url.includes('/cateringmanagement/addgoods/getgoodsbyname')) {
+    store.commit('showLoading')
+  }
   // 判断那些接口需要添加token，那些接口需要添加请求类型，判断token是否存在
   if (!(config.url.includes('/login'))) {
     config.headers.post['APPKEY'] = localStorage.getItem('APPKEY');
+    config.headers.post['userId'] = localStorage.getItem('userCode');
   }
   return config;
 }, function (error) {

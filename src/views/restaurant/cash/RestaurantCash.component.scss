@@ -40,7 +40,7 @@
         display: flex;
         justify-content: center;
         bottom: 0;
-        .pagination{
+        /deep/ .pagination{
           .page-item{
             .page-link{
               width: 1.8rem;

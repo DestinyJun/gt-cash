@@ -17,7 +17,8 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+  /*餐饮模块*/
 .restaurant{
   height: 100vh;
   .content{

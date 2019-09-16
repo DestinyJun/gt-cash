@@ -20,7 +20,8 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+  /*超市模块*/
   .market{
     height: 100vh;
     .content{

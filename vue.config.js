@@ -19,7 +19,7 @@ module.exports = {
       }
     }
   },
-  outputDir: 'dist/gtcash',
+  outputDir: './dist/gtcash',
   transpileDependencies: [
     'vue-echarts',
     'resize-detector'

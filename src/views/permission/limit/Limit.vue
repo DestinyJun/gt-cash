@@ -308,6 +308,6 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "Limit.component";
 </style>

@@ -33,7 +33,7 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .card-panel{
   width: 100%;
   height: auto;

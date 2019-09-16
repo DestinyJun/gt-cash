@@ -434,6 +434,6 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "Account.component";
 </style>

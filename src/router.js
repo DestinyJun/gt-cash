@@ -4,7 +4,7 @@ import Market from './views/market/Market.vue'
 import Restaurant from './views/restaurant/Restaurant.vue'
 import Permission from './views/permission/Permission.vue'
 import Chart from './views/chart/Chart.vue'
-import Error from './views/error/error.vue'
+import Test from './views/test/Test.vue'
 
 Vue.use(Router)
 const routes = new Router({
@@ -90,7 +90,12 @@ const routes = new Router({
     {
       path: '/error',
       name: 'error',
-      component: Error,
+      component: () => import('@/views/error/error.vue')
+    },
+    {
+      path: '/test',
+      name: '测试',
+      component: Test,
     },
     {
       path: '**',
@@ -99,7 +104,7 @@ const routes = new Router({
   ]
 })
 routes.beforeEach((to, from, next) => {
-  if ((to.path === '/login') ||(to.path === '/error')) {
+  if ((to.path === '/login') ||(to.path === '/error') || (to.path === '/test')) {
     next(true)
   }
   else if (Vue.localStorage.get('userCode')){

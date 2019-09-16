@@ -140,6 +140,7 @@
 </script>
 
 <style lang="scss">
+  /*header组件*/
   .header{
     height: 60px;
     background-color: #FEFFF9;

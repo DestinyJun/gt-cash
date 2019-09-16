@@ -49,6 +49,7 @@
 </script>
 
 <style lang="scss">
+  /*error-remind组件*/
 .error-remind{
   background: rgba(66,66,66,0.5);
   z-index: 1999;

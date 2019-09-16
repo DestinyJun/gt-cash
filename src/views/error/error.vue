@@ -15,7 +15,7 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .error{
   width: 100vw;
   height: 100vh;

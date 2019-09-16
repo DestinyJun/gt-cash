@@ -510,6 +510,6 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   @import "MarketManager.component";
 </style>
