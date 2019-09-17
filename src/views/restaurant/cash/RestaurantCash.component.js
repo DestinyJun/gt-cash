@@ -143,7 +143,7 @@ export default {
         })
         this.d_cashMenuList = res.data
       })
-    this.post('/cateringcashier/getallgoodsinfo', {merchatCode:this.$localStorage.get('merchatCode')})
+    this.post('/cateringcashier/getallgoodsinfocash', {merchatCode:this.$localStorage.get('merchatCode')})
       .then((res) => {
         this.d_cashDishList = res.data
       })
