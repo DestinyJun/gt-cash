@@ -1,9 +1,9 @@
 <template>
   <div class="error">
   <p>
-    <span class="h3 text-warning">非法访问！</span>
-    <router-link to="/home">
-      <button class="btn btn-danger">返回首页</button>
+    <span class="h3 text-warning">您输入的页面不存在，亲！</span>
+    <router-link to="/login">
+      <button class="btn btn-danger">返回登录</button>
     </router-link>
   </p>
   </div>

@@ -47,6 +47,40 @@ Vue.use(BootstrapVue) // bootstrap-vue UI插件
 Vue.filter('twoDecimals',(value) => {
   return value.toFixed(2)
 })
+// 定义指令
+/*Vue.directive('hover',{
+  update(el, binding){
+    el.onmouseenter = ()=>{
+      for (const prop in binding.value) {
+        if (binding.value.hasOwnProperty(prop)) {
+          switch(prop) {
+            case 'color':
+              el.style.color = binding.value[prop]
+              break
+            case 'background':
+              el.style.background = binding.value[prop]
+              break
+          }
+        }
+      }
+    }
+    el.onmouseleave = () => {
+      for (const prop in binding.oldValue) {
+        if (binding.oldValue.hasOwnProperty(prop)) {
+          switch(prop) {
+            case 'color':
+              console.log(prop);
+              el.style.color = binding.oldValue[prop]
+              break
+            case 'background':
+              el.style.background = binding.oldValue[prop]
+              break
+          }
+        }
+      }
+    }
+  }
+})*/
 
 new Vue({
   router,

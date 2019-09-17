@@ -5,6 +5,7 @@ import Restaurant from './views/restaurant/Restaurant.vue'
 import Permission from './views/permission/Permission.vue'
 import Chart from './views/chart/Chart.vue'
 import Test from './views/test/Test.vue'
+import Store from './views/store/Store.vue'
 
 Vue.use(Router)
 const routes = new Router({
@@ -93,6 +94,11 @@ const routes = new Router({
       component: () => import('@/views/error/error.vue')
     },
     {
+      path: '/store',
+      name: '商户管理',
+      component: Store,
+    },
+    {
       path: '/test',
       name: '测试',
       component: Test,
@@ -104,11 +110,12 @@ const routes = new Router({
   ]
 })
 routes.beforeEach((to, from, next) => {
-  if ((to.path === '/login') ||(to.path === '/error') || (to.path === '/test')) {
+  const arr = ['/login','/error']
+  if (arr.includes(to.path)) {
     next(true)
-  }
-  else if (Vue.localStorage.get('userCode')){
-    if (to.path === '/home') {
+  } else if (Vue.localStorage.get('userCode')){
+    const arr2 = ['/home','/test','/store']
+    if (arr2.includes(to.path)) {
       next(true)
     } else {
       let success = []
@@ -121,6 +128,8 @@ routes.beforeEach((to, from, next) => {
         next({path: '/error'})
       }
     }
+  } else {
+    next({path: '/error'})
   }
 })
 export default routes
