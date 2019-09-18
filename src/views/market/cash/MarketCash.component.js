@@ -33,22 +33,23 @@ export default {
       }
       this.cashGoodsSelect(event.target.value)
         .then((res) => {
-          if (res) {
+          if (!(res.length === 0)) {
             this.d_cashTotal = 0
-            res.num = 1
-            if (goodCode.includes(res.goodsCode)) {
+            if (goodCode.includes(res[0].goodsCode)) {
               this.d_cashGoods.map((val) => {
-                if (res.goodsCode === val.goodsCode) {
+                if (res[0].goodsCode === val.goodsCode) {
                   val.num = parseInt(val.num) + 1
                 }
                 this.d_cashTotal += (parseFloat(val.num) * parseFloat(val.unitPrice))
               })
-            } else {
-              this.d_cashGoods.push(res)
+            }
+            else {
+              res.map((val) => {
+                val.num = 1
+                this.d_cashGoods.push(val)
+              })
               this.cashCalculateTotal()
             }
-          } else {
-            // 错误提示
           }
         })
       event.target.value = ''
@@ -177,8 +178,10 @@ export default {
       const data = { merchatCode: this.$localStorage.get('merchatCode'), code: code }
       return this.post(`/supermarketmanagement/supermarketcashier/goods/select`, data)
         .then((res) => {
-          res.data.num = 0
-          res.data.active = false
+          res.data.map((val) => {
+            val.num = 0
+            val.active = false
+          })
           return res.data
         })
         .catch((err) => {
