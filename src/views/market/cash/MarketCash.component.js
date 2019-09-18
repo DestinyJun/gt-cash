@@ -129,9 +129,9 @@ export default {
       this.post(`/supermarketmanagement/supermarketcashier/goods/select`, data)
         .then((res) => {
           if (!(res.data.length === 0)) {
-            res.data.num = 0
-            res.data.active = false
             res.data.map((val) => {
+              val.num = 0
+              val.active = false
               this.d_cashCodeGoods.push(val)
             })
           } else {
