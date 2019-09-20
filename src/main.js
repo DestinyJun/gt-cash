@@ -2,7 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-
+// date picker
+import {Datepicker} from '@livelybone/vue-datepicker';
 // storage
 import VueLocalStorage from 'vue-localstorage'
 // axios
@@ -11,9 +12,6 @@ import VueAxios from 'vue-axios'
 import {get,post} from './util/api'
 // Vuelidate
 import Vuelidate from 'vuelidate'
-// ECharts  手动引入 ECharts 各模块来减小打包体积
-// import ECharts from 'vue-echarts'
-// import 'echarts/lib/chart/line'
 // vue switch
 import ToggleButton from 'vue-js-toggle-button'
 import PortalVue from 'portal-vue'
@@ -22,6 +20,7 @@ import 'bootstrap'
 import BootstrapVue from 'bootstrap-vue'
 // tool 自定义工具函数
 import {reset_form,clone_obj,clone_copy,clone_copy_a} from './util/tools'
+Vue.config.productionTip = false // 配置在生产环境下不产生各种警告信息
 
 //挂载自定义方法到Vue原型上
 Vue.prototype.get = get;
@@ -32,7 +31,7 @@ Vue.prototype.clone_copy = clone_copy;
 Vue.prototype.clone_copy_a = clone_copy_a;
 
 // 使用vue插件
-Vue.config.productionTip = false
+Vue.component('datepicker', Datepicker);// 日期选择插件
 Vue.use(VueAxios, axios) // axios请求插件
 Vue.use(Vuelidate) // 表单校验插件
 Vue.use(ToggleButton) // switch开关插件

@@ -1,7 +1,7 @@
-export default function getData (data,x_data) {
+export default function barSellGetData (data, x_data) {
   return {
     title: {
-      text: '本月销售利润统计',
+      text: '本月销售额统计',
       left: 'center'
     },
     legend: {},
@@ -9,6 +9,11 @@ export default function getData (data,x_data) {
       formatter: function (params ) {
         return `<span>时间：${params.name}</span>;<span class="ml-3">总收益：${params.value}元</span>`
       }
+    },
+    grid: {
+      left: '8%',
+      right: '3%',
+      bottom: '6%'
     },
     xAxis: {
       type: 'category',
