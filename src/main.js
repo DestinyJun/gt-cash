@@ -2,22 +2,20 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-// date picker
-import {Datepicker} from '@livelybone/vue-datepicker';
 // storage
 import VueLocalStorage from 'vue-localstorage'
 // axios
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import {get,post} from './util/api'
-// Vuelidate
-import Vuelidate from 'vuelidate'
 // vue switch
 import ToggleButton from 'vue-js-toggle-button'
 import PortalVue from 'portal-vue'
 // bootstrap
 import 'bootstrap'
 import BootstrapVue from 'bootstrap-vue'
+// vue表单校验
+import Vuelidate from 'vuelidate'
 // tool 自定义工具函数
 import {reset_form,clone_obj,clone_copy,clone_copy_a} from './util/tools'
 Vue.config.productionTip = false // 配置在生产环境下不产生各种警告信息
@@ -31,7 +29,6 @@ Vue.prototype.clone_copy = clone_copy;
 Vue.prototype.clone_copy_a = clone_copy_a;
 
 // 使用vue插件
-Vue.component('datepicker', Datepicker);// 日期选择插件
 Vue.use(VueAxios, axios) // axios请求插件
 Vue.use(Vuelidate) // 表单校验插件
 Vue.use(ToggleButton) // switch开关插件
@@ -47,39 +44,6 @@ Vue.filter('twoDecimals',(value) => {
   return value.toFixed(2)
 })
 // 定义指令
-/*Vue.directive('hover',{
-  update(el, binding){
-    el.onmouseenter = ()=>{
-      for (const prop in binding.value) {
-        if (binding.value.hasOwnProperty(prop)) {
-          switch(prop) {
-            case 'color':
-              el.style.color = binding.value[prop]
-              break
-            case 'background':
-              el.style.background = binding.value[prop]
-              break
-          }
-        }
-      }
-    }
-    el.onmouseleave = () => {
-      for (const prop in binding.oldValue) {
-        if (binding.oldValue.hasOwnProperty(prop)) {
-          switch(prop) {
-            case 'color':
-              console.log(prop);
-              el.style.color = binding.oldValue[prop]
-              break
-            case 'background':
-              el.style.background = binding.oldValue[prop]
-              break
-          }
-        }
-      }
-    }
-  }
-})*/
 
 new Vue({
   router,

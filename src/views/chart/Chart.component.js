@@ -15,21 +15,19 @@ ECharts.registerTheme('ovilia-green', theme)
 import barSellGetData from './data/bar_sell'
 import barTopGetData from './data/bar_top'
 import barTopProGetData from './data/bar_topPro'
-import * as VueDatepicker from '@livelybone/vue-datepicker'
+// date
+import DatePicker from 'vue2-datepicker'
 
 export default {
   name: 'Chart',
   components: {
     Header,
     'v-chart': ECharts,
-    'datepicker': VueDatepicker.Datepicker
+    DatePicker
   },
   data () {
     return {
-      dayStr: ['7', '1', '2', '3', '4', '5', '6'],
-      date: '2018-06-01',
-      isM: isM,
-      popperProps: popperProps,
+      time1: '', //
       d_barSell: null, // 柱状图配置
       d_barTop: null, // 柱状图配置
       d_barTopPro: null, // 柱状图配置

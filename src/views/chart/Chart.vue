@@ -4,7 +4,9 @@
     <div class="container-fluid">
       <div class="row h-100">
         <div class="col-md-12 h-50">
-          <div class="chart-date position-absolute"></div>
+          <div class="chart-date position-absolute">
+            <date-picker v-model="time1" valueType="format" :first-day-of-week="1"></date-picker>
+          </div>
           <div class="chart-sell">
             <v-chart :options="d_barSell"
               ref="bar" theme="ovilia-green" autoresize
