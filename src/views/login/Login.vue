@@ -14,10 +14,10 @@
         <label for="user" class="sr-only"></label>
         <input
           type="text" class="form-control"
-          v-model="d_loginForm.user"
+          v-model.trim="$v.d_loginForm.user.$model"
           v-on:input="loginUserChange()"
           placeholder="请输入用户名" name="user" id='user'>
-        <span class="text-danger" v-if="d_loginError.user_error">用户名是必填项</span>
+        <span class="text-danger" v-if="$v.d_loginForm.user.$error">用户名是必填项</span>
       </div>
       <!--下拉选框-->
       <div class="form-group">
@@ -36,8 +36,9 @@
         <label for="user" class="sr-only"></label>
         <input
           type="password" class="form-control"
-          v-model="d_loginForm.password"
+          v-model.trim="$v.d_loginForm.password.$model"
           placeholder="请输入密码" name="password" id='password'/>
+        <span class="text-danger" v-if="$v.d_loginForm.password.$error">密码是必填项</span>
       </div>
       <!--记住密码及忘记密码-->
       <div class="form-check">
@@ -55,91 +56,12 @@
       </div>
       <!--登陆按钮-->
       <div class="form-group">
-        <button type="button" class="btn btn-block btn-primary" @click="loginClick()">登陆</button>
+        <button type="button" class="btn btn-block btn-primary" @click="loginClick()" :disabled="!$v.d_loginForm.$dirty || $v.d_loginForm.$error">登陆</button>
       </div>
-
     </form>
   </div>
 </template>
-
-<script>
-  import Loading from '../../components/Loading'
-  var debounce = require('lodash.debounce')
-  export default {
-    name: 'Login',
-    components: { Loading },
-    data: () => {
-      return {
-        d_loginForm: {
-          user: '',
-          password: '',
-          merchatCode: '',
-        },
-        d_loginError: {
-          user_error: '',
-          password_error: ''
-        },
-        d_loginOptions: [
-          { merchatCode: null, merchatName: '请选择店铺...' },
-        ],
-        d_loginShopSelect: '请选择店铺...'
-      }
-    },
-    validations: {},
-    methods: {
-      loginClick () {
-        if (this.d_loginForm.user && this.d_loginForm.password) {
-          this.post(`/user/login`,this.d_loginForm)
-            .then((res) => {
-              console.log(res);
-              this.$localStorage.set('merchatCode', res.data.merchatCode)
-              this.$localStorage.set('userCode', res.data.userId)
-              this.$localStorage.set('APPKEY', res.data.APPKEY)
-              this.$router.push('/home')
-            })
-            .catch((err) => {})
-          return true
-        }
-        if (!this.d_loginForm.user) {
-          this.d_loginError.user_error = '用户名是必填项';
-        }
-        if (!this.d_loginForm.password) {
-          this.d_loginError.password_error = '密码是必填项';
-        }
-      },
-      loginShopSelect (item) {
-        this.d_loginForm.merchatCode=item.merchatCode
-        this.d_loginShopSelect=item.merchatName
-      },
-      loginSwitchChange () {
-        console.log('222');
-      },
-      loginUserChange: debounce(function () {
-        const that = this;
-        this.d_loginOptions = [{ merchatCode: null, merchatName: '请选择店铺...' }]
-        let aTime;
-        aTime = setTimeout(() => {
-          this.$http.post(`/user/selectmerchatbyuser`, { user: this.d_loginForm.user })
-            .then(function (response) {
-              const data = response.data.data
-              for(var i = 0, len = data.length; i < len; i++){
-                that.d_loginOptions.push(data[i])
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        }, 500)
-      }, 800)
-    },
-    created () {
-      this.$localStorage.remove('userCode')
-      this.$localStorage.remove('merchatCode')
-      this.$localStorage.remove('routers')
-    }
-  }
-</script>
-
+<script src="./login.component.js"></script>
 <style scoped lang="scss">
   @import "login.component";
 </style>
