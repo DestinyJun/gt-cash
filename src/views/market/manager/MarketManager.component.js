@@ -69,8 +69,11 @@ export default {
       // 商品列表查询
       this.post(
         `/supermarketmanagement/supermarketstorage/goods/getlist`,
-        { merchatCode: this.$localStorage.get('merchatCode') })
-        .then((res) => {
+        {
+          merchatCode: this.$localStorage.get('merchatCode'),
+          pageNum: '1',
+          pageSize: '10000',
+        }).then((res) => {
           this.d_mnGoods = res.data.publicGoodsList.concat(res.data.privateGoodsList)
         })
     },

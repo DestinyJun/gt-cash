@@ -40,7 +40,9 @@ export default {
     cashGetDishList (type) {
       this.post('/cateringcashier/getgoodslist', {
         restaurantType: type,
-        merchatCode: this.$localStorage.get('merchatCode')
+        merchatCode: this.$localStorage.get('merchatCode'),
+        pageNum: '1',
+        pageSize:'10000',
       })
         .then((res) => {
           this.d_cashDishList = res.data
@@ -143,7 +145,11 @@ export default {
         })
         this.d_cashMenuList = res.data
       })
-    this.post('/cateringcashier/getallgoodsinfocash', {merchatCode:this.$localStorage.get('merchatCode')})
+    this.post('/cateringcashier/getallgoodsinfocash', {
+      merchatCode:this.$localStorage.get('merchatCode'),
+      pageNum: '1',
+      pageSize:'10000',
+    })
       .then((res) => {
         this.d_cashDishList = res.data
       })

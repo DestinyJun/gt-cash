@@ -54,7 +54,12 @@ export default {
   methods: {
     // 菜品列表查询
     managerDishList() {
-      this.post('/cateringcashier/getallgoodsinfo',{merchatCode: this.$localStorage.get('merchatCode')})
+      this.post('/cateringcashier/getallgoodsinfo',{
+        merchatCode: this.$localStorage.get('merchatCode'),
+        pageNum: '1',
+        pageSize:'10000',
+        },
+        )
         .then((res) => {
           this.d_managerDishList = res.data
         })

@@ -3,10 +3,10 @@
     <Header :title="$route.name" :icon="['iconfanhui','icondianpu-copy']"></Header>
     <div class="container-fluid">
       <div class="row h-100">
-        <div class="col-md-12 h-50">
-          <div class="chart-date position-absolute">
+        <div class="col-md-12 h-100">
+         <!-- <div class="chart-date position-absolute">
             <date-picker v-model="time1" valueType="format" :first-day-of-week="1"></date-picker>
-          </div>
+          </div>-->
           <div class="chart-sell">
             <v-chart :options="d_barSell"
               ref="bar" theme="ovilia-green" autoresize
@@ -14,7 +14,7 @@
             </v-chart>
           </div>
         </div>
-        <div class="col-md-6 h-50">
+        <!--<div class="col-md-6 h-50">
           <div class="chart-sell">
             <v-chart :options="d_barTop"
               ref="bar" theme="ovilia-green" autoresize
@@ -29,7 +29,7 @@
               ref="bar" theme="ovilia-green" autoresize>
             </v-chart>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
     <!--订单统计-->

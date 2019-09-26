@@ -94,10 +94,11 @@ export default {
     // 初始化柱状图是数据
     this.post('/chart/getchart',{userId: this.$localStorage.get('userCode')})
       .then((res) => {
+        console.log(res);
         const bar_data = [];
         const x_date = [];
         res.data.map((val) => {
-          bar_data.push(val.profit);
+          bar_data.push(val.sales);
           x_date.push(val.date);
         })
         this.d_barSell = barSellGetData(bar_data,x_date)
