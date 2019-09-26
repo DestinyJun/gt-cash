@@ -236,7 +236,7 @@ export default {
             })
             .then(value => {
               if (value) {
-                window.open(`${process.env.VUE_APP_URL}/printpdf/cateringcashier?merchatCode=${this.$localStorage.get('merchatCode')}&orderNum=${res.data}`)
+                window.open(`${process.env.VUE_APP_URL}/printpdf/printsupermatket?merchatCode=${this.$localStorage.get('merchatCode')}&orderNum=${res.data}`)
               }
             })
             .catch((err) => {})
