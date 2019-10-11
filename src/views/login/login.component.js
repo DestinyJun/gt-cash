@@ -50,6 +50,7 @@ export default {
       }
     },
     loginShopSelect (item) {
+      this.d_loginShopSelect = item.merchatName;
       this.d_loginForm.merchatCode=item.merchatCode
     },
     loginSwitchChange () {
