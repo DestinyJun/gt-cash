@@ -111,7 +111,27 @@ export default {
             })
             .then(value => {
               if(value) {
-                window.open(`${process.env.VUE_APP_URL}/printpdf/cateringcashier?merchatCode=${this.$localStorage.get('merchatCode')}&orderNum=${res.data}`)
+                this.get(`/printpdf/cateringcashier?merchatCode=${this.$localStorage.get('merchatCode')}&orderNum=${res.data}`)
+                  .then((res)=> {
+                    const windowprint = window.open('','print');
+                    if (windowprint) {
+                      windowprint.document.open();
+                      windowprint.document.write(this.print(
+                        res.data.serverName,
+                        res.data.merchantName,
+                        res.data.orderNum,
+                        res.data.num,
+                        res.data.data,
+                        res.data.userName,
+                        res.data.payTime,
+                        res.data.sum,
+                      ));
+                      windowprint.document.close();
+                      windowprint.print();
+                      windowprint.close();
+                    }
+                  })
+                  .catch(err => {})
               }
             })
             .catch((err) => {})

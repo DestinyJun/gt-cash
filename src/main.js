@@ -17,7 +17,7 @@ import BootstrapVue from 'bootstrap-vue'
 // vue表单校验
 import Vuelidate from 'vuelidate'
 // tool 自定义工具函数
-import {reset_form,clone_obj,clone_copy,clone_copy_a} from './util/tools'
+import {reset_form,clone_obj,clone_copy,clone_copy_a,print} from './util/tools'
 Vue.config.productionTip = false // 配置在生产环境下不产生各种警告信息
 
 //挂载自定义方法到Vue原型上
@@ -27,6 +27,7 @@ Vue.prototype.reset_form = reset_form;
 Vue.prototype.clone_obj = clone_obj;
 Vue.prototype.clone_copy = clone_copy;
 Vue.prototype.clone_copy_a = clone_copy_a;
+Vue.prototype.print = print;
 
 // 使用vue插件
 Vue.use(VueAxios, axios) // axios请求插件
