@@ -193,14 +193,14 @@
               <div class="custom-control custom-radio custom-control-inline">
                 <input
                   type="radio" id="public_upperShelf1"
-                  name="haveCapacity" class="custom-control-input"
+                  name="upperShelf" class="custom-control-input"
                   value="0" v-model="d_mnPublicUpdate.upperShelf">
                 <label class="custom-control-label" for="public_upperShelf1">是</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline ml-5">
                 <input
                   type="radio" id="public_upperShelf2"
-                  name="haveCapacity" class="custom-control-input"
+                  name="upperShelf" class="custom-control-input"
                   value="1" v-model="d_mnPublicUpdate.upperShelf">
                 <label class="custom-control-label" for="public_upperShelf2">否</label>
               </div>
