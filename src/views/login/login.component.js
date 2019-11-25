@@ -39,6 +39,7 @@ export default {
             .then((res) => {
               this.$localStorage.set('merchatCode', res.data.merchatCode)
               this.$localStorage.set('userCode', res.data.userId)
+              this.$localStorage.set('serverId', res.data.serverId)
               this.$localStorage.set('APPKEY', res.data.APPKEY)
               this.$router.push('/home')
             })

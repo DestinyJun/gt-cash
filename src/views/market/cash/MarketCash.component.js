@@ -17,7 +17,7 @@ export default {
       d_cashPaySure: {
         // 确认收款
         merchatCode: this.$localStorage.get('merchatCode'),
-        serverId: '111',
+        serverId: this.$localStorage.get('serverId'),
         userId: this.$localStorage.get('userCode'),
         payType: '现金支付',
         data: []

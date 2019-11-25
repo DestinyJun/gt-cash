@@ -53,6 +53,11 @@ export default {
         containGoodsCode: null,
         capacity: null,
         capacityCompany: null
+      },
+      d_page: {
+        currentPage: 1,
+        pageNum: 1,
+        pageSize: 10,
       }
     }
   },
@@ -71,10 +76,11 @@ export default {
         `/supermarketmanagement/supermarketstorage/goods/getlist`,
         {
           merchatCode: this.$localStorage.get('merchatCode'),
-          pageNum: '1',
-          pageSize: '10000',
+          pageNum: this.d_page.currentPage,
+          pageSize: '10',
         }).then((res) => {
           this.d_mnGoods = res.data.publicGoodsList.concat(res.data.privateGoodsList)
+          this.d_page.pageNum = res.totalRecord;
         })
     },
     mnTableOperateClick (item, type) {
@@ -222,6 +228,9 @@ export default {
           }
           break
       }
+    },
+    mnGoodsPageChange() {
+      this.mnSelectGoodList();
     }
   },
   created () {

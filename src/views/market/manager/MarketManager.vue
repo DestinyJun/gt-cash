@@ -37,6 +37,18 @@
           </div>-->
         </template>
       </b-table>
+      <b-pagination
+        v-model="d_page.currentPage"
+        :total-rows="d_page.pageNum"
+        :per-page="d_page.pageSize"
+        @input="mnGoodsPageChange()"
+        aria-controls="my-table"
+      >
+        <template v-slot:first-text><span class="text-success">首页</span></template>
+        <template v-slot:prev-text><span class="text-danger">上一页</span></template>
+        <template v-slot:next-text><span class="text-warning">下一页</span></template>
+        <template v-slot:last-text><span class="text-info">末页</span></template>
+      </b-pagination>
     </div>
     <!--商品销毁弹窗-->
     <b-modal
