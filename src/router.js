@@ -114,7 +114,7 @@ routes.beforeEach((to, from, next) => {
   if (arr.includes(to.path)) {
     next(true)
   } else if (Vue.localStorage.get('userCode')){
-    const arr2 = ['/home','/test','/store']
+    const arr2 = ['/home','/test','/store','/assets']
     if (arr2.includes(to.path)) {
       next(true)
     } else {

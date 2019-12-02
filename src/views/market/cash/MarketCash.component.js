@@ -21,7 +21,8 @@ export default {
         userId: this.$localStorage.get('userCode'),
         payType: '现金支付',
         data: []
-      }
+      },
+      d_keybordTxt: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '00',]
     }
   },
   methods: {

@@ -64,7 +64,8 @@
         </span>
       </div>
       <div class="footer-btn">
-        <button class="btn btn-primary" @click="cashPaySure()" :disabled="d_cashGoods.length === 0">确认收款成功</button>
+        <!--:disabled="d_cashGoods.length === 0"-->
+        <button class="btn btn-primary" @click="$bvModal.show('modal-cash')">确认收款</button>
       </div>
     </div>
     <!--手动查询商品-->
@@ -81,10 +82,10 @@
       </template>
       <template slot="default" slot-scope="{ hide }">
         <div class="search mb-2">
-         <!-- <div class="input-group w-50">
-            <input type="text" class="form-control" id="goodName" placeholder="输入商品名称">
-            <button class="btn btn-info ml-1">查询</button>
-          </div>-->
+          <!-- <div class="input-group w-50">
+             <input type="text" class="form-control" id="goodName" placeholder="输入商品名称">
+             <button class="btn btn-info ml-1">查询</button>
+           </div>-->
           <div class="input-group w-50">
             <input type="tel" class="form-control" id="goodCode" placeholder="输入条码/自定义编号" v-model="d_cashCodeOperate">
             <button class="btn btn-info ml-1" @click="cashCodeGoodSearch()">查询</button>
@@ -122,6 +123,119 @@
           v-on:click="close();cashCodeGoodsClick('sure')">
           确定
         </b-button>
+      </template>
+    </b-modal>
+    <!--收款成功-->
+    <b-modal id="modal-cash" centered size="lg" no-close-on-backdrop>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6>
+            <b-button class="float-left" size="sm" variant="outline-info" @click="close();d_cashCodeGoods=[]">
+              收款确认
+            </b-button>
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[]">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="total text-center">
+         <p class="mb-0"><span class="h5">应收：</span><span class="text-danger h3">200.00</span><span class="h5">元</span></p>
+        </div>
+        <div class="type mt-3">
+          <div class="munber" style="">
+            <div class="input-group w-100">
+              <span class="mr-3">应收金额：</span><span class="text-danger h5">5.23</span>元
+            </div>
+            <div class="input-group w-100 mt-2">
+              <button class="btn btn-default pl-0" @click="">收取现金：</button>
+              <input type="tel" class="form-control" placeholder="请输入现金" v-model="d_cashCodeOperate">
+            </div>
+            <div class="input-group w-100 mt-2">
+              <button class="btn btn-default pl-0" @click="">实收金额：</button>
+              <input type="tel" class="form-control" placeholder="请输入金额" v-model="d_cashCodeOperate">
+            </div>
+            <div class="input-group w-100 mt-2">
+              <span class="mr-3">找零金额：</span><span class="text-danger h5">2.00</span>元
+            </div>
+          </div>
+          <div class="pay-way">
+            <div class="title w-100 mb-3">
+              <span>请选择支付方式：</span>
+            </div>
+            <div class="way w-100">
+              <div class="box">
+                <b-button
+                  size="lg"
+                  block
+                  :pressed="true"
+                  variant="default"
+                  @click=""
+                >
+                  <span class="icon iconfont iconweixin mr-2 text-success h3 align-middle"></span>
+                  <span class="align-middle">微信</span>
+                </b-button>
+              </div>
+              <div class="box">
+                <b-button
+                  size="lg"
+                  block
+                  :pressed="true"
+                  variant="default"
+                  @click=""
+                >
+                  <span class="icon iconfont iconumidd17 mr-2 text-info h2 align-middle"></span>
+                  <span class="align-middle">支付宝</span>
+                </b-button>
+              </div>
+              <div class="box">
+                <b-button
+                  size="lg"
+                  block
+                  :pressed="true"
+                  variant="default"
+                  @click=""
+                >
+                  <span class="icon iconfont iconrmb mr-2 text-warning h2 align-middle"></span>
+                  <span class="align-middle">现金</span>
+                </b-button>
+              </div>
+              <div class="box">
+                <b-button
+                  size="lg"
+                  block
+                  :pressed="true"
+                  variant="default"
+                  @click=""
+                >
+                  <img class="mr-2" src="../../../assets/images/yinglian.png" width="auto" height="32">
+                  <span class="align-middle">现金</span>
+                </b-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <div class="keyboard">
+          <div class="box" v-for="(item,index,) in d_keybordTxt" :key="index">
+            <span style="color: #333333;font-size: 20px;font-weight: 600">{{item}}</span>
+          </div>
+        </div>
+        <div class="btn-list">
+          <b-button
+            class="pt-2 pb-2 btn-block" size="sm" variant="default"
+            v-on:click="">
+            <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
+          </b-button>
+          <b-button
+            class=" btn-block" size="sm"  variant="bg1"
+            v-on:click="close();cashCodeGoodsClick('sure')">
+            <span class="d-block mb-2 h6 mt-4">收款</span>
+            <span class="d-block h6 mb-4">成功</span>
+          </b-button>
+        </div>
       </template>
     </b-modal>
   </div>

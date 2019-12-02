@@ -150,4 +150,79 @@
     }
   }
 }
+#modal-cash{
+  .modal-content{
+    .modal-body{
+      .type{
+        display: flex;
+        flex-wrap: wrap;
+        .munber{
+          padding-left: 2%;
+          width: 40%;
+          input::placeholder{
+            font-size: 12px;
+          }
+        }
+        .pay-way{
+          width: 60%;
+          padding: 0 2% 0 5%;
+          .way{
+            display: flex;
+            flex-wrap: wrap;
+            .box{
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: center;
+              width: 47%;
+              box-shadow: 0 0 2px 1px #E8E8E8;
+              margin-right: 3%;
+              margin-bottom: 11px;
+              border-radius: 5px;
+              .btn-default.focus{
+                box-shadow: 0 0 6px 2px #B0CEC8;
+              }
+            }
+          }
 
+        }
+      }
+    }
+    .modal-footer{
+      .keyboard{
+        width: 83%;
+        display: flex;
+        flex-wrap: wrap;
+        .box{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 30.33%;
+          height: 60px;
+          box-shadow: 0 0 2px 1px #E8E8E8;
+          margin-right: 3%;
+          margin-bottom: 11px;
+          border-radius: 5px;
+          cursor: pointer;
+        }
+      }
+      .btn-list{
+        width: 17%;
+        .btn-default{
+          height: 60px;
+          margin-bottom: 11px;
+          box-shadow: 0 0 2px 1px #E8E8E8;
+        }
+        .btn-bg1{
+          color: #fff;
+          background-color: #468F80;
+          border-color: #468F80;
+          padding-top: 55px;
+          padding-bottom: 55px;
+          margin-bottom: 7px;
+        }
+      }
+    }
+  }
+}
