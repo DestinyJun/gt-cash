@@ -45,7 +45,7 @@
         ref="storageCodeInput"
         type="text"
         class="form-control position-absolute"
-        @input="stScanChange($event.target,'')"
+        @input="stScanChange($event.target)"
         @blur="srCodeInputBlur"
         autofocus/>
     </div>

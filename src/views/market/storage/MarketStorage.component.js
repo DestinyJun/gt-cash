@@ -135,6 +135,7 @@ export default {
     },
     //扫码入库查询
     stScanChange: debounce(function (event) {
+      console.log(event.value);
       this.d_stGoodSearch = []
       this.post(
         '/supermarketmanagement/supermarketstorage',
@@ -221,7 +222,6 @@ export default {
     },
     // 选择需要入库的商品
     stSearchGoodsSelect: function (item) {
-      console.log(item);
       this.d_stGoodSearch.map((val) => {
         val.active = false
       })
@@ -263,7 +263,6 @@ export default {
         }
         else {
           const obj = this.clone_obj(this.d_stGoodSearchSelect);
-          console.log(obj);
           this.d_stCodeGoodsList.push(obj)
         }
       }

@@ -1,3 +1,8 @@
+import { between,or,required } from 'vuelidate/lib/validators'
+import { regex } from "vuelidate/lib/validators/common.js"
+
+var phoneNumber = regex('请输入正确的手机号！', /^1(3|4|5|7|8)\d{9}$/);
+
 var debounce = require('lodash.debounce')
 export default {
   name: 'MarketCash',
@@ -12,7 +17,7 @@ export default {
       ],
       d_cashCodeGoods: [], // 手动查询商品列表
       d_cashCodeGoodSelect: null, // 手动选择商品
-      d_cashCodeGoodAmount: null, // 手动输入商品数量
+      d_cashCodeGoodAmount: 1, // 手动输入商品数量
       d_cashCodeOperate: null, // 手动输入商品条码
       d_cashPaySure: {
         // 确认收款
@@ -22,11 +27,39 @@ export default {
         payType: '现金支付',
         data: []
       },
-      d_keybordTxt: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '00',]
+      d_keybordTxt: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '00',],
+      d_cashShopInfo: {
+        active: true,
+        company: "",
+        discount: 1,
+        goodsCode: '',
+        goodsName: "",
+        goodsType: "",
+        id: "",
+        nowPrice: "",
+        nowSize: 0,
+        num: "",
+        purchasePrice: "",
+        type: "",
+        unitPrice: ""
+      },
+    }
+  },
+  validations: {
+    d_cashShopInfo:{
+      discount:{
+        between: between(0, 1)
+      },
+      num: {
+        required,
+      }
     }
   },
   methods: {
-    // 扫码结算商品
+    test1: function() {
+      console.error(this.$v.d_cashShopInfo.num);
+    },
+    // 扫码增加商品到购物车
     cashGoodChange: debounce(function (event) {
       const goodCode = []
       for (let i = 0; i < this.d_cashGoods.length; i++) {
@@ -40,13 +73,16 @@ export default {
               this.d_cashGoods.map((val) => {
                 if (res[0].goodsCode === val.goodsCode) {
                   val.num = parseInt(val.num) + 1
+                  val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
                 }
-                this.d_cashTotal += (parseFloat(val.num) * parseFloat(val.unitPrice))
               })
+              this.cashCalculateTotal()
             }
             else {
               res.map((val) => {
                 val.num = 1
+                val.discount = 1
+                val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
                 this.d_cashGoods.push(val)
               })
               this.cashCalculateTotal()
@@ -55,6 +91,54 @@ export default {
         })
       event.target.value = ''
     }, 800),
+
+    // 手动添加商品到购物车
+    cashCodeGoodsClick: function (index) {
+      if (!(index === 'sure')) {
+        this.d_cashCodeGoods.map((val) => {
+          val.active = false;
+        })
+        this.d_cashCodeGoods[index].active = true
+        this.d_cashCodeGoodSelect = index
+      } else {
+        if(this.d_cashCodeGoods.length !== 0) {
+          this.d_cashCodeGoods[this.d_cashCodeGoodSelect].num = this.d_cashCodeGoodAmount
+          const goodCode = []
+          for (let i = 0; i < this.d_cashGoods.length; i++) {
+            goodCode.push(this.d_cashGoods[i].goodsCode)
+          }
+          if (goodCode.includes(this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode)) {
+            // 购物车中已存在时，增加数量
+            this.d_cashGoods.map((val) => {
+              if (this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode === val.goodsCode) {
+                val.num = parseFloat(val.num) + parseFloat(this.d_cashCodeGoodAmount);
+                val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
+              }
+            })
+            this.cashCalculateTotal()
+          }
+          else {
+            // 不存在时，新增商品
+            const val = this.d_cashCodeGoods[this.d_cashCodeGoodSelect]
+            val.num = this.d_cashCodeGoodAmount
+            val.discount = 1
+            val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
+            this.d_cashGoods.push(val)
+          }
+          this.cashCalculateTotal()
+          this.d_cashCodeGoods = []
+          this.d_cashCodeGoodAmount = 1
+        }
+      }
+    },
+
+    // 计算商品折扣
+    cashDiscountOperate: function (num) {
+      this.d_cashShopInfo.discount = parseFloat(num);
+      this.d_cashShopInfo.nowPrice = ((this.d_cashShopInfo.unitPrice * this.d_cashShopInfo.num) * this.d_cashShopInfo.discount).toFixed(2)
+      this.cashCalculateTotal();
+    },
+
     // 结算页商品列表操作
     cashOperateClick: function (ope, index) {
       switch (ope) {
@@ -75,55 +159,31 @@ export default {
           break
       }
     },
+
+    // 商品弹窗操作
+    cashModalOperateClick:function(index) {
+      this.clone_copy(this.d_cashShopInfo,this.d_cashGoods[index])
+    },
+
     // 计算总价
     cashCalculateTotal: function () {
       this.d_cashTotal = 0
       this.d_cashGoods.map((val) => {
-        this.d_cashTotal += (parseFloat(val.num) * parseFloat(val.unitPrice))
+        this.d_cashTotal += parseFloat(val.nowPrice);
       })
     },
+
     // 扫码输入切换
     cashCodeBtnClick: function () {
       this.$refs.cashCodeInput.focus()
       this.$refs.cashCodeBtn.style.display = 'none'
     },
+
     // 扫码输入切换
     cashInputBlur: function () {
       this.$refs.cashCodeBtn.style.display = 'block'
     },
-    // 手动输入编码商品操作
-    cashCodeGoodsClick: function (index) {
-      if (!(index === 'sure')) {
-        this.d_cashCodeGoods.map((val) => {
-          val.active = false
-        })
-        this.d_cashCodeGoods[index].active = true
-        this.d_cashCodeGoodSelect = index
-      } else {
-        if (this.d_cashCodeGoodAmount) {
-          if (this.d_cashCodeGoodAmount) {
-            this.d_cashCodeGoods[this.d_cashCodeGoodSelect].num = this.d_cashCodeGoodAmount
-            const goodCode = []
-            for (let i = 0; i < this.d_cashGoods.length; i++) {
-              goodCode.push(this.d_cashGoods[i].goodsCode)
-            }
-            if (goodCode.includes(this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode)) {
-              this.d_cashGoods.map((val) => {
-                if (this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode === val.goodsCode) {
-                  val.num = parseFloat(val.num) + parseFloat(this.d_cashCodeGoodAmount)
-                }
-                this.cashCalculateTotal()
-              })
-            } else {
-              this.d_cashGoods.push(this.d_cashCodeGoods[this.d_cashCodeGoodSelect])
-              this.cashCalculateTotal()
-            }
-            this.cashCalculateTotal()
-            this.d_cashCodeGoods = []
-          }
-        }
-      }
-    },
+
     // 手动查询商品
     cashCodeGoodSearch: function () {
       this.d_cashCodeGoods = []
@@ -132,7 +192,6 @@ export default {
         .then((res) => {
           if (!(res.data.length === 0)) {
             res.data.map((val) => {
-              val.num = 0
               val.active = false
               this.d_cashCodeGoods.push(val)
             })
@@ -155,25 +214,9 @@ export default {
               .catch((err) => {})
           }
         })
-        .catch((err) => {
-          this.$bvModal.msgBoxOk('查无此商品', {
-            title: '操作提醒',
-            size: 'sm',
-            buttonSize: 'sm',
-            hideHeaderClose: false, // 是否隐藏头部关闭按钮
-            headerBgVariant: 'danger', // 头部背景
-            headerTextVariant: 'light', // 头部文字
-            headerCloseVariant: 'light', // 头部关闭按钮
-            okTitle: '关闭',
-            okVariant: 'danger',
-            headerClass: 'p-2 border-bottom-0',
-            footerClass: 'p-2 border-top-0',
-            centered: true
-          })
-            .then((res) => {})
-            .catch((err) => {})
-        })
+        .catch((err) => {})
     },
+
     // 商品查询
     cashGoodsSelect: function (code) {
       const data = { merchatCode: this.$localStorage.get('merchatCode'), code: code }
@@ -209,6 +252,7 @@ export default {
             .catch((err) => {})
         })
     },
+
     // 确认支付成功
     cashPaySure () {
       const data = []

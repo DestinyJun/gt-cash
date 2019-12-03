@@ -36,9 +36,13 @@
             <td>{{item.unitPrice}}</td>
             <td>{{item.num}}</td>
             <td class="icon-operate">
-              <i class="icon iconfont icon iconfont iconziyuan1 mr-3" v-on:click="cashOperateClick('add',index)"></i>
-              <i class="icon iconfont iconziyuan mr-3" @click="cashOperateClick('minus',index)"></i>
-              <i class="icon iconfont iconziyuan1-copy" @click="cashOperateClick('del',index)"></i>
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" v-on:click="cashOperateClick('add',index)"></i>
+              <i class="icon iconfont iconziyuan mr-3 align-middle" @click="cashOperateClick('minus',index)"></i>
+              <i class="icon iconfont iconziyuan1-copy align-middle" @click="cashOperateClick('del',index)"></i>
+              <b-button size="sm" variant="info align-middle ml-3" pill style="font-size: 12px" @click="cashModalOperateClick(index);$bvModal.show('modal-shop')">
+                <span class="mr-1">操</span>
+                <span>作</span>
+              </b-button>
             </td>
           </tr>
           </tbody>
@@ -68,6 +72,75 @@
         <button class="btn btn-primary" @click="$bvModal.show('modal-cash')">确认收款</button>
       </div>
     </div>
+    <!--商品操作-->
+    <b-modal id="modal-shop" centered size="md" no-close-on-backdrop>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6>
+            <b-button class="float-left" size="sm" variant="outline-info" @click="close();d_cashCodeGoods=[]">
+              商品操作
+            </b-button>
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[]">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="type mt-3">
+          <div class="munber">
+            <div class="input-group w-100">
+              <span class="mr-3">原价：</span><span class="text-danger h5">{{(d_cashShopInfo.unitPrice * d_cashShopInfo.num).toFixed(2)}}</span>元
+            </div>
+            <div class="input-group w-100 mt-2">
+              <button class="btn btn-default pl-0">折扣：</button>
+              <input type="tel" class="form-control" placeholder="请输入0-1之间的数" v-model="$v.d_cashShopInfo.discount.$model">
+            </div>
+            <div class="input-group w-100 mt-2">
+              <span class="mr-3">现价：</span><span class="text-danger h5">{{((d_cashShopInfo.unitPrice * d_cashShopInfo.num)*d_cashShopInfo.discount).toFixed(2)}}</span>元
+            </div>
+          </div>
+          <div class="discount pb-2 pr-2">
+            <b-button pill size="sm" variant="outline-info" @click="cashDiscountOperate(0.5)">
+              <span class="mr-1 pl-2">5</span>
+              <span class="pr-2">折</span>
+            </b-button>
+            <b-button pill size="sm" variant="outline-info ml-2 mr-2" @click="cashDiscountOperate(0.88)">
+              <span class="mr-1 pl-2">8.8</span>
+              <span class="pr-2">折</span>
+            </b-button>
+            <b-button pill size="sm" variant="outline-info" @click="cashDiscountOperate(0.9)">
+              <span class="mr-1 pl-2">9</span>
+              <span class="pr-2">折</span>
+            </b-button>
+            <div class="input-group w-75 mt-2">
+              <button class="btn btn-default pl-0" @click="">数量：</button>
+              <input type="number" class="form-control" placeholder="填写数量" v-model="d_cashShopInfo.num" @input="test1()">
+            </div>
+          </div>
+        </div>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <div class="keyboard">
+          <div class="box" v-for="(item,index,) in d_keybordTxt" :key="index">
+            <span style="color: #333333;font-size: 20px;font-weight: 600">{{item}}</span>
+          </div>
+        </div>
+        <div class="btn-list">
+          <b-button
+            class="pt-2 pb-2 btn-block" size="sm" variant="default"
+            v-on:click="">
+            <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
+          </b-button>
+          <b-button
+            class=" btn-block" size="sm"  variant="bg1"
+            v-on:click="close()">
+            <span class="d-block h6" style="padding-top: 36px;padding-bottom: 36px;margin-bottom: 3px">确认</span>
+            <!--<span class="d-block mb-2 h6 mt-4" style="visibility: hidden">收款</span>-->
+          </b-button>
+        </div>
+      </template>
+    </b-modal>
     <!--手动查询商品-->
     <b-modal id="modal-center" centered size="md" no-close-on-backdrop>
       <template slot="modal-header" slot-scope="{ close }">
