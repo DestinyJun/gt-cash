@@ -68,8 +68,7 @@
         </span>
       </div>
       <div class="footer-btn">
-        <!--:disabled="d_cashGoods.length === 0"-->
-        <button class="btn btn-primary" @click="$bvModal.show('modal-cash')">确认收款</button>
+        <button class="btn btn-primary" @click="$bvModal.show('modal-cash')" :disabled="d_cashGoods.length===0">确认收款</button>
       </div>
     </div>
     <!--商品操作-->
@@ -94,7 +93,7 @@
             </div>
             <div class="input-group w-100 mt-2">
               <button class="btn btn-default pl-0">折扣：</button>
-              <input type="tel" class="form-control" placeholder="请输入0-1之间的数" v-model="$v.d_cashShopInfo.discount.$model">
+              <input id="discount" ref="discount" type="tel" class="form-control" placeholder="请输入0-1之间的数" v-model="$v.d_cashShopInfo.discount.$model" @focus="cashShopNumFocus($event.target)">
             </div>
             <div class="input-group w-100 mt-2">
               <span class="mr-3">现价：</span><span class="text-danger h5">{{((d_cashShopInfo.unitPrice * d_cashShopInfo.num)*d_cashShopInfo.discount).toFixed(2)}}</span>元
@@ -115,28 +114,27 @@
             </b-button>
             <div class="input-group w-75 mt-2">
               <button class="btn btn-default pl-0" @click="">数量：</button>
-              <input type="number" class="form-control" placeholder="填写数量" v-model="d_cashShopInfo.num" @input="test1()">
+              <input id="shopNum" type="tel" class="form-control" placeholder="填写数量" v-model="d_cashShopInfo.num" @focus="cashShopNumFocus($event.target)">
             </div>
           </div>
         </div>
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
         <div class="keyboard">
-          <div class="box" v-for="(item,index,) in d_keybordTxt" :key="index">
+          <div class="box" v-for="(item,index,) in d_keybordTxt" :key="index" @click="cashKeybordClick(index)">
             <span style="color: #333333;font-size: 20px;font-weight: 600">{{item}}</span>
           </div>
         </div>
         <div class="btn-list">
           <b-button
             class="pt-2 pb-2 btn-block" size="sm" variant="default"
-            v-on:click="">
+            @click="cashKeybordClick('del')">
             <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
           </b-button>
           <b-button
             class=" btn-block" size="sm"  variant="bg1"
-            v-on:click="close()">
+            @click="close();cashKeybordClick('sure')">
             <span class="d-block h6" style="padding-top: 36px;padding-bottom: 36px;margin-bottom: 3px">确认</span>
-            <!--<span class="d-block mb-2 h6 mt-4" style="visibility: hidden">收款</span>-->
           </b-button>
         </div>
       </template>
@@ -214,23 +212,22 @@
       </template>
       <template slot="default" slot-scope="{ hide }">
         <div class="total text-center">
-         <p class="mb-0"><span class="h5">应收：</span><span class="text-danger h3">200.00</span><span class="h5">元</span></p>
+         <p class="mb-0"><span class="h5">应收：</span><span class="text-danger h3">{{d_cashTotal}}</span><span class="h5">元</span></p>
         </div>
         <div class="type mt-3">
           <div class="munber" style="">
-            <div class="input-group w-100">
-              <span class="mr-3">应收金额：</span><span class="text-danger h5">5.23</span>元
-            </div>
-            <div class="input-group w-100 mt-2">
+            <div class="input-group w-100 mt-5">
               <button class="btn btn-default pl-0" @click="">收取现金：</button>
-              <input type="tel" class="form-control" placeholder="请输入现金" v-model="d_cashCodeOperate">
+              <input
+                id="cashMoney" type="tel" class="form-control" placeholder="请输入现金" autofocus
+                v-model="d_cashMoney"
+                @focus="cashShopNumFocus($event.target)"
+                @input="cashChangeMoneyOperate($event.target.value)"
+              >
             </div>
-            <div class="input-group w-100 mt-2">
-              <button class="btn btn-default pl-0" @click="">实收金额：</button>
-              <input type="tel" class="form-control" placeholder="请输入金额" v-model="d_cashCodeOperate">
-            </div>
-            <div class="input-group w-100 mt-2">
-              <span class="mr-3">找零金额：</span><span class="text-danger h5">2.00</span>元
+            <!---->
+            <div class="input-group w-100 mt-4">
+              <span class="mr-3">找零金额：</span><span class="text-danger h5">{{d_cashChangeMoney}}</span>元
             </div>
           </div>
           <div class="pay-way">
@@ -292,19 +289,19 @@
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
         <div class="keyboard">
-          <div class="box" v-for="(item,index,) in d_keybordTxt" :key="index">
+          <div class="box" v-for="(item,index,) in d_keybordTxt" :key="index" @click="cashKeybordClick(index)">
             <span style="color: #333333;font-size: 20px;font-weight: 600">{{item}}</span>
           </div>
         </div>
         <div class="btn-list">
           <b-button
             class="pt-2 pb-2 btn-block" size="sm" variant="default"
-            v-on:click="">
+            v-on:click="cashKeybordClick('del')">
             <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
           </b-button>
           <b-button
             class=" btn-block" size="sm"  variant="bg1"
-            v-on:click="close();cashCodeGoodsClick('sure')">
+            v-on:click="close();cashKeybordClick('sure')">
             <span class="d-block mb-2 h6 mt-4">收款</span>
             <span class="d-block h6 mb-4">成功</span>
           </b-button>

@@ -1,8 +1,6 @@
 import { between,or,required } from 'vuelidate/lib/validators'
 import { regex } from "vuelidate/lib/validators/common.js"
-
 var phoneNumber = regex('请输入正确的手机号！', /^1(3|4|5|7|8)\d{9}$/);
-
 var debounce = require('lodash.debounce')
 export default {
   name: 'MarketCash',
@@ -43,6 +41,9 @@ export default {
         type: "",
         unitPrice: ""
       },
+      d_cashDom: null,
+      d_cashMoney: null, // 收取现金
+      d_cashChangeMoney: 0, // 应找零钱
     }
   },
   validations: {
@@ -56,9 +57,6 @@ export default {
     }
   },
   methods: {
-    test1: function() {
-      console.error(this.$v.d_cashShopInfo.num);
-    },
     // 扫码增加商品到购物车
     cashGoodChange: debounce(function (event) {
       const goodCode = []
@@ -134,6 +132,7 @@ export default {
 
     // 计算商品折扣
     cashDiscountOperate: function (num) {
+      this.d_cashDom = this.$refs.discount
       this.d_cashShopInfo.discount = parseFloat(num);
       this.d_cashShopInfo.nowPrice = ((this.d_cashShopInfo.unitPrice * this.d_cashShopInfo.num) * this.d_cashShopInfo.discount).toFixed(2)
       this.cashCalculateTotal();
@@ -251,6 +250,63 @@ export default {
             })
             .catch((err) => {})
         })
+    },
+
+    // 键盘操作
+    cashKeybordClick: function (item) {
+      if (item.toString()) {
+        this.d_cashDom.focus()
+        if (item === 'del') {
+          let str = this.d_cashDom.value
+          str=str.substring(0,str.length-1)
+          this.cashInputValue(str)
+        }
+        else if (item === 'sure') {
+          this.d_cashShopInfo.nowPrice = ((this.d_cashShopInfo.unitPrice * this.d_cashShopInfo.num)*this.d_cashShopInfo.discount).toFixed(2)
+          this.d_cashGoods.map((val) => {
+            if(this.d_cashShopInfo.id === val.id) {
+              this.clone_copy(val,this.d_cashShopInfo)
+              this.cashCalculateTotal();
+            }
+          })
+        }
+        else {
+          let astr = this.d_cashDom.value
+          astr += this.d_keybordTxt[item]
+          this.cashInputValue(astr)
+          if (this.d_cashDom.id === 'cashMoney') {
+            this.cashChangeMoneyOperate();
+          }
+        }
+      }
+    },
+
+    // 给获得焦点的input赋值
+    cashInputValue: function(value) {
+      if (this.d_cashDom.id === 'shopNum') {
+        this.d_cashShopInfo.num = value;
+      }
+      if (this.d_cashDom.id === 'discount') {
+        this.d_cashShopInfo.discount = value;
+      }
+      if (this.d_cashDom.id === 'cashMoney') {
+        this.d_cashMoney = value;
+        this.cashChangeMoneyOperate(value);
+      }
+    },
+
+    // 给input绑定键盘
+    cashShopNumFocus: function(dom) {
+      this.d_cashDom = dom;
+    },
+
+    // 零钱计算
+    cashChangeMoneyOperate: function(value) {
+      if (value && parseFloat(value) >this.d_cashTotal ) {
+        this.d_cashChangeMoney = (parseFloat(value) - parseFloat(this.d_cashTotal)).toFixed(2)
+      } else {
+        this.d_cashChangeMoney = 0
+      }
     },
 
     // 确认支付成功
