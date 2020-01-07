@@ -55,9 +55,9 @@ export default {
         capacityCompany: null
       },
       d_page: {
-        currentPage: 1,
-        pageNum: 1,
-        pageSize: 10,
+        currentPage: 1, // 当前页
+        pageNum: 1,// 总页数
+        pageSize: 10, // 每页显示多少条
       }
     }
   },

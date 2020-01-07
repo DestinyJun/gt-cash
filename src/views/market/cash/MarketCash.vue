@@ -57,8 +57,8 @@
       </div>
       <div class="footer-pay">
         <div class="footer-pay-content position-absolute">
-          <span style="color: #000;">支付方式：</span>
-          <b-form-select v-model="d_cashPaySure.payType" :options="d_cashOptions" size="sm"></b-form-select>
+          <b-button variant="danger" @click="$bvModal.show('modal-return');cashOrderPageChange()">退货操作</b-button>
+          <b-button variant="info ml-3" @click="$bvModal.show('modal-gift');cashGiftPageChange()">大礼包</b-button>
         </div>
         <div class="footer-pay-border position-absolute"></div>
       </div>
@@ -153,10 +153,6 @@
       </template>
       <template slot="default" slot-scope="{ hide }">
         <div class="search mb-2">
-          <!-- <div class="input-group w-50">
-             <input type="text" class="form-control" id="goodName" placeholder="输入商品名称">
-             <button class="btn btn-info ml-1">查询</button>
-           </div>-->
           <div class="input-group w-50">
             <input type="tel" class="form-control" id="goodCode" placeholder="输入条码/自定义编号" v-model="d_cashCodeOperate">
             <button class="btn btn-info ml-1" @click="cashCodeGoodSearch()">查询</button>
@@ -306,6 +302,219 @@
             <span class="d-block h6 mb-4">成功</span>
           </b-button>
         </div>
+      </template>
+    </b-modal>
+    <!--退货订单查询-->
+    <b-modal id="modal-return" centered size="lg" no-close-on-backdrop ok-only no-stacking>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6 class="text-center">
+            订单退货
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close()">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="search mb-2">
+          <div class="input-group w-50">
+            <input type="tel" class="form-control" id="orderCode" placeholder="输入订单号" v-model="d_cashOrderNum">
+            <button class="btn btn-info ml-1" @click="cashOrderPageSearch()">查询</button>
+          </div>
+        </div>
+        <table class="table table-bordered ">
+          <thead>
+          <tr>
+            <th scope="col">序号</th>
+            <th scope="col">订单号</th>
+            <th scope="col">成交时间</th>
+            <th scope="col">订单金额</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            v-for="(item,index,) in d_cashOrderList" :key="index"
+            v-bind:class="{'table-info':item.active}" v-on:click="cashOrderSelect(item);$bvModal.show('modal-order')">
+            <th scope="row">{{index + 1}}</th>
+            <td>{{item.orderNumber}}</td>
+            <td>{{item.date}}</td>
+            <td>{{item.actualAccountsReceivable}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <b-pagination
+          v-model="d_cashPage.currentPage"
+          :total-rows="d_cashPage.pageNum"
+          :per-page="d_cashPage.pageSize"
+          @input="cashOrderPageChange()"
+          aria-controls="my-table"
+        >
+          <template v-slot:first-text><span class="text-success">首页</span></template>
+          <template v-slot:prev-text><span class="text-danger">上一页</span></template>
+          <template v-slot:next-text><span class="text-warning">下一页</span></template>
+          <template v-slot:last-text><span class="text-info">末页</span></template>
+        </b-pagination>
+      </template>
+    </b-modal>
+    <!--退货订单详情-->
+    <b-modal id="modal-order" centered size="lg" no-close-on-backdrop>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6>
+            <b-button class="float-left" size="sm" variant="outline-info" @click="close()">
+              订单退货
+            </b-button>
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close()">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="search mb-2">
+          <div class="input-group w-50">
+            <input type="tel" class="form-control" id="orderCodeInfo" placeholder="输入订单号" v-model="d_cashOrderNum">
+            <button class="btn btn-info ml-1" @click="cashOrderReturnInfo()">查询</button>
+          </div>
+        </div>
+        <b-row>
+          <b-col md="7">
+            <table class="table table-bordered ">
+              <thead>
+              <tr>
+                <th scope="col">商品名称</th>
+                <th scope="col">单价</th>
+                <th scope="col">数量</th>
+                <th scope="col">折扣</th>
+                <th scope="col">退货数量</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr
+                v-for="(item,index,) in d_cashOrderInfo" :key="index"
+                v-bind:class="{'table-info':item.active}">
+                <td>{{item.goodsName}}</td>
+                <td>{{item.unitPrice}}</td>
+                <td>{{item.number}}</td>
+                <td>{{item.discount}}</td>
+                <td>
+                  <b-form-input
+                    id="cashOrderInfoId" type="number" size="sm"
+                    v-model="d_cashOrderInfoNum" placeholder="请填写数量"
+                    @focus="cashShopNumFocus($event.target)"
+                    @blur="cashOrderInfoIdBlur(item)"
+                  >
+                  </b-form-input>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </b-col>
+          <b-col md="5">
+            <div class="order-keyboard">
+              <div class="keyboard">
+                <div class="box" v-for="(item,index,) in d_keybordTxt" :key="index" @click="cashKeybordClick(index)">
+                  <span style="color: #333333;font-size: 20px;font-weight: 600">{{item}}</span>
+                </div>
+              </div>
+              <div class="btn-list">
+                <b-button
+                  class="pt-2 pb-2 btn-block" size="sm" variant="default"
+                  @click="cashKeybordClick('del')">
+                  <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
+                </b-button>
+                <b-button
+                  class="btn-block" size="sm"  variant="bg1"
+                  @click="hide();cashOrderReturnSure()">
+                  <span class="d-block h6" style="padding-top: 24px;padding-bottom: 24px;margin-bottom: 3px">确认退货</span>
+                </b-button>
+              </div>
+            </div>
+          </b-col>
+        </b-row>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <span></span>
+      </template>
+    </b-modal>
+    <!--大礼包列表-->
+    <b-modal id="modal-gift" centered size="lg" no-close-on-backdrop ok-only no-stacking>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6 class="text-center">
+            大礼包管理
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close()">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="search mb-2">
+          <div class="input-group w-50">
+            <input type="text" class="form-control" id="giftKeyword" placeholder="输入礼包名称/编号" v-model="d_cashOrderNum">
+            <button class="btn btn-info ml-1" @click="cashOrderPageSearch()">搜索大礼包</button>
+          </div>
+          <div class="input-group w-50 justify-content-sm-end">
+            <b-button variant="success" size="sm">新建大礼包</b-button>
+          </div>
+        </div>
+        <table class="table table-bordered ">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">礼包编号</th>
+            <th scope="col">礼包名称</th>
+            <th scope="col">包含商品</th>
+            <th scope="col">销售状态</th>
+            <th scope="col">总价</th>
+            <th scope="col">操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            v-for="(item,index,) in d_cashGiftPage" :key="index"
+            v-bind:class="{'table-info':item.active}" v-on:click="cashOrderSelect(item);$bvModal.show('modal-order')">
+            <td scope="row">{{index + 1}}</td>
+            <td>{{item.giftPackageCode}}</td>
+            <td>{{item.giftName}}</td>
+            <td>旺旺雪饼</td>
+            <td>{{item.upperShelf}}</td>
+            <td>{{item.unitPrice}}</td>
+            <td>
+              <div
+                @click="mnTableOperateClick(data.item,'editor')"
+                class="bg-info"
+                style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
+                <i class="icon iconfont iconxiugai1 text-light"></i>
+              </div>
+              <div
+                @click="mnTableOperateClick(data.item,'del')"
+                class="bg-warning ml-3 mr-3"
+                style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
+                <i class="icon iconfont iconshanchu text-light"></i>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <b-pagination
+          v-model="d_cashGiftPage.currentPage"
+          :total-rows="d_cashGiftPage.pageNum"
+          :per-page="d_cashGiftPage.pageSize"
+          @input="cashOrderPageChange()"
+          aria-controls="my-table"
+        >
+          <template v-slot:first-text><span class="text-success">首页</span></template>
+          <template v-slot:prev-text><span class="text-danger">上一页</span></template>
+          <template v-slot:next-text><span class="text-warning">下一页</span></template>
+          <template v-slot:last-text><span class="text-info">末页</span></template>
+        </b-pagination>
       </template>
     </b-modal>
   </div>

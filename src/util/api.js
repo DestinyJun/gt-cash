@@ -3,6 +3,7 @@
  */
 import axios from 'axios'
 import store from '@/store'
+import { EMPTY } from 'rxjs'
 // 判断开发模式
 if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = process.env.VUE_APP_URL;
@@ -98,7 +99,9 @@ export function post(url, params) {
         resolve(res.data);
       })
       .catch(err =>{
-        reject(err.data)
+        // 抛出异常以后，拦截器哪里已经做了提醒处理，所以无需再处理
+        // console.log(err.data);
+        // reject(EMPTY)
       })
   });
 }

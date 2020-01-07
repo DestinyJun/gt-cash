@@ -103,6 +103,40 @@
 }
 //模态框改造
 .modal-content{
+  .keyboard{
+    width: 83%;
+    display: flex;
+    flex-wrap: wrap;
+    .box{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 30.33%;
+      height: 60px;
+      box-shadow: 0 0 2px 1px #E8E8E8;
+      margin-right: 3%;
+      margin-bottom: 11px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+  .btn-list{
+    width: 17%;
+    .btn-default{
+      height: 60px;
+      margin-bottom: 11px;
+      box-shadow: 0 0 2px 1px #E8E8E8;
+    }
+    .btn-bg1{
+      color: #fff;
+      background-color: #468F80;
+      border-color: #468F80;
+      padding-top: 55px;
+      padding-bottom: 55px;
+      margin-bottom: 7px;
+    }
+  }
   .modal-header{
     border: none;
   }
@@ -184,6 +218,11 @@
         }
       }
     }
+    .order-keyboard{
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
   }
   .modal-footer{
     font-size: 0.8rem;
@@ -191,40 +230,6 @@
       width: 40%;
       padding: 0 5px;
       font-size: 0.75rem;
-    }
-    .keyboard{
-      width: 83%;
-      display: flex;
-      flex-wrap: wrap;
-      .box{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 30.33%;
-        height: 60px;
-        box-shadow: 0 0 2px 1px #E8E8E8;
-        margin-right: 3%;
-        margin-bottom: 11px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-    }
-    .btn-list{
-      width: 17%;
-      .btn-default{
-        height: 60px;
-        margin-bottom: 11px;
-        box-shadow: 0 0 2px 1px #E8E8E8;
-      }
-      .btn-bg1{
-        color: #fff;
-        background-color: #468F80;
-        border-color: #468F80;
-        padding-top: 55px;
-        padding-bottom: 55px;
-        margin-bottom: 7px;
-      }
     }
   }
 }

@@ -18,15 +18,15 @@
         </template>
         <template slot="[operate]" slot-scope="data">
           <div
-            @click="mnTableOperateClick(data.item,'editor')"
+            @click="cashGiftOperate(data.item,'editor')"
             class="bg-info"
-            style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
+            style="width: 25px;height: 25px;display: inline-block;cursor: pointer;">
             <i class="icon iconfont iconxiugai1 text-light"></i>
           </div>
           <div
-            @click="mnTableOperateClick(data.item,'del')"
+            @click="cashGiftOperate(data.item,'del')"
             class="bg-warning ml-3 mr-3"
-            style="width: 25px;height: 25px;display: inline-block;cursor: pointer">
+            style="width: 25px;height: 25px;display: inline-block;cursor: pointer;">
             <i class="icon iconfont iconshanchu text-light"></i>
           </div>
           <!--<div

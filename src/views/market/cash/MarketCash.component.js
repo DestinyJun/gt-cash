@@ -44,6 +44,22 @@ export default {
       d_cashDom: null,
       d_cashMoney: null, // 收取现金
       d_cashChangeMoney: 0, // 应找零钱
+      d_cashPage: {
+        currentPage: 1, // 当前页
+        pageNum: 1,// 总页数
+        pageSize: 5, // 每页显示多少条
+      },
+      d_cashOrderNum: null, // 订单编号
+      d_cashOrderList: [], //订单列表
+      d_cashOrderInfo: [], // 订单详情
+      d_cashOrderInfoId: [], // 退货商品
+      d_cashOrderInfoNum: null, // 退货商品数量
+      d_cashGiftList: [], // 大礼包列表
+      d_cashGiftPage: { // 大礼包分页
+        currentPage: 1, // 当前页
+        pageNum: 1,// 总页数
+        pageSize: 5, // 每页显示多少条
+      },
     }
   },
   validations: {
@@ -254,6 +270,9 @@ export default {
 
     // 键盘操作
     cashKeybordClick: function (item) {
+      if (!this.d_cashDom) {
+        return false;
+      }
       if (item.toString()) {
         this.d_cashDom.focus()
         if (item === 'del') {
@@ -292,6 +311,9 @@ export default {
       if (this.d_cashDom.id === 'cashMoney') {
         this.d_cashMoney = value;
         this.cashChangeMoneyOperate(value);
+      }
+      if (this.d_cashDom.id === 'cashOrderInfoId') {
+        this.d_cashOrderInfoNum = value;
       }
     },
 
@@ -365,6 +387,208 @@ export default {
           this.d_cashTotal = 0.00
         })
         .catch(() => {})
-    }
+    },
+
+    // 订单列表分页查询
+    cashOrderPageChange() {
+      this.post(
+        `/supermarketmanagement/returnGoods/getBillList`,
+        {
+          pageSize: this.d_cashPage.pageSize,
+          pageNum: this.d_cashPage.currentPage,
+          merchantCode: this.$localStorage.get('merchatCode'),
+          userId: this.$localStorage.get('userCode'),
+        }).then((res) => {
+          this.d_cashOrderList = res.data
+          this.d_cashPage.pageNum = res.totalRecord;
+      })
+    },
+
+    // 根据订单号精准查询
+    cashOrderPageSearch() {
+      this.post(
+        `/supermarketmanagement/returnGoods/selectBill`,
+        {
+          orderNum: this.d_cashOrderNum,
+          merchantCode: this.$localStorage.get('merchatCode'),
+        }).then((res) => {
+        this.d_cashOrderList = res.data
+        this.d_cashPage.pageNum = res.totalRecord;
+      })
+    },
+
+    // 订单详情
+    cashOrderSelect(item) {
+      this.post(
+        `/supermarketmanagement/returnGoods/getBillInfo`,
+        {
+          billId: item.id,
+        }).then((res) => {
+        this.d_cashOrderInfo = res.data;
+      })
+    },
+
+    // 退货数量失去焦点
+    cashOrderInfoIdBlur(item) {
+      if (this.d_cashOrderInfoId.length>0) {
+        this.d_cashOrderInfoId.map((val) => {
+          if (val.billInfoId === item.id) {
+            val.num = this.d_cashOrderInfoNum;
+          } else {
+            this.d_cashOrderInfoId.push({
+              billInfoId: item.id,
+              num: this.d_cashOrderInfoNum
+            })
+          }
+        })
+      } else {
+        this.d_cashOrderInfoId.push({
+          billInfoId: item.id,
+          num: this.d_cashOrderInfoNum
+        })
+      }
+    },
+
+    // 退货订单精准查询
+    cashOrderReturnInfo() {
+      this.post(
+        `/supermarketmanagement/returnGoods/selectBill`,
+        {
+          orderNum: this.d_cashOrderNum,
+          merchantCode: this.$localStorage.get('merchatCode'),
+        }).then((res) => {
+        this.post(
+          `/supermarketmanagement/returnGoods/getBillInfo`,
+          {
+            billId: res.data[0].id,
+          }).then((res) => {
+          this.d_cashOrderInfo = res.data;
+        })
+      })
+    },
+
+    // 确定退货
+    cashOrderReturnSure() {
+      this.post(
+        `/supermarketmanagement/returnGoods/returnGoods`,
+        this.d_cashOrderInfoId
+        ).then((res) => {
+        this.$bvModal.msgBoxOk(
+          '退货成功！',
+          {
+            title: '操作提醒', // 标题
+            centered: true, // 弹窗是否居中
+            hideHeaderClose: false, // 是否隐藏头部关闭按钮
+            headerBgVariant: 'success', // 头部背景
+            headerTextVariant: 'light', // 头部文字
+            headerCloseVariant: 'light', // 头部关闭按钮
+            size: 'sm', // 框尺寸
+            buttonSize: 'sm', // 按钮尺寸
+            okTitle: '关闭', // 确认按钮内容
+            okVariant: 'danger', // 确认按钮样式
+            footerClass: ['p-3']
+          })
+          .then(value => {})
+          .catch((err) => {})
+        console.log(res);
+      })
+    },
+
+    // 大礼包分页查询
+    cashGiftPageChange() {
+      this.post(
+        `/supermarketmanagement/gift/getGiftList`,
+        {
+          pageSize: this.d_cashGiftPage.pageSize,
+          pageNum: this.d_cashGiftPage.currentPage,
+          merchantCode: this.$localStorage.get('merchatCode'),
+        }).then((res) => {
+          console.log(res);
+        this.d_cashGiftPage = res.data
+        this.d_cashGiftPage.pageNum = res.totalRecord;
+      })
+    },
+
+    // 大礼包操作
+    cashGiftOperate (item, type) {
+      // 商品操作事件
+      switch (type) {
+        case 'editor':
+          if (item.type === 'public') {
+            this.$bvModal.show('add-code')
+            for (const prop in this.d_mnPublicUpdate) {
+              if (this.d_mnPublicUpdate.hasOwnProperty(prop)) {
+                this.d_mnPublicUpdate[prop] = item[prop]
+              }
+            }
+            this.d_mnPublicUpdate.merchatCode = this.$localStorage.get('merchatCode')
+            this.mnHaveCapacityChange(this.d_mnPublicUpdate.haveCapacity)
+          } else {
+            this.$bvModal.show('update-no-code')
+            for (const prop in this.d_mnPrivateUpdate) {
+              if (this.d_mnPrivateUpdate.hasOwnProperty(prop)) {
+                this.d_mnPrivateUpdate[prop] = item[prop]
+              }
+            }
+            this.d_mnPrivateUpdate.merchatCode = this.$localStorage.get('merchatCode')
+          }
+          break
+        case 'del':
+          this.$bvModal.msgBoxConfirm(
+            '您确定要是删除此商品吗？',
+            {
+              title: '删除提醒', // 标题
+              centered: true, // 弹窗是否居中
+              hideHeaderClose: false, // 是否隐藏头部关闭按钮
+              headerBgVariant: 'danger', // 头部背景
+              headerTextVariant: 'light', // 头部文字
+              headerCloseVariant: 'light', // 头部关闭按钮
+              size: 'sm', // 框尺寸
+              buttonSize: 'sm', // 按钮尺寸
+              okTitle: '取消', // 确认按钮内容
+              okVariant: 'danger', // 确认按钮样式
+              cancelTitle: '确认', // 取消按钮内容
+              cancelVariant: 'success', // 确取消按钮样式
+              footerClass: ['p-3']
+            })
+            .then(value => {
+              if (!value) {
+                this.post(
+                  '/supermarketmanagement/supermarketstorage/goods/delete',
+                  { id: item.id, type: item.type })
+                  .then((res) => {
+                    this.$bvModal.msgBoxOk(
+                      '删除成功！',
+                      {
+                        title: '操作提醒', // 标题
+                        centered: true, // 弹窗是否居中
+                        hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                        headerBgVariant: 'success', // 头部背景
+                        headerTextVariant: 'light', // 头部文字
+                        headerCloseVariant: 'light', // 头部关闭按钮
+                        size: 'sm', // 框尺寸
+                        buttonSize: 'sm', // 按钮尺寸
+                        okTitle: '确定', // 确认按钮内容
+                        okVariant: 'info', // 确认按钮样式
+                        footerClass: ['p-3']
+                      })
+                      .then(value => {})
+                      .catch((err) => {})
+                    this.mnSelectGoodList()
+                  })
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+          break
+        case 'destroy':
+          for (const prop in this.d_destroy) {
+            if (this.d_destroy.hasOwnProperty(prop)) {
+              this.d_destroy[prop] = item[prop]
+            }
+          }
+      }
+    },
   }
 }
