@@ -60,6 +60,15 @@ export default {
         pageNum: 1,// 总页数
         pageSize: 5, // 每页显示多少条
       },
+      d_cashGiftAdd: { // 大礼包添加
+        merchantCode: this.$localStorage.get('merchatCode'),
+        lastUserId: this.$localStorage.get('userCode'),
+        giftName: null, // 大礼包名称
+        unitPrice: null, // 大礼包价格
+        giftCode: null,
+        sales: null, // 出售状态
+        giftPackageInfoDTOS:[] // 包含商品
+      }
     }
   },
   validations: {
@@ -503,8 +512,16 @@ export default {
           pageNum: this.d_cashGiftPage.currentPage,
           merchantCode: this.$localStorage.get('merchatCode'),
         }).then((res) => {
-          console.log(res);
-        this.d_cashGiftPage = res.data
+        this.d_cashGiftList = res.data
+        this.d_cashGiftList.map((val) => {
+          let goodsString = '';
+          val.giftGoodsInfos.map((res) =>{
+            goodsString += res.goodsName + '，';
+          })
+          goodsString = goodsString.substring(0,goodsString.length-1)
+          val.goodsString = goodsString
+        })
+        console.log(this.d_cashGiftList);
         this.d_cashGiftPage.pageNum = res.totalRecord;
       })
     },

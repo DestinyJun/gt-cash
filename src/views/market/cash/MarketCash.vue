@@ -459,10 +459,101 @@
             <button class="btn btn-info ml-1" @click="cashOrderPageSearch()">搜索大礼包</button>
           </div>
           <div class="input-group w-50 justify-content-sm-end">
-            <b-button variant="success" size="sm">新建大礼包</b-button>
+            <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-add')">新建大礼包</b-button>
           </div>
         </div>
-        <table class="table table-bordered ">
+        <table class="table table-bordered" style="table-layout: fixed;">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">礼包编号</th>
+            <th scope="col">礼包名称</th>
+            <th scope="col" width="25%" >包含商品</th>
+            <th scope="col">销售状态</th>
+            <th scope="col">总价</th>
+            <th scope="col">操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            v-for="(item,index,) in d_cashGiftList" :key="index"
+            v-bind:class="{'table-info':item.active}">
+            <td scope="row">{{index + 1}}</td>
+            <td>{{item.giftPackageCode}}</td>
+            <td>{{item.giftName}}</td>
+            <td style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap" :title="item.goodsString">
+              {{item.goodsString}}
+            </td>
+            <td>{{item.upperShelf}}</td>
+            <td>{{item.unitPrice}}</td>
+            <td>
+              <div
+                @click="mnTableOperateClick(item,'editor')"
+                class="bg-info"
+                style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
+                <i class="icon iconfont iconxiugai1 text-light"></i>
+              </div>
+              <div
+                @click="mnTableOperateClick(item,'del')"
+                class="bg-warning ml-3 mr-3"
+                style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
+                <i class="icon iconfont iconshanchu text-light"></i>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <b-pagination
+          v-model="d_cashGiftPage.currentPage"
+          :total-rows="d_cashGiftPage.pageNum"
+          :per-page="d_cashGiftPage.pageSize"
+          @input="cashOrderPageChange()"
+          aria-controls="my-table"
+        >
+          <template v-slot:first-text><span class="text-success">首页</span></template>
+          <template v-slot:prev-text><span class="text-danger">上一页</span></template>
+          <template v-slot:next-text><span class="text-warning">下一页</span></template>
+          <template v-slot:last-text><span class="text-info">末页</span></template>
+        </b-pagination>
+      </template>
+    </b-modal>
+    <!--新增大礼包列表-->
+    <b-modal id="modal-gift-add" centered size="lg" no-close-on-backdrop ok-only no-stacking>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6 class="text-center">
+            新增大礼包
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close()">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="search mb-2">
+          <div class="input-group w-50 mb-2">
+            <b-button variant="info mr-1" size="sm">大礼包名称</b-button>
+            <input type="text" class="form-control" id="giftName" placeholder="输入礼包名称/编号" v-model="d_cashGiftAdd.giftName">
+          </div>
+          <div class="input-group w-50 mb-2">
+            <b-button variant="danger mr-1" size="sm">定价</b-button>
+            <input type="number" class="form-control" id="giftPrice" placeholder="请输入价格" v-model="d_cashGiftAdd.unitPrice">
+          </div>
+          <div class="input-group w-50">
+            <b-button variant="success mr-1" size="sm">
+              <span class="mr-1">销售</span><span class="mr-1">状态</span>
+            </b-button>
+            <b-form-radio v-model="d_cashGiftAdd.sales" name="radio-inline" value="A" >在售</b-form-radio>
+            <b-form-radio v-model="d_cashGiftAdd.sales" name="radio-inline" value="B" selected>下架</b-form-radio>
+          </div>
+          <div class="input-group w-50">
+            <b-button variant="primary mr-1 pl-2 pr-2" size="sm">编号</b-button>
+            <input type="number" class="form-control" id="giftCode" placeholder="请输入价格" v-model="d_cashGiftAdd.giftCode">
+          </div>
+        </div>
+        <table class="table table-bordered ">id=""
           <thead>
           <tr>
             <th scope="col">#</th>
@@ -476,23 +567,25 @@
           </thead>
           <tbody>
           <tr
-            v-for="(item,index,) in d_cashGiftPage" :key="index"
-            v-bind:class="{'table-info':item.active}" v-on:click="cashOrderSelect(item);$bvModal.show('modal-order')">
+            v-for="(item,index,) in d_cashGiftList" :key="index"
+            v-bind:class="{'table-info':item.active}">
             <td scope="row">{{index + 1}}</td>
             <td>{{item.giftPackageCode}}</td>
             <td>{{item.giftName}}</td>
-            <td>旺旺雪饼</td>
+            <td width="40%">
+              <p style="width: 100%;overflow: hidden">{{item.goodsString}}{{item.goodsString}}{{item.goodsString}}{{item.goodsString}}{{item.goodsString}}</p>
+            </td>
             <td>{{item.upperShelf}}</td>
             <td>{{item.unitPrice}}</td>
             <td>
               <div
-                @click="mnTableOperateClick(data.item,'editor')"
+                @click="mnTableOperateClick(item,'editor')"
                 class="bg-info"
                 style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
                 <i class="icon iconfont iconxiugai1 text-light"></i>
               </div>
               <div
-                @click="mnTableOperateClick(data.item,'del')"
+                @click="mnTableOperateClick(item,'del')"
                 class="bg-warning ml-3 mr-3"
                 style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
                 <i class="icon iconfont iconshanchu text-light"></i>
