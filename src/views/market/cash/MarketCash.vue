@@ -35,11 +35,11 @@
             <td>{{item.goodsCode}}</td>
             <td>{{item.unitPrice}}</td>
             <td>{{item.num}}</td>
-            <td class="icon-operate">
-              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" v-on:click="cashOperateClick('add',index)"></i>
-              <i class="icon iconfont iconziyuan mr-3 align-middle" @click="cashOperateClick('minus',index)"></i>
-              <i class="icon iconfont iconziyuan1-copy align-middle" @click="cashOperateClick('del',index)"></i>
-              <b-button size="sm" variant="info align-middle ml-3" pill style="font-size: 12px" @click="cashModalOperateClick(index);$bvModal.show('modal-shop')">
+            <td class="icon-operate" onselectstart="return false;" >
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" v-on:click="cashOperateClick('add',item)"></i>
+              <i class="icon iconfont iconziyuan mr-3 align-middle" @click="cashOperateClick('minus',item,index)"></i>
+              <i class="icon iconfont iconziyuan1-copy align-middle" @click="cashOperateClick('del',item,index)"></i>
+              <b-button size="sm" variant="info align-middle ml-3" pill style="font-size: 12px" @click="cashModalOperateClick(item);$bvModal.show('modal-shop')">
                 <span class="mr-1">操</span>
                 <span>作</span>
               </b-button>
@@ -170,7 +170,7 @@
           <tbody>
           <tr
             v-for="(item,index,) in d_cashCodeGoods" :key="index"
-            v-bind:class="{'table-info':item.active}" v-on:click="cashCodeGoodsClick(index)">
+            v-bind:class="{'table-info':item.active}" v-on:click="cashCodeGoodsClick(index,'select')">
             <th scope="row">{{index + 1}}</th>
             <td>{{item.goodsName}}</td>
             <td>{{item.goodsCode}}</td>
@@ -187,7 +187,7 @@
           style="display: inline-block;flex: none;">
         <b-button
           class="pl-md-4 pr-md-4" size="sm" variant="success"
-          v-on:click="close();cashCodeGoodsClick('sure')">
+          v-on:click="close();cashCodeGoodsClick('sure','manual')">
           确定
         </b-button>
       </template>
@@ -519,8 +519,8 @@
         </b-pagination>
       </template>
     </b-modal>
-    <!--新增大礼包列表-->
-    <b-modal id="modal-gift-add" centered size="lg" no-close-on-backdrop ok-only no-stacking>
+    <!--新增大礼包-->
+    <b-modal id="modal-gift-add" centered size="lg" no-close-on-backdrop>
       <template slot="modal-header" slot-scope="{ close }">
         <div class="w-100">
           <h6 class="text-center">
@@ -537,7 +537,7 @@
             <b-button variant="info mr-1" size="sm">大礼包名称</b-button>
             <input type="text" class="form-control" id="giftName" placeholder="输入礼包名称/编号" v-model="d_cashGiftAdd.giftName">
           </div>
-          <div class="input-group w-50 mb-2">
+          <div class="input-group w-50 mb-2 justify-content-end">
             <b-button variant="danger mr-1" size="sm">定价</b-button>
             <input type="number" class="form-control" id="giftPrice" placeholder="请输入价格" v-model="d_cashGiftAdd.unitPrice">
           </div>
@@ -545,38 +545,32 @@
             <b-button variant="success mr-1" size="sm">
               <span class="mr-1">销售</span><span class="mr-1">状态</span>
             </b-button>
-            <b-form-radio v-model="d_cashGiftAdd.sales" name="radio-inline" value="A" >在售</b-form-radio>
-            <b-form-radio v-model="d_cashGiftAdd.sales" name="radio-inline" value="B" selected>下架</b-form-radio>
+            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="A" >在售</b-form-radio>
+            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="B" selected>下架</b-form-radio>
           </div>
-          <div class="input-group w-50">
+          <div class="input-group w-50 justify-content-end">
             <b-button variant="primary mr-1 pl-2 pr-2" size="sm">编号</b-button>
-            <input type="number" class="form-control" id="giftCode" placeholder="请输入价格" v-model="d_cashGiftAdd.giftCode">
+            <input type="number" class="form-control" id="giftCode" placeholder="请输入编号" v-model="d_cashGiftAdd.giftCode">
           </div>
         </div>
-        <table class="table table-bordered ">id=""
+        <table class="table table-bordered ">
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">礼包编号</th>
-            <th scope="col">礼包名称</th>
-            <th scope="col">包含商品</th>
-            <th scope="col">销售状态</th>
-            <th scope="col">总价</th>
+            <th scope="col">商品名称</th>
+            <th scope="col">单价</th>
+            <th scope="col">数量</th>
             <th scope="col">操作</th>
           </tr>
           </thead>
           <tbody>
           <tr
-            v-for="(item,index,) in d_cashGiftList" :key="index"
+            v-for="(item,index,) in d_cashGiftAdd.giftPackageInfoDTOS" :key="index"
             v-bind:class="{'table-info':item.active}">
             <td scope="row">{{index + 1}}</td>
-            <td>{{item.giftPackageCode}}</td>
-            <td>{{item.giftName}}</td>
-            <td width="40%">
-              <p style="width: 100%;overflow: hidden">{{item.goodsString}}{{item.goodsString}}{{item.goodsString}}{{item.goodsString}}{{item.goodsString}}</p>
-            </td>
-            <td>{{item.upperShelf}}</td>
+            <td>{{item.goodsName}}</td>
             <td>{{item.unitPrice}}</td>
+            <td>{{item.number}}</td>
             <td>
               <div
                 @click="mnTableOperateClick(item,'editor')"
@@ -594,20 +588,69 @@
           </tr>
           </tbody>
         </table>
+        <div class="input-group w-100 p-2" style="background: #F6F6F6;">
+          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods')">添加商品</b-button>
+          <b class="text-right" style="flex: 1;text-align: right;">商品总价：￥{{d_cashGiftAdd.sales}}</b>
+        </div>
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
-        <b-pagination
-          v-model="d_cashGiftPage.currentPage"
-          :total-rows="d_cashGiftPage.pageNum"
-          :per-page="d_cashGiftPage.pageSize"
-          @input="cashOrderPageChange()"
-          aria-controls="my-table"
-        >
-          <template v-slot:first-text><span class="text-success">首页</span></template>
-          <template v-slot:prev-text><span class="text-danger">上一页</span></template>
-          <template v-slot:next-text><span class="text-warning">下一页</span></template>
-          <template v-slot:last-text><span class="text-info">末页</span></template>
-        </b-pagination>
+        <b-button variant="info pl-4 pr-4">
+          <span class="mr-1">保</span>
+          <span>存</span>
+        </b-button>
+      </template>
+    </b-modal>
+    <!--大礼包查询商品-->
+    <b-modal id="modal-gift-goods" centered size="md" no-close-on-backdrop>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6 class="text-center">
+            大礼包查询商品
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[]">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="search mb-2">
+          <div class="input-group w-50">
+            <input type="tel" class="form-control" id="giftGoodCode" placeholder="输入条码/自定义编号" v-model="d_cashCodeOperate">
+            <button class="btn btn-info ml-1" @click="cashGiftGoodSearch()">查询</button>
+          </div>
+        </div>
+        <table class="table table-bordered">
+          <thead>
+          <tr>
+            <th scope="col">序号</th>
+            <th scope="col">商品</th>
+            <th scope="col">条码/自定义编码</th>
+            <th scope="col">单价</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            v-for="(item,index,) in d_cashCodeGoods" :key="index"
+            v-bind:class="{'table-info':item.active}" v-on:click="cashCodeGoodsClick(index,'select')">
+            <th scope="row">{{index + 1}}</th>
+            <td>{{item.goodsName}}</td>
+            <td>{{item.goodsCode}}</td>
+            <td>{{item.unitPrice}}</td>
+          </tr>
+          </tbody>
+        </table>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <label for="giftAmount" class="">添加数量：</label>
+        <input
+          v-model="d_cashCodeGoodAmount"
+          type="tel" id="giftAmount" class="form-control"
+          style="display: inline-block;flex: none;">
+        <b-button
+          class="pl-md-4 pr-md-4" size="sm" variant="success"
+          v-on:click="close();cashCodeGoodsClick('sure','gift')">
+          确定
+        </b-button>
       </template>
     </b-modal>
   </div>

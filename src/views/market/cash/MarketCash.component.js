@@ -64,9 +64,10 @@ export default {
         merchantCode: this.$localStorage.get('merchatCode'),
         lastUserId: this.$localStorage.get('userCode'),
         giftName: null, // 大礼包名称
-        unitPrice: null, // 大礼包价格
-        giftCode: null,
-        sales: null, // 出售状态
+        unitPrice: null, // 大礼包定价
+        sales: 0, // 实际总价
+        giftCode: null, // 大礼包编码
+        upperShelf: null, // 出售状态
         giftPackageInfoDTOS:[] // 包含商品
       }
     }
@@ -115,15 +116,16 @@ export default {
       event.target.value = ''
     }, 800),
 
-    // 手动添加商品到购物车
-    cashCodeGoodsClick: function (index) {
-      if (!(index === 'sure')) {
+    // 手动添加商品到购物车或者添加大礼包商品
+    cashCodeGoodsClick: function (index,modal) {
+      if (modal === 'select') {
         this.d_cashCodeGoods.map((val) => {
           val.active = false;
         })
         this.d_cashCodeGoods[index].active = true
         this.d_cashCodeGoodSelect = index
-      } else {
+      }
+      else {
         if(this.d_cashCodeGoods.length !== 0) {
           this.d_cashCodeGoods[this.d_cashCodeGoodSelect].num = this.d_cashCodeGoodAmount
           const goodCode = []
@@ -147,8 +149,9 @@ export default {
             val.discount = 1
             val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
             this.d_cashGoods.push(val)
+            console.log(this.d_cashGoods);
+            this.cashCalculateTotal()
           }
-          this.cashCalculateTotal()
           this.d_cashCodeGoods = []
           this.d_cashCodeGoodAmount = 1
         }
@@ -164,18 +167,22 @@ export default {
     },
 
     // 结算页商品列表操作
-    cashOperateClick: function (ope, index) {
+    cashOperateClick: function (ope,item,index) {
+      this.clone_copy(this.d_cashShopInfo,item)
       switch (ope) {
         case 'add':
-          this.d_cashGoods[index].num = parseInt(this.d_cashGoods[index].num) + 1
+          item.num = parseInt(item.num) + 1
+          item.nowPrice = ((item.unitPrice * item.num) * item.discount).toFixed(2)
           this.cashCalculateTotal()
           break
         case 'minus':
-          this.d_cashGoods[index].num = parseInt(this.d_cashGoods[index].num) - 1
-          this.cashCalculateTotal()
-          if (this.d_cashGoods[index].num == '0') {
+          item.num = parseInt(item.num) - 1
+          if (item.num === 0) {
             this.d_cashGoods.splice(index, 1)
+          } else {
+            item.nowPrice = ((item.unitPrice * item.num) * item.discount).toFixed(2)
           }
+          this.cashCalculateTotal()
           break
         case 'del':
           this.d_cashGoods.splice(index, 1)
@@ -185,8 +192,8 @@ export default {
     },
 
     // 商品弹窗操作
-    cashModalOperateClick:function(index) {
-      this.clone_copy(this.d_cashShopInfo,this.d_cashGoods[index])
+    cashModalOperateClick:function(item) {
+      this.clone_copy(this.d_cashShopInfo,item)
     },
 
     // 计算总价
@@ -214,6 +221,7 @@ export default {
       const data = { merchatCode: this.$localStorage.get('merchatCode'), code: this.d_cashCodeOperate }
       this.post(`/supermarketmanagement/supermarketcashier/goods/select`, data)
         .then((res) => {
+          console.log(res);
           if (!(res.data.length === 0)) {
             res.data.map((val) => {
               val.active = false
@@ -606,6 +614,38 @@ export default {
             }
           }
       }
+    },
+
+    // 大礼包查询商品
+    cashGiftGoodSearch: function () {
+      this.d_cashCodeGoods = []
+      const data = { merchatCode: this.$localStorage.get('merchatCode'), code: this.d_cashCodeOperate }
+      this.post(`/supermarketmanagement/gift/getGoods`, data)
+        .then((res) => {
+          if (!(res.data.length === 0)) {
+            res.data.map((val) => {
+              val.active = false
+              this.d_cashCodeGoods.push(val)
+            })
+          } else {
+            this.$bvModal.msgBoxOk('查无此商品', {
+              title: '操作提醒',
+              size: 'sm',
+              buttonSize: 'sm',
+              hideHeaderClose: false, // 是否隐藏头部关闭按钮
+              headerBgVariant: 'danger', // 头部背景
+              headerTextVariant: 'light', // 头部文字
+              headerCloseVariant: 'light', // 头部关闭按钮
+              okTitle: '关闭',
+              okVariant: 'danger',
+              headerClass: 'p-2 border-bottom-0',
+              footerClass: 'p-2 border-top-0',
+              centered: true
+            })
+              .then((res) => {})
+              .catch((err) => {})
+          }
+        })
     },
   }
 }
