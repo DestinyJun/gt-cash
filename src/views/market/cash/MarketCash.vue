@@ -139,7 +139,7 @@
         </div>
       </template>
     </b-modal>
-    <!--手动查询商品-->
+    <!--手动查询商品/大礼包商品-->
     <b-modal id="modal-center" centered size="md" no-close-on-backdrop>
       <template slot="modal-header" slot-scope="{ close }">
         <div class="w-100">
@@ -197,7 +197,7 @@
       <template slot="modal-header" slot-scope="{ close }">
         <div class="w-100">
           <h6>
-            <b-button class="float-left" size="sm" variant="outline-info" @click="close();d_cashCodeGoods=[]">
+            <b-button class="float-left" size="sm" variant="outline-info">
               收款确认
             </b-button>
             <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[]">
@@ -441,7 +441,7 @@
       </template>
     </b-modal>
     <!--大礼包列表-->
-    <b-modal id="modal-gift" centered size="lg" no-close-on-backdrop ok-only no-stacking>
+    <b-modal id="modal-gift" centered size="lg" no-close-on-backdrop>
       <template slot="modal-header" slot-scope="{ close }">
         <div class="w-100">
           <h6 class="text-center">
@@ -475,7 +475,7 @@
           </tr>
           </thead>
           <tbody>
-          <tr
+            <tr
             v-for="(item,index,) in d_cashGiftList" :key="index"
             v-bind:class="{'table-info':item.active}">
             <td scope="row">{{index + 1}}</td>
@@ -488,13 +488,13 @@
             <td>{{item.unitPrice}}</td>
             <td>
               <div
-                @click="mnTableOperateClick(item,'editor')"
+                @click="cashGiftDelete(item,'editor')"
                 class="bg-info"
                 style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
                 <i class="icon iconfont iconxiugai1 text-light"></i>
               </div>
               <div
-                @click="mnTableOperateClick(item,'del')"
+                @click="cashGiftDelete(item,'del')"
                 class="bg-warning ml-3 mr-3"
                 style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
                 <i class="icon iconfont iconshanchu text-light"></i>
@@ -509,7 +509,7 @@
           v-model="d_cashGiftPage.currentPage"
           :total-rows="d_cashGiftPage.pageNum"
           :per-page="d_cashGiftPage.pageSize"
-          @input="cashOrderPageChange()"
+          @input="cashGiftPageChange()"
           aria-controls="my-table"
         >
           <template v-slot:first-text><span class="text-success">首页</span></template>
@@ -545,8 +545,8 @@
             <b-button variant="success mr-1" size="sm">
               <span class="mr-1">销售</span><span class="mr-1">状态</span>
             </b-button>
-            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="A" >在售</b-form-radio>
-            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="B" selected>下架</b-form-radio>
+            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="0" >在售</b-form-radio>
+            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="1" selected>下架</b-form-radio>
           </div>
           <div class="input-group w-50 justify-content-end">
             <b-button variant="primary mr-1 pl-2 pr-2" size="sm">编号</b-button>
@@ -565,25 +565,15 @@
           </thead>
           <tbody>
           <tr
-            v-for="(item,index,) in d_cashGiftAdd.giftPackageInfoDTOS" :key="index"
-            v-bind:class="{'table-info':item.active}">
+            v-for="(item,index,) in d_cashGiftAdd.giftPackageInfoDTOS" :key="index">
             <td scope="row">{{index + 1}}</td>
             <td>{{item.goodsName}}</td>
             <td>{{item.unitPrice}}</td>
             <td>{{item.number}}</td>
             <td>
-              <div
-                @click="mnTableOperateClick(item,'editor')"
-                class="bg-info"
-                style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
-                <i class="icon iconfont iconxiugai1 text-light"></i>
-              </div>
-              <div
-                @click="mnTableOperateClick(item,'del')"
-                class="bg-warning ml-3 mr-3"
-                style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
-                <i class="icon iconfont iconshanchu text-light"></i>
-              </div>
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px" v-on:click="cashGiftOperate('add',item)"></i>
+              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px" @click="cashGiftOperate('minus',item,index)"></i>
+              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px" @click="cashGiftOperate('del',item,index)"></i>
             </td>
           </tr>
           </tbody>
@@ -594,7 +584,7 @@
         </div>
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
-        <b-button variant="info pl-4 pr-4">
+        <b-button variant="info pl-4 pr-4" @click="cashGiftAdd();close()">
           <span class="mr-1">保</span>
           <span>存</span>
         </b-button>

@@ -61,15 +61,15 @@ export default {
         pageSize: 5, // 每页显示多少条
       },
       d_cashGiftAdd: { // 大礼包添加
-        merchantCode: this.$localStorage.get('merchatCode'),
+        merchatCode: this.$localStorage.get('merchatCode'),
         lastUserId: this.$localStorage.get('userCode'),
         giftName: null, // 大礼包名称
         unitPrice: null, // 大礼包定价
-        sales: 0, // 实际总价
+        sales: 0.00, // 包含商品总价
         giftCode: null, // 大礼包编码
-        upperShelf: null, // 出售状态
+        upperShelf: 0, // 出售状态
         giftPackageInfoDTOS:[] // 包含商品
-      }
+      },
     }
   },
   validations: {
@@ -127,30 +127,55 @@ export default {
       }
       else {
         if(this.d_cashCodeGoods.length !== 0) {
-          this.d_cashCodeGoods[this.d_cashCodeGoodSelect].num = this.d_cashCodeGoodAmount
-          const goodCode = []
-          for (let i = 0; i < this.d_cashGoods.length; i++) {
-            goodCode.push(this.d_cashGoods[i].goodsCode)
+          let goodCode = []
+          // manual
+          if (modal === 'manual') {
+            for (let i = 0; i < this.d_cashGoods.length; i++) {
+              goodCode.push(this.d_cashGoods[i].goodsCode)
+            }
+            if (goodCode.includes(this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode)) {
+              // 购物车中已存在时，增加数量
+              this.d_cashGoods.map((val) => {
+                if (this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode === val.goodsCode) {
+                  val.num = parseFloat(val.num) + parseFloat(this.d_cashCodeGoodAmount);
+                  val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
+                }
+              })
+              this.cashCalculateTotal('manual')
+            }
+            else {
+              // 不存在时，新增商品
+              const val = this.d_cashCodeGoods[this.d_cashCodeGoodSelect]
+              val.num = this.d_cashCodeGoodAmount
+              val.discount = 1
+              val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
+              this.d_cashGoods.push(val)
+              this.cashCalculateTotal('manual')
+            }
           }
-          if (goodCode.includes(this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode)) {
-            // 购物车中已存在时，增加数量
-            this.d_cashGoods.map((val) => {
-              if (this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode === val.goodsCode) {
-                val.num = parseFloat(val.num) + parseFloat(this.d_cashCodeGoodAmount);
-                val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
-              }
-            })
-            this.cashCalculateTotal()
-          }
-          else {
-            // 不存在时，新增商品
-            const val = this.d_cashCodeGoods[this.d_cashCodeGoodSelect]
-            val.num = this.d_cashCodeGoodAmount
-            val.discount = 1
-            val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
-            this.d_cashGoods.push(val)
-            console.log(this.d_cashGoods);
-            this.cashCalculateTotal()
+          // gift
+          if (modal === 'gift') {
+            for (let i = 0; i < this.d_cashGiftAdd.giftPackageInfoDTOS.length; i++) {
+              goodCode.push(this.d_cashGiftAdd.giftPackageInfoDTOS[i].goodsCode)
+            }
+            if (goodCode.includes(this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode)) {
+              // 购物车中已存在时，增加数量
+              this.d_cashGiftAdd.giftPackageInfoDTOS.map((val) => {
+                if (this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode === val.goodsCode) {
+                  val.number = parseFloat(val.number) + parseFloat(this.d_cashCodeGoodAmount);
+                  val.nowPrice = (val.unitPrice * val.number).toFixed(2)
+                }
+              })
+              this.cashCalculateTotal('gift')
+            }
+            else {
+              // 不存在时，新增商品
+              const val = this.d_cashCodeGoods[this.d_cashCodeGoodSelect]
+              val.number = this.d_cashCodeGoodAmount
+              val.nowPrice = (val.unitPrice * val.number).toFixed(2)
+              this.d_cashGiftAdd.giftPackageInfoDTOS.push(val)
+              this.cashCalculateTotal('gift')
+            }
           }
           this.d_cashCodeGoods = []
           this.d_cashCodeGoodAmount = 1
@@ -173,7 +198,7 @@ export default {
         case 'add':
           item.num = parseInt(item.num) + 1
           item.nowPrice = ((item.unitPrice * item.num) * item.discount).toFixed(2)
-          this.cashCalculateTotal()
+          this.cashCalculateTotal('manual')
           break
         case 'minus':
           item.num = parseInt(item.num) - 1
@@ -182,11 +207,11 @@ export default {
           } else {
             item.nowPrice = ((item.unitPrice * item.num) * item.discount).toFixed(2)
           }
-          this.cashCalculateTotal()
+          this.cashCalculateTotal('manual')
           break
         case 'del':
           this.d_cashGoods.splice(index, 1)
-          this.cashCalculateTotal()
+          this.cashCalculateTotal('manual')
           break
       }
     },
@@ -197,11 +222,19 @@ export default {
     },
 
     // 计算总价
-    cashCalculateTotal: function () {
-      this.d_cashTotal = 0
-      this.d_cashGoods.map((val) => {
-        this.d_cashTotal += parseFloat(val.nowPrice);
-      })
+    cashCalculateTotal: function (model) {
+      if (model === 'gift') {
+        this.d_cashGiftAdd.sales = 0
+        this.d_cashGiftAdd.giftPackageInfoDTOS.map((val) => {
+          this.d_cashGiftAdd.sales += parseFloat(val.nowPrice);
+        })
+      }
+      if (model === 'manual') {
+        this.d_cashTotal = 0
+        this.d_cashGoods.map((val) => {
+          this.d_cashTotal += parseFloat(val.nowPrice);
+        })
+      }
     },
 
     // 扫码输入切换
@@ -221,7 +254,6 @@ export default {
       const data = { merchatCode: this.$localStorage.get('merchatCode'), code: this.d_cashCodeOperate }
       this.post(`/supermarketmanagement/supermarketcashier/goods/select`, data)
         .then((res) => {
-          console.log(res);
           if (!(res.data.length === 0)) {
             res.data.map((val) => {
               val.active = false
@@ -413,7 +445,7 @@ export default {
         {
           pageSize: this.d_cashPage.pageSize,
           pageNum: this.d_cashPage.currentPage,
-          merchantCode: this.$localStorage.get('merchatCode'),
+          merchatCode: this.$localStorage.get('merchatCode'),
           userId: this.$localStorage.get('userCode'),
         }).then((res) => {
           this.d_cashOrderList = res.data
@@ -507,7 +539,6 @@ export default {
           })
           .then(value => {})
           .catch((err) => {})
-        console.log(res);
       })
     },
 
@@ -518,7 +549,7 @@ export default {
         {
           pageSize: this.d_cashGiftPage.pageSize,
           pageNum: this.d_cashGiftPage.currentPage,
-          merchantCode: this.$localStorage.get('merchatCode'),
+          merchatCode: this.$localStorage.get('merchatCode'),
         }).then((res) => {
         this.d_cashGiftList = res.data
         this.d_cashGiftList.map((val) => {
@@ -529,90 +560,31 @@ export default {
           goodsString = goodsString.substring(0,goodsString.length-1)
           val.goodsString = goodsString
         })
-        console.log(this.d_cashGiftList);
         this.d_cashGiftPage.pageNum = res.totalRecord;
       })
     },
 
     // 大礼包操作
-    cashGiftOperate (item, type) {
-      // 商品操作事件
-      switch (type) {
-        case 'editor':
-          if (item.type === 'public') {
-            this.$bvModal.show('add-code')
-            for (const prop in this.d_mnPublicUpdate) {
-              if (this.d_mnPublicUpdate.hasOwnProperty(prop)) {
-                this.d_mnPublicUpdate[prop] = item[prop]
-              }
-            }
-            this.d_mnPublicUpdate.merchatCode = this.$localStorage.get('merchatCode')
-            this.mnHaveCapacityChange(this.d_mnPublicUpdate.haveCapacity)
+    cashGiftOperate (ope,item,index) {
+      switch (ope) {
+        case 'add':
+          item.number = parseInt(item.number) + 1
+          item.nowPrice = (item.unitPrice * item.number).toFixed(2)
+          this.cashCalculateTotal('gift')
+          break
+        case 'minus':
+          item.number = parseInt(item.number) - 1
+          if (item.number === 0) {
+            this.d_cashGiftAdd.giftPackageInfoDTOS.splice(index, 1)
           } else {
-            this.$bvModal.show('update-no-code')
-            for (const prop in this.d_mnPrivateUpdate) {
-              if (this.d_mnPrivateUpdate.hasOwnProperty(prop)) {
-                this.d_mnPrivateUpdate[prop] = item[prop]
-              }
-            }
-            this.d_mnPrivateUpdate.merchatCode = this.$localStorage.get('merchatCode')
+            item.nowPrice = (item.unitPrice * item.number).toFixed(2)
           }
+          this.cashCalculateTotal('gift')
           break
         case 'del':
-          this.$bvModal.msgBoxConfirm(
-            '您确定要是删除此商品吗？',
-            {
-              title: '删除提醒', // 标题
-              centered: true, // 弹窗是否居中
-              hideHeaderClose: false, // 是否隐藏头部关闭按钮
-              headerBgVariant: 'danger', // 头部背景
-              headerTextVariant: 'light', // 头部文字
-              headerCloseVariant: 'light', // 头部关闭按钮
-              size: 'sm', // 框尺寸
-              buttonSize: 'sm', // 按钮尺寸
-              okTitle: '取消', // 确认按钮内容
-              okVariant: 'danger', // 确认按钮样式
-              cancelTitle: '确认', // 取消按钮内容
-              cancelVariant: 'success', // 确取消按钮样式
-              footerClass: ['p-3']
-            })
-            .then(value => {
-              if (!value) {
-                this.post(
-                  '/supermarketmanagement/supermarketstorage/goods/delete',
-                  { id: item.id, type: item.type })
-                  .then((res) => {
-                    this.$bvModal.msgBoxOk(
-                      '删除成功！',
-                      {
-                        title: '操作提醒', // 标题
-                        centered: true, // 弹窗是否居中
-                        hideHeaderClose: false, // 是否隐藏头部关闭按钮
-                        headerBgVariant: 'success', // 头部背景
-                        headerTextVariant: 'light', // 头部文字
-                        headerCloseVariant: 'light', // 头部关闭按钮
-                        size: 'sm', // 框尺寸
-                        buttonSize: 'sm', // 按钮尺寸
-                        okTitle: '确定', // 确认按钮内容
-                        okVariant: 'info', // 确认按钮样式
-                        footerClass: ['p-3']
-                      })
-                      .then(value => {})
-                      .catch((err) => {})
-                    this.mnSelectGoodList()
-                  })
-              }
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+          this.d_cashGiftAdd.giftPackageInfoDTOS.splice(index, 1)
+          this.cashCalculateTotal('gift')
           break
-        case 'destroy':
-          for (const prop in this.d_destroy) {
-            if (this.d_destroy.hasOwnProperty(prop)) {
-              this.d_destroy[prop] = item[prop]
-            }
-          }
       }
     },
 
@@ -647,5 +619,103 @@ export default {
           }
         })
     },
+
+    // 新增大礼包操作
+    cashGiftAdd: function () {
+      this.d_cashGiftAdd.giftPackageInfoDTOS.map((val) =>{
+        val.goodsId = val.id
+        delete val.active
+        delete val.id
+        delete val.nowPrice
+      })
+      this.post(
+        `/supermarketmanagement/gift/addNewGoods`,
+        this.d_cashGiftAdd
+      ).then(() => {
+        this.$bvModal.msgBoxOk(
+          '添加成功！',
+          {
+            title: '操作提醒', // 标题
+            centered: true, // 弹窗是否居中
+            hideHeaderClose: false, // 是否隐藏头部关闭按钮
+            headerBgVariant: 'success', // 头部背景
+            headerTextVariant: 'light', // 头部文字
+            headerCloseVariant: 'light', // 头部关闭按钮
+            size: 'sm', // 框尺寸
+            buttonSize: 'sm', // 按钮尺寸
+            okTitle: '关闭', // 确认按钮内容
+            okVariant: 'danger', // 确认按钮样式
+            footerClass: ['p-3']
+          })
+          .then(() => {
+            // 重置参数
+            this.d_cashGiftAdd = {
+              merchatCode: this.$localStorage.get('merchatCode'),
+                lastUserId: this.$localStorage.get('userCode'),
+                giftName: null, // 大礼包名称
+                unitPrice: null, // 大礼包定价
+                sales: 0.00, // 包含商品总价
+                giftCode: null, // 大礼包编码
+                upperShelf: 0, // 出售状态
+                giftPackageInfoDTOS:[] // 包含商品
+            }
+            this.cashGiftPageChange()
+          })
+      })
+    },
+
+    // 大礼包操作删除/编辑操作
+    cashGiftDelete (item, type) {
+      switch (type) {
+        case 'del':
+          this.$bvModal.msgBoxConfirm(
+            '您确定要是删除此大礼包吗？',
+            {
+              title: '删除提醒', // 标题
+              centered: true, // 弹窗是否居中
+              hideHeaderClose: false, // 是否隐藏头部关闭按钮
+              headerBgVariant: 'danger', // 头部背景
+              headerTextVariant: 'light', // 头部文字
+              headerCloseVariant: 'light', // 头部关闭按钮
+              size: 'sm', // 框尺寸
+              buttonSize: 'sm', // 按钮尺寸
+              okTitle: '取消', // 确认按钮内容
+              okVariant: 'danger', // 确认按钮样式
+              cancelTitle: '确认', // 取消按钮内容
+              cancelVariant: 'success', // 确取消按钮样式
+              footerClass: ['p-3']
+            })
+            .then(value => {
+              if (!value) {
+                this.post(`/supermarketmanagement/gift/deleteGift`, { id: item.id, userId: this.$localStorage.get('userCode')}).then(() => {
+                  this.$bvModal.msgBoxOk(
+                    '删除成功！',
+                    {
+                      title: '操作提醒', // 标题
+                      centered: true, // 弹窗是否居中
+                      hideHeaderClose: false, // 是否隐藏头部关闭按钮
+                      headerBgVariant: 'success', // 头部背景
+                      headerTextVariant: 'light', // 头部文字
+                      headerCloseVariant: 'light', // 头部关闭按钮
+                      size: 'sm', // 框尺寸
+                      buttonSize: 'sm', // 按钮尺寸
+                      okTitle: '关闭', // 确认按钮内容
+                      okVariant: 'danger', // 确认按钮样式
+                      footerClass: ['p-3']
+                    })
+                    .then(() => {
+                      this.cashGiftPageChange()
+                    })
+                })
+              }
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+          break
+        case 'editor':
+          break
+      }
+    }
   }
 }
