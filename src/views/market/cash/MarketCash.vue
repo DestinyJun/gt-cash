@@ -64,7 +64,7 @@
       </div>
       <div class="footer-total">
         <span class="h4 text-dark">合计金额：
-          <strong class="h3 text-danger">￥{{d_cashTotal | twoDecimals}}</strong>
+          <strong class="h3 text-danger">￥{{d_cashPaySure.sales | twoDecimals}}</strong>
         </span>
       </div>
       <div class="footer-btn">
@@ -114,7 +114,9 @@
             </b-button>
             <div class="input-group w-75 mt-2">
               <button class="btn btn-default pl-0" @click="">数量：</button>
-              <input id="shopNum" type="tel" class="form-control" placeholder="填写数量" v-model="d_cashShopInfo.num" @focus="cashShopNumFocus($event.target)">
+              <input
+                id="shopNum" type="tel" class="form-control" placeholder="填写数量"
+                v-model="d_cashShopInfo.num" @focus="cashShopNumFocus($event.target)">
             </div>
           </div>
         </div>
@@ -200,7 +202,7 @@
             <b-button class="float-left" size="sm" variant="outline-info">
               收款确认
             </b-button>
-            <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[]">
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[];d_cashChangeMoney=0">
               关闭
             </b-button>
           </h6>
@@ -208,22 +210,28 @@
       </template>
       <template slot="default" slot-scope="{ hide }">
         <div class="total text-center">
-         <p class="mb-0"><span class="h5">应收：</span><span class="text-danger h3">{{d_cashTotal}}</span><span class="h5">元</span></p>
+         <p class="mb-0">
+           <span class="h5">应收：</span>
+           <span class="text-danger h4">{{d_cashPaySure.accountsReceivable}}</span>
+           <span class="h5">元</span>
+           <span class="h5 ml-5">实收：</span>
+           <span class="text-danger h3">{{d_cashPaySure.sales}}</span>
+           <span class="h5">元</span>
+         </p>
         </div>
         <div class="type mt-3">
           <div class="munber" style="">
             <div class="input-group w-100 mt-5">
-              <button class="btn btn-default pl-0" @click="">收取现金：</button>
+              <button class="btn btn-default pl-0" @click="">收取金额：</button>
               <input
-                id="cashMoney" type="tel" class="form-control" placeholder="请输入现金" autofocus
+                id="cashMoney" type="number" class="form-control" placeholder="请输入现金" autofocus
                 v-model="d_cashMoney"
                 @focus="cashShopNumFocus($event.target)"
                 @input="cashChangeMoneyOperate($event.target.value)"
               >
             </div>
-            <!---->
             <div class="input-group w-100 mt-4">
-              <span class="mr-3">找零金额：</span><span class="text-danger h5">{{d_cashChangeMoney}}</span>元
+              <span class="mr-3">找零金额：</span><span class="text-danger h5">{{d_cashChangeMoney?d_cashChangeMoney + '元':'无需找零！'}}</span>
             </div>
           </div>
           <div class="pay-way">
@@ -232,52 +240,59 @@
             </div>
             <div class="way w-100">
               <div class="box">
-                <b-button
+                <b-form-radio
                   size="lg"
-                  block
                   :pressed="true"
-                  variant="default"
-                  @click=""
+                  button-variant="default w-100"
+                  button
+                  value="微信"
+                  v-model="d_cashPaySure.payType"
                 >
                   <span class="icon iconfont iconweixin mr-2 text-success h3 align-middle"></span>
                   <span class="align-middle">微信</span>
-                </b-button>
+                </b-form-radio>
               </div>
               <div class="box">
-                <b-button
+                <b-form-radio
                   size="lg"
                   block
                   :pressed="true"
-                  variant="default"
-                  @click=""
+                  button-variant="default w-100"
+                  button
+                  value="支付宝"
+                  v-model="d_cashPaySure.payType"
                 >
                   <span class="icon iconfont iconumidd17 mr-2 text-info h2 align-middle"></span>
                   <span class="align-middle">支付宝</span>
-                </b-button>
+                </b-form-radio>
               </div>
               <div class="box">
-                <b-button
+                <b-form-radio
                   size="lg"
                   block
                   :pressed="true"
-                  variant="default"
-                  @click=""
+                  button-variant="default w-100"
+                  button
+                  value="现金"
+                  v-model="d_cashPaySure.payType"
                 >
                   <span class="icon iconfont iconrmb mr-2 text-warning h2 align-middle"></span>
                   <span class="align-middle">现金</span>
-                </b-button>
+                </b-form-radio>
               </div>
               <div class="box">
-                <b-button
+                <b-form-radio
                   size="lg"
                   block
                   :pressed="true"
-                  variant="default"
-                  @click=""
+                  button-variant="default w-100"
+                  button
+                  value="银联"
+                  v-model="d_cashPaySure.payType"
                 >
                   <img class="mr-2" src="../../../assets/images/yinglian.png" width="auto" height="32">
-                  <span class="align-middle">现金</span>
-                </b-button>
+                  <span class="align-middle">银联</span>
+                </b-form-radio>
               </div>
             </div>
           </div>
@@ -296,8 +311,9 @@
             <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
           </b-button>
           <b-button
+            :disabled="d_cashMoney === ''"
             class=" btn-block" size="sm"  variant="bg1"
-            v-on:click="close();cashKeybordClick('sure')">
+            v-on:click="close();cashPaySure()">
             <span class="d-block mb-2 h6 mt-4">收款</span>
             <span class="d-block h6 mb-4">成功</span>
           </b-button>
@@ -455,8 +471,8 @@
       <template slot="default" slot-scope="{ hide }">
         <div class="search mb-2">
           <div class="input-group w-50">
-            <input type="text" class="form-control" id="giftKeyword" placeholder="输入礼包名称/编号" v-model="d_cashOrderNum">
-            <button class="btn btn-info ml-1" @click="cashOrderPageSearch()">搜索大礼包</button>
+            <input type="text" class="form-control" id="giftKeyword" placeholder="输入礼包名称/编号" v-model="d_cashGiftNum">
+            <button class="btn btn-info ml-1" @click="cashGiftPageSearch()">搜索大礼包</button>
           </div>
           <div class="input-group w-50 justify-content-sm-end">
             <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-add')">新建大礼包</b-button>

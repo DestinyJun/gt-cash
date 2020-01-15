@@ -7,7 +7,6 @@ export default {
   data: function () {
     return {
       d_cashGoods: [], // 扫描的商品列表
-      d_cashTotal: 0.00, // 商品总价
       d_cashOptions: [
         // 收费方式列表
         { value: '现金支付', text: '现金支付' },
@@ -22,7 +21,9 @@ export default {
         merchatCode: this.$localStorage.get('merchatCode'),
         serverId: this.$localStorage.get('serverId'),
         userId: this.$localStorage.get('userCode'),
-        payType: '现金支付',
+        payType: '现金',
+        accountsReceivable: 0.00, // 应收金额
+        sales: 0.00, // 实收金额
         data: []
       },
       d_keybordTxt: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '00',],
@@ -70,6 +71,7 @@ export default {
         upperShelf: 0, // 出售状态
         giftPackageInfoDTOS:[] // 包含商品
       },
+      d_cashGiftNum: null, // 大礼包编号
     }
   },
   validations: {
@@ -92,7 +94,7 @@ export default {
       this.cashGoodsSelect(event.target.value)
         .then((res) => {
           if (!(res.length === 0)) {
-            this.d_cashTotal = 0
+            this.d_cashPaySure.sales = 0
             if (goodCode.includes(res[0].goodsCode)) {
               this.d_cashGoods.map((val) => {
                 if (res[0].goodsCode === val.goodsCode) {
@@ -188,7 +190,7 @@ export default {
       this.d_cashDom = this.$refs.discount
       this.d_cashShopInfo.discount = parseFloat(num);
       this.d_cashShopInfo.nowPrice = ((this.d_cashShopInfo.unitPrice * this.d_cashShopInfo.num) * this.d_cashShopInfo.discount).toFixed(2)
-      this.cashCalculateTotal();
+      this.cashCalculateTotal('manual');
     },
 
     // 结算页商品列表操作
@@ -230,9 +232,18 @@ export default {
         })
       }
       if (model === 'manual') {
-        this.d_cashTotal = 0
+        this.d_cashPaySure.sales = 0
+        this.d_cashPaySure.accountsReceivable = 0
+        this.d_cashPaySure.data = []
         this.d_cashGoods.map((val) => {
-          this.d_cashTotal += parseFloat(val.nowPrice);
+          this.d_cashPaySure.sales += parseFloat(val.nowPrice);
+          this.d_cashPaySure.accountsReceivable += parseFloat((val.unitPrice * val.num).toFixed(2))
+          this.d_cashPaySure.data.push({
+            id: val.id,
+            type: val.type,
+            num: val.num,
+            discount: val.discount
+          })
         })
       }
     },
@@ -334,7 +345,7 @@ export default {
           this.d_cashGoods.map((val) => {
             if(this.d_cashShopInfo.id === val.id) {
               this.clone_copy(val,this.d_cashShopInfo)
-              this.cashCalculateTotal();
+              this.cashCalculateTotal('manual');
             }
           })
         }
@@ -342,9 +353,6 @@ export default {
           let astr = this.d_cashDom.value
           astr += this.d_keybordTxt[item]
           this.cashInputValue(astr)
-          if (this.d_cashDom.id === 'cashMoney') {
-            this.cashChangeMoneyOperate();
-          }
         }
       }
     },
@@ -367,14 +375,14 @@ export default {
     },
 
     // 给input绑定键盘
-    cashShopNumFocus: function(dom) {
+    cashShopNumFocus: function(dom,model) {
       this.d_cashDom = dom;
     },
 
     // 零钱计算
     cashChangeMoneyOperate: function(value) {
-      if (value && parseFloat(value) >this.d_cashTotal ) {
-        this.d_cashChangeMoney = (parseFloat(value) - parseFloat(this.d_cashTotal)).toFixed(2)
+      if (value && parseFloat(value) >this.d_cashPaySure.sales ) {
+        this.d_cashChangeMoney = (parseFloat(value) - parseFloat(this.d_cashPaySure.sales)).toFixed(2)
       } else {
         this.d_cashChangeMoney = 0
       }
@@ -382,12 +390,7 @@ export default {
 
     // 确认支付成功
     cashPaySure () {
-      const data = []
-      this.d_cashGoods.map((val) => {
-        data.push({ id: val.id, num: val.num.toString(), type: val.type })
-      })
-      this.d_cashPaySure.data = data
-      this.post('/supermarketmanagement/supermarketcashier/goods/pay', this.d_cashPaySure)
+      this.post('/supermarketmanagement/supermarketcashier/goods/newPay', this.d_cashPaySure)
         .then((res) => {
           this.$bvModal.msgBoxConfirm(
             '订单支付成功！是否打印小票？',
@@ -433,7 +436,7 @@ export default {
             })
             .catch((err) => {})
           this.d_cashGoods = []
-          this.d_cashTotal = 0.00
+          this.d_cashPaySure.sales = 0.00
         })
         .catch(() => {})
     },
@@ -459,10 +462,11 @@ export default {
         `/supermarketmanagement/returnGoods/selectBill`,
         {
           orderNum: this.d_cashOrderNum,
-          merchantCode: this.$localStorage.get('merchatCode'),
+          merchatCode: this.$localStorage.get('merchatCode'),
         }).then((res) => {
-        this.d_cashOrderList = res.data
-        this.d_cashPage.pageNum = res.totalRecord;
+          console.log(res);
+          this.d_cashOrderList = res.data
+          this.d_cashPage.pageNum = res.totalRecord;
       })
     },
 
@@ -551,15 +555,29 @@ export default {
           pageNum: this.d_cashGiftPage.currentPage,
           merchatCode: this.$localStorage.get('merchatCode'),
         }).then((res) => {
-        this.d_cashGiftList = res.data
-        this.d_cashGiftList.map((val) => {
-          let goodsString = '';
-          val.giftGoodsInfos.map((res) =>{
-            goodsString += res.goodsName + '，';
+          console.log(res);
+          this.d_cashGiftList = res.data
+          this.d_cashGiftList.map((val) => {
+            let goodsString = '';
+            val.giftGoodsInfos.map((res) =>{
+              goodsString += res.goodsName + '，';
+            })
+            goodsString = goodsString.substring(0,goodsString.length-1)
+            val.goodsString = goodsString
           })
-          goodsString = goodsString.substring(0,goodsString.length-1)
-          val.goodsString = goodsString
-        })
+          this.d_cashGiftPage.pageNum = res.totalRecord;
+      })
+    },
+
+    // 大礼包根据编号精准查询
+    cashGiftPageSearch() {
+      this.post(
+        `/supermarketmanagement/gift/selectGoods`,
+        {
+          key: this.d_cashGiftNum,
+          merchatCode: this.$localStorage.get('merchatCode'),
+        }).then((res) => {
+        this.d_cashGiftList = res.data
         this.d_cashGiftPage.pageNum = res.totalRecord;
       })
     },
