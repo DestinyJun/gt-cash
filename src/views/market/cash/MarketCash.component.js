@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { between,or,required } from 'vuelidate/lib/validators'
 import { regex } from "vuelidate/lib/validators/common.js"
+import { clone_copy } from '../../../util/tools'
 var phoneNumber = regex('请输入正确的手机号！', /^1(3|4|5|7|8)\d{9}$/);
 var debounce = require('lodash.debounce')
 export default {
@@ -511,7 +512,6 @@ export default {
           orderNum: this.d_cashOrderNum,
           merchatCode: this.$localStorage.get('merchatCode'),
         }).then((res) => {
-          console.log(res);
           this.d_cashOrderList = res.data
           this.d_cashPage.pageNum = res.totalRecord;
       })
@@ -677,8 +677,8 @@ export default {
       item.giftGoodsInfos.map((val) => {
         val.nowPrice = (val.unitPrice * val.number).toFixed(2)
       })
-      this.d_cashGiftEdit=item;
       this.d_cashGiftEdit.sales = 0
+      clone_copy(this.d_cashGiftEdit,item);
       this.cashCalculateTotal('edit')
     },
 
@@ -808,9 +808,7 @@ export default {
                 })
               }
             })
-            .catch((err) => {
-              console.log(err)
-            })
+            .catch((err) => {})
           break
         case 'editor':
           break

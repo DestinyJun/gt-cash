@@ -503,12 +503,12 @@
             <td>{{item.upperShelf}}</td>
             <td>{{item.unitPrice}}</td>
             <td>
-             <!-- <div
+              <div
                 @click="$bvModal.show('modal-gift-edit');cashGiftEditClick(item)"
                 class="bg-info"
                 style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
                 <i class="icon iconfont iconxiugai1 text-light"></i>
-              </div>-->
+              </div>
               <div
                 @click="cashGiftDelete(item,'del')"
                 class="bg-warning ml-3 mr-3"
