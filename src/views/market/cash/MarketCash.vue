@@ -503,12 +503,12 @@
             <td>{{item.upperShelf}}</td>
             <td>{{item.unitPrice}}</td>
             <td>
-              <div
-                @click="cashGiftDelete(item,'editor')"
+             <!-- <div
+                @click="$bvModal.show('modal-gift-edit');cashGiftEditClick(item)"
                 class="bg-info"
                 style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
                 <i class="icon iconfont iconxiugai1 text-light"></i>
-              </div>
+              </div>-->
               <div
                 @click="cashGiftDelete(item,'del')"
                 class="bg-warning ml-3 mr-3"
@@ -587,22 +587,92 @@
             <td>{{item.unitPrice}}</td>
             <td>{{item.number}}</td>
             <td>
-              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px" v-on:click="cashGiftOperate('add',item)"></i>
-              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px" @click="cashGiftOperate('minus',item,index)"></i>
-              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px" @click="cashGiftOperate('del',item,index)"></i>
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px" v-on:click="cashGiftOperate('add','add',item)"></i>
+              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px" @click="cashGiftOperate('add','minus',item,index)"></i>
+              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px" @click="cashGiftOperate('add','del',item,index)"></i>
             </td>
           </tr>
           </tbody>
         </table>
         <div class="input-group w-100 p-2" style="background: #F6F6F6;">
-          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods')">添加商品</b-button>
-          <b class="text-right" style="flex: 1;text-align: right;">商品总价：￥{{d_cashGiftAdd.sales}}</b>
+          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods');d_cashGiftStatus='gift'">添加商品</b-button>
+          <b class="text-right" style="flex: 1;text-align: right;">商品总价：￥{{d_cashGiftAdd.sales.toFixed(2)}}</b>
         </div>
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
         <b-button variant="info pl-4 pr-4" @click="cashGiftAdd();close()">
           <span class="mr-1">保</span>
           <span>存</span>
+        </b-button>
+      </template>
+    </b-modal>
+    <!--编辑大礼包-->
+    <b-modal id="modal-gift-edit" centered size="lg" no-close-on-backdrop>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6 class="text-center">
+            编辑大礼包
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close()">
+              关闭
+            </b-button>
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <div class="search mb-2">
+          <div class="input-group w-50 mb-2">
+            <b-button variant="info mr-1" size="sm">大礼包名称</b-button>
+            <input type="text" class="form-control" placeholder="输入礼包名称/编号" v-model="d_cashGiftEdit.giftName">
+          </div>
+          <div class="input-group w-50 mb-2 justify-content-end">
+            <b-button variant="danger mr-1" size="sm">定价</b-button>
+            <input type="number" class="form-control" placeholder="请输入价格" v-model="d_cashGiftEdit.unitPrice">
+          </div>
+          <div class="input-group w-50">
+            <b-button variant="success mr-1" size="sm">
+              <span class="mr-1">销售</span><span class="mr-1">状态</span>
+            </b-button>
+            <b-form-radio v-model="d_cashGiftEdit.upperShelf" name="radio-inline" value="上架" >上架</b-form-radio>
+            <b-form-radio v-model="d_cashGiftEdit.upperShelf" name="radio-inline" value="下架" selected>下架</b-form-radio>
+          </div>
+          <div class="input-group w-50 justify-content-end">
+            <b-button variant="primary mr-1 pl-2 pr-2" size="sm">编号</b-button>
+            <input type="number" class="form-control" placeholder="请输入编号" v-model="d_cashGiftEdit.giftPackageCode">
+          </div>
+        </div>
+        <table class="table table-bordered ">
+          <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">商品名称</th>
+            <th scope="col">单价</th>
+            <th scope="col">数量</th>
+            <th scope="col">操作</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr
+            v-for="(item,index,) in d_cashGiftEdit.giftGoodsInfos" :key="index">
+            <td scope="row">{{index + 1}}</td>
+            <td>{{item.goodsName}}</td>
+            <td>{{item.unitPrice}}</td>
+            <td>{{item.number}}</td>
+            <td>
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px" v-on:click="cashGiftOperate('edit','add',item)"></i>
+              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px" @click="cashGiftOperate('edit','minus',item,index)"></i>
+              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px" @click="cashGiftOperate('edit','del',item,index)"></i>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <div class="input-group w-100 p-2" style="background: #F6F6F6;">
+          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods');d_cashGiftStatus='edit'">添加商品</b-button>
+          <b class="text-right" style="flex: 1;text-align: right;">商品总价：￥{{d_cashGiftEdit.sales.toFixed(2)}}</b>
+        </div>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <b-button variant="info pl-4 pr-4" @click="cashGiftEditSubmit();close()">
+          <span>确认修改</span>
         </b-button>
       </template>
     </b-modal>
@@ -654,7 +724,7 @@
           style="display: inline-block;flex: none;">
         <b-button
           class="pl-md-4 pr-md-4" size="sm" variant="success"
-          v-on:click="close();cashCodeGoodsClick('sure','gift')">
+          v-on:click="close();cashCodeGoodsClick('sure',d_cashGiftStatus)">
           确定
         </b-button>
       </template>

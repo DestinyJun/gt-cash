@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { between,or,required } from 'vuelidate/lib/validators'
 import { regex } from "vuelidate/lib/validators/common.js"
 var phoneNumber = regex('请输入正确的手机号！', /^1(3|4|5|7|8)\d{9}$/);
@@ -72,6 +73,17 @@ export default {
         giftPackageInfoDTOS:[] // 包含商品
       },
       d_cashGiftNum: null, // 大礼包编号
+      d_cashGiftEdit: { // 大礼包添加
+        merchatCode: this.$localStorage.get('merchatCode'),
+        lastUserId: this.$localStorage.get('userCode'),
+        giftName: null, // 大礼包名称
+        unitPrice: null, // 大礼包定价
+        sales: 0.00, // 包含商品总价
+        giftPackageCode: null, // 大礼包编码
+        upperShelf: '上架', // 出售状态
+        giftGoodsInfos:[] // 包含商品
+      },
+      d_cashGiftStatus: 'add',
     }
   },
   validations: {
@@ -179,6 +191,34 @@ export default {
               this.cashCalculateTotal('gift')
             }
           }
+          // edit
+          if (modal === 'edit') {
+            for (let i = 0; i < this.d_cashGiftEdit.giftGoodsInfos.length; i++) {
+              goodCode.push(this.d_cashGiftEdit.giftGoodsInfos[i].goodsCode)
+            }
+            if (goodCode.includes(this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode)) {
+              // 购物车中已存在时，增加数量
+              this.d_cashGiftEdit.giftGoodsInfos.map((val,index) => {
+                if (this.d_cashCodeGoods[this.d_cashCodeGoodSelect].goodsCode === val.goodsCode) {
+                  // Vue.set(val.number,parseFloat(val.number) + parseFloat(this.d_cashCodeGoodAmount))
+                  // Vue.set(val.nowPrice,(val.unitPrice * val.number).toFixed(2))
+                  // this.$set(this.d_cashGiftEdit.giftGoodsInfos[index],'number',parseFloat(val.number) + parseFloat(this.d_cashCodeGoodAmount))
+                  // this.$set(this.d_cashGiftEdit.giftGoodsInfos[index],'nowPrice',(val.unitPrice * val.number).toFixed(2))
+                  val.number = parseFloat(val.number) + parseFloat(this.d_cashCodeGoodAmount)
+                  val.nowPrice = (val.unitPrice * val.number).toFixed(2)
+                }
+              })
+              this.cashCalculateTotal('edit')
+            }
+            else {
+              // 不存在时，新增商品
+              const val = this.d_cashCodeGoods[this.d_cashCodeGoodSelect]
+              val.number = this.d_cashCodeGoodAmount
+              val.nowPrice = (val.unitPrice * val.number).toFixed(2)
+              this.d_cashGiftEdit.giftGoodsInfos.push(val)
+              this.cashCalculateTotal('edit')
+            }
+          }
           this.d_cashCodeGoods = []
           this.d_cashCodeGoodAmount = 1
         }
@@ -225,6 +265,13 @@ export default {
 
     // 计算总价
     cashCalculateTotal: function (model) {
+      if (model === 'edit') {
+        let totalPrice = 0
+        this.d_cashGiftEdit.giftGoodsInfos.map((val) => {
+          totalPrice += parseFloat(val.nowPrice);
+        })
+        this.$set(this.d_cashGiftEdit,'sales',totalPrice);
+      }
       if (model === 'gift') {
         this.d_cashGiftAdd.sales = 0
         this.d_cashGiftAdd.giftPackageInfoDTOS.map((val) => {
@@ -555,7 +602,6 @@ export default {
           pageNum: this.d_cashGiftPage.currentPage,
           merchatCode: this.$localStorage.get('merchatCode'),
         }).then((res) => {
-          console.log(res);
           this.d_cashGiftList = res.data
           this.d_cashGiftList.map((val) => {
             let goodsString = '';
@@ -583,27 +629,62 @@ export default {
     },
 
     // 大礼包操作
-    cashGiftOperate (ope,item,index) {
+    cashGiftOperate (type,ope,item,index) {
       switch (ope) {
         case 'add':
           item.number = parseInt(item.number) + 1
           item.nowPrice = (item.unitPrice * item.number).toFixed(2)
-          this.cashCalculateTotal('gift')
+          if (type === 'add') {
+            this.cashCalculateTotal('gift')
+          }
+          if (type === 'edit') {
+            this.cashCalculateTotal('edit')
+          }
           break
         case 'minus':
           item.number = parseInt(item.number) - 1
           if (item.number === 0) {
-            this.d_cashGiftAdd.giftPackageInfoDTOS.splice(index, 1)
+            if (type === 'add') {
+              this.d_cashGiftAdd.giftPackageInfoDTOS.splice(index, 1)
+            } else {
+              this.d_cashGiftEdit.giftGoodsInfos.splice(index, 1)
+            }
           } else {
             item.nowPrice = (item.unitPrice * item.number).toFixed(2)
           }
-          this.cashCalculateTotal('gift')
+          if (type === 'add') {
+            this.cashCalculateTotal('gift')
+          }
+          if (type === 'edit') {
+            this.cashCalculateTotal('edit')
+          }
           break
         case 'del':
-          this.d_cashGiftAdd.giftPackageInfoDTOS.splice(index, 1)
-          this.cashCalculateTotal('gift')
+          if (type === 'add') {
+            this.cashCalculateTotal('gift')
+            this.d_cashGiftAdd.giftPackageInfoDTOS.splice(index, 1)
+          }
+          if (type === 'edit') {
+            this.d_cashGiftEdit.giftGoodsInfos.splice(index, 1)
+            this.cashCalculateTotal('edit')
+          }
           break
       }
+    },
+
+    // 大礼包编辑点击
+    cashGiftEditClick(item) {
+      item.giftGoodsInfos.map((val) => {
+        val.nowPrice = (val.unitPrice * val.number).toFixed(2)
+      })
+      this.d_cashGiftEdit=item;
+      this.d_cashGiftEdit.sales = 0
+      this.cashCalculateTotal('edit')
+    },
+
+    // 大礼包编辑提交
+    cashGiftEditSubmit() {
+      console.log(this.d_cashGiftEdit);
     },
 
     // 大礼包查询商品
