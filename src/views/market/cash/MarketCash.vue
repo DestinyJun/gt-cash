@@ -511,7 +511,7 @@
               </div>
               <div
                 @click="cashGiftDelete(item,'del')"
-                class="bg-warning ml-3 mr-3"
+                class="bg-warning ml-3 mr-3 text-center"
                 style="width: 25px;height: 25px;display: inline-block;cursor: pointer;text-align: center">
                 <i class="icon iconfont iconshanchu text-light"></i>
               </div>

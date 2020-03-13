@@ -27,7 +27,8 @@ axios.defaults.retryDelay = 1000;
 axios.defaults.timeout = 3000;
 
 // 请求拦截
-axios.interceptors.request.use(function (config) {
+axios.interceptors.request.use(
+  function (config) {
   if (!config.url.includes('/cateringmanagement/addgoods/getgoodsbyname')) {
     store.commit('showLoading')
   }
@@ -37,46 +38,52 @@ axios.interceptors.request.use(function (config) {
     config.headers.post['userId'] = localStorage.getItem('userCode');
   }
   return config;
-}, function (error) {
+},
+  function (error) {
   // 对请求错误做些什么
   return Promise.reject(error);
-});
+}
+);
+
 // 响应拦截
-axios.interceptors.response.use(function (response){
-  // 处理200响应数据错误
-  if (response.status === 200) {
+axios.interceptors.response.use(
+  function (response){
+    // 处理200响应数据错误
+    switch(response.status) {
+      case 200:
+        store.commit('hideLoading')
+        switch (response.data.code) {
+          case '1000':
+            return Promise.resolve(response);
+          case '1005':
+            store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
+            return Promise.reject(response);
+          default:
+            store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
+            return Promise.reject(response);
+        }
+      default:
+        store.commit('hideLoading')
+        window.alert('链接服务器失败，请稍后重试！')
+        return Promise.reject(response);
+    }
+  },
+  function (error){
     store.commit('hideLoading')
-    // 处理服务器本身错误
-    if (response.data.code === '1000') {
-      return Promise.resolve(response);
-    } else if (response.data.code === '1005') {
-      store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
-      return Promise.reject(response);
+    // 请求超时处理
+    if(error.message.includes('timeout')){   // 判断请求异常信息中是否含有超时timeout字符串
+      const confirm = window.confirm('网络请求超时，请重试！')
+      if (confirm) {
+        location.reload()
+        return Promise.resolve(error);
+      } else {
+        return Promise.reject(error); // 错误信息
+      }
     }
-    else {
-      store.commit('remindChange',{show:true,code:response.data.code,msg:response.data.msg})
-      return Promise.reject(response);
-    }
-  } else {
-    store.commit('hideLoading')
-    window.alert('链接服务器失败，请稍后重试！')
-    return Promise.reject(response);
+    // 处理响应失败
+    return Promise.reject(error);
   }
-},function (error){
-  store.commit('hideLoading')
-  // 请求超时处理
-  if(error.message.includes('timeout')){   // 判断请求异常信息中是否含有超时timeout字符串
-    const confirm = window.confirm('网络请求超时，请重试！')
-    if (confirm) {
-      location.reload()
-      return Promise.resolve(error);
-    } else {
-      return Promise.reject(error); // 错误信息
-    }
-  }
-  // 处理响应失败
-  return Promise.reject(error);
-});
+);
 
 // 封装get请求
 export function get(url, params){
