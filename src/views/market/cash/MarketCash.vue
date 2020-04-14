@@ -1,6 +1,6 @@
 <template>
   <div class="market-cash">
-    <div class="market-cash-table overflow-auto ml-3 mr-3">
+    <div class="market-cash-table overflow-auto ml-3 mr-3 pt-3">
       <button
         ref="cashCodeBtn"
         @click="cashCodeBtnClick()"

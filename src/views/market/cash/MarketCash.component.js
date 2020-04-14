@@ -21,8 +21,8 @@ export default {
       d_cashPaySure: {
         // 确认收款
         merchatCode: this.$localStorage.get('merchatCode'),
-        serverId: this.$localStorage.get('serverId'),
         userId: this.$localStorage.get('userCode'),
+        serverId: this.$localStorage.get('serverId'),
         payType: '现金',
         accountsReceivable: 0.00, // 应收金额
         sales: 0.00, // 实收金额
@@ -440,6 +440,7 @@ export default {
     cashPaySure () {
       this.post('/supermarketmanagement/supermarketcashier/goods/newPay', this.d_cashPaySure)
         .then((res) => {
+          console.log(res);
           this.$bvModal.msgBoxConfirm(
             '订单支付成功！是否打印小票？',
             {
