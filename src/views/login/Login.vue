@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <div class="login-scan"></div>
     <form class="login-form pl-2 pr-2 pt-5 rounded">
       <!--半圆效果-->
       <div class="form-circle rounded-circle">

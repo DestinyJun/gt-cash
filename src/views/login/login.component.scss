@@ -7,7 +7,8 @@
   background-size: 100% 100%;
   background-position: center center;
   display: flex;
-  justify-content: flex-end;
+  //flex-direction: column;
+  justify-content: space-around;
   align-items: center;
   padding-right: 3vw;
   .login-form{
@@ -89,6 +90,16 @@
         color: $bg_468E80;
       }
     }
+  }
+  .login-scan{
+    width: 25vh;
+    background-image: url('../../assets/images/gtcash.png');
+    background-repeat: no-repeat;
+    -webkit-background-size: 100% 100%;
+    background-size: 100% 100%;
+    background-position: center center;
+    height: 25vh;
+    margin-top: 2vh;
   }
 }
 @media (max-width: 768px) {
