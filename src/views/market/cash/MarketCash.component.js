@@ -685,6 +685,9 @@ export default {
 
     // 大礼包编辑提交
     cashGiftEditSubmit() {
+      this.d_cashGiftEdit.giftGoodsInfos.map((val) =>{
+        val.id = '-1'
+      })
       this.post(
         `/supermarketmanagement/gift/updateGift`,
         this.d_cashGiftEdit
@@ -705,17 +708,6 @@ export default {
             footerClass: ['p-3']
           })
           .then(() => {
-            // 重置参数
-            // this.d_cashGiftEdit = {
-            //   merchatCode: this.$localStorage.get('merchatCode'),
-            //   lastUserId: this.$localStorage.get('userCode'),
-            //   giftName: null, // 大礼包名称
-            //   unitPrice: null, // 大礼包定价
-            //   sales: 0.00, // 包含商品总价
-            //   giftCode: null, // 大礼包编码
-            //   upperShelf: 0, // 出售状态
-            //   giftPackageInfoDTOS:[] // 包含商品
-            // }
             this.cashGiftPageChange()
           })
       })
@@ -730,7 +722,8 @@ export default {
         .then((res) => {
           if (!(res.data.length === 0)) {
             res.data.map((val) => {
-              val.active = false
+              val.active = false;
+              val.goodsId = val.id;
               this.d_cashCodeGoods.push(val)
             })
           } else {
@@ -759,7 +752,6 @@ export default {
       this.d_cashGiftAdd.giftPackageInfoDTOS.map((val) =>{
         val.goodsId = val.id
         delete val.active
-        delete val.id
         delete val.nowPrice
       })
       this.post(

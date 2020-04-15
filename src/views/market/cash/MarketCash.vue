@@ -500,13 +500,13 @@
             v-for="(item,index,) in d_cashGiftList" :key="index"
             v-bind:class="{'table-info':item.active}">
             <td scope="row">{{index + 1}}</td>
-            <td>{{item.giftPackageCode}}</td>
-            <td>{{item.giftName}}</td>
-            <td style="overflow: hidden;text-overflow: ellipsis;white-space: nowrap" :title="item.goodsString">
+            <td class="ellipsis" :title="item.giftPackageCode">{{item.giftPackageCode}}</td>
+            <td class="ellipsis" :title="item.giftPackageCode">{{item.giftName}}</td>
+            <td class="ellipsis" :title="item.goodsString">
               {{item.goodsString}}
             </td>
-            <td>{{item.upperShelf}}</td>
-            <td>{{item.unitPrice}}</td>
+            <td class="ellipsis" :title="item.upperShelf">{{item.upperShelf}}</td>
+            <td class="ellipsis" :title="item.unitPrice">{{item.unitPrice}}</td>
             <td>
               <div
                 @click="$bvModal.show('modal-gift-edit');cashGiftEditClick(item)"

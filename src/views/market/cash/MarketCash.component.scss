@@ -240,6 +240,11 @@
     }
   }
 }
+.ellipsis{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /*#modal-cash{
   .modal-content{
     .modal-body{
