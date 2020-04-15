@@ -685,7 +685,41 @@ export default {
 
     // 大礼包编辑提交
     cashGiftEditSubmit() {
-      console.log(this.d_cashGiftEdit);
+      this.post(
+        `/supermarketmanagement/gift/updateGift`,
+        this.d_cashGiftEdit
+      ).then(() => {
+        this.$bvModal.msgBoxOk(
+          '修改成功！',
+          {
+            title: '操作提醒', // 标题
+            centered: true, // 弹窗是否居中
+            hideHeaderClose: false, // 是否隐藏头部关闭按钮
+            headerBgVariant: 'success', // 头部背景
+            headerTextVariant: 'light', // 头部文字
+            headerCloseVariant: 'light', // 头部关闭按钮
+            size: 'sm', // 框尺寸
+            buttonSize: 'sm', // 按钮尺寸
+            okTitle: '关闭', // 确认按钮内容
+            okVariant: 'danger', // 确认按钮样式
+            footerClass: ['p-3']
+          })
+          .then(() => {
+            // 重置参数
+            // this.d_cashGiftEdit = {
+            //   merchatCode: this.$localStorage.get('merchatCode'),
+            //   lastUserId: this.$localStorage.get('userCode'),
+            //   giftName: null, // 大礼包名称
+            //   unitPrice: null, // 大礼包定价
+            //   sales: 0.00, // 包含商品总价
+            //   giftCode: null, // 大礼包编码
+            //   upperShelf: 0, // 出售状态
+            //   giftPackageInfoDTOS:[] // 包含商品
+            // }
+            this.cashGiftPageChange()
+          })
+      })
+      this.cashGiftPageChange();
     },
 
     // 大礼包查询商品

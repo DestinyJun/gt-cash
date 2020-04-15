@@ -35,11 +35,13 @@
             <td>{{item.goodsCode}}</td>
             <td>{{item.unitPrice}}</td>
             <td>{{item.num}}</td>
-            <td class="icon-operate" onselectstart="return false;" >
-              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" v-on:click="cashOperateClick('add',item)"></i>
+            <td class="icon-operate" onselectstart="return false;">
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle"
+                 v-on:click="cashOperateClick('add',item)"></i>
               <i class="icon iconfont iconziyuan mr-3 align-middle" @click="cashOperateClick('minus',item,index)"></i>
               <i class="icon iconfont iconziyuan1-copy align-middle" @click="cashOperateClick('del',item,index)"></i>
-              <b-button size="sm" variant="info align-middle ml-3" pill style="font-size: 12px" @click="cashModalOperateClick(item);$bvModal.show('modal-shop')">
+              <b-button size="sm" variant="info align-middle ml-3" pill style="font-size: 12px"
+                        @click="cashModalOperateClick(item);$bvModal.show('modal-shop')">
                 <span class="mr-1">操</span>
                 <span>作</span>
               </b-button>
@@ -68,7 +70,8 @@
         </span>
       </div>
       <div class="footer-btn">
-        <button class="btn btn-primary" @click="$bvModal.show('modal-cash')" :disabled="d_cashGoods.length===0">确认收款</button>
+        <button class="btn btn-primary" @click="$bvModal.show('modal-cash')" :disabled="d_cashGoods.length===0">确认收款
+        </button>
       </div>
     </div>
     <!--商品操作-->
@@ -93,7 +96,8 @@
             </div>
             <div class="input-group w-100 mt-2">
               <button class="btn btn-default pl-0">折扣：</button>
-              <input id="discount" ref="discount" type="tel" class="form-control" placeholder="请输入0-1之间的数" v-model="$v.d_cashShopInfo.discount.$model" @focus="cashShopNumFocus($event.target)">
+              <input id="discount" ref="discount" type="tel" class="form-control" placeholder="请输入0-1之间的数"
+                     v-model="$v.d_cashShopInfo.discount.$model" @focus="cashShopNumFocus($event.target)">
             </div>
             <div class="input-group w-100 mt-2">
               <span class="mr-3">现价：</span><span class="text-danger h5">{{((d_cashShopInfo.unitPrice * d_cashShopInfo.num)*d_cashShopInfo.discount).toFixed(2)}}</span>元
@@ -134,7 +138,7 @@
             <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
           </b-button>
           <b-button
-            class=" btn-block" size="sm"  variant="bg1"
+            class=" btn-block" size="sm" variant="bg1"
             @click="close();cashKeybordClick('sure')">
             <span class="d-block h6" style="padding-top: 36px;padding-bottom: 36px;margin-bottom: 3px">确认</span>
           </b-button>
@@ -202,7 +206,8 @@
             <b-button class="float-left" size="sm" variant="outline-info">
               收款确认
             </b-button>
-            <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[];d_cashChangeMoney=0">
+            <b-button class="float-right" size="sm" variant="outline-danger"
+                      @click="close();d_cashCodeGoods=[];d_cashChangeMoney=0">
               关闭
             </b-button>
           </h6>
@@ -210,14 +215,14 @@
       </template>
       <template slot="default" slot-scope="{ hide }">
         <div class="total text-center">
-         <p class="mb-0">
-           <span class="h5">应收：</span>
-           <span class="text-danger h4">{{d_cashPaySure.accountsReceivable}}</span>
-           <span class="h5">元</span>
-           <span class="h5 ml-5">实收：</span>
-           <span class="text-danger h3">{{d_cashPaySure.sales}}</span>
-           <span class="h5">元</span>
-         </p>
+          <p class="mb-0">
+            <span class="h5">应收：</span>
+            <span class="text-danger h4">{{d_cashPaySure.accountsReceivable}}</span>
+            <span class="h5">元</span>
+            <span class="h5 ml-5">实收：</span>
+            <span class="text-danger h3">{{d_cashPaySure.sales}}</span>
+            <span class="h5">元</span>
+          </p>
         </div>
         <div class="type mt-3">
           <div class="munber" style="">
@@ -312,7 +317,7 @@
           </b-button>
           <b-button
             :disabled="d_cashMoney === ''"
-            class=" btn-block" size="sm"  variant="bg1"
+            class=" btn-block" size="sm" variant="bg1"
             v-on:click="close();cashPaySure()">
             <span class="d-block mb-2 h6 mt-4">收款</span>
             <span class="d-block h6 mb-4">成功</span>
@@ -443,7 +448,7 @@
                   <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
                 </b-button>
                 <b-button
-                  class="btn-block" size="sm"  variant="bg1"
+                  class="btn-block" size="sm" variant="bg1"
                   @click="hide();cashOrderReturnSure()">
                   <span class="d-block h6" style="padding-top: 24px;padding-bottom: 24px;margin-bottom: 3px">确认退货</span>
                 </b-button>
@@ -484,14 +489,14 @@
             <th scope="col">#</th>
             <th scope="col">礼包编号</th>
             <th scope="col">礼包名称</th>
-            <th scope="col" width="25%" >包含商品</th>
+            <th scope="col" width="25%">包含商品</th>
             <th scope="col">销售状态</th>
             <th scope="col">总价</th>
             <th scope="col">操作</th>
           </tr>
           </thead>
           <tbody>
-            <tr
+          <tr
             v-for="(item,index,) in d_cashGiftList" :key="index"
             v-bind:class="{'table-info':item.active}">
             <td scope="row">{{index + 1}}</td>
@@ -551,22 +556,25 @@
         <div class="search mb-2">
           <div class="input-group w-50 mb-2">
             <b-button variant="info mr-1" size="sm">大礼包名称</b-button>
-            <input type="text" class="form-control" id="giftName" placeholder="输入礼包名称/编号" v-model="d_cashGiftAdd.giftName">
+            <input type="text" class="form-control" id="giftName" placeholder="输入礼包名称/编号"
+                   v-model="d_cashGiftAdd.giftName">
           </div>
           <div class="input-group w-50 mb-2 justify-content-end">
             <b-button variant="danger mr-1" size="sm">定价</b-button>
-            <input type="number" class="form-control" id="giftPrice" placeholder="请输入价格" v-model="d_cashGiftAdd.unitPrice">
+            <input type="number" class="form-control" id="giftPrice" placeholder="请输入价格"
+                   v-model="d_cashGiftAdd.unitPrice">
           </div>
           <div class="input-group w-50">
             <b-button variant="success mr-1" size="sm">
               <span class="mr-1">销售</span><span class="mr-1">状态</span>
             </b-button>
-            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="0" >在售</b-form-radio>
+            <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="0">在售</b-form-radio>
             <b-form-radio v-model="d_cashGiftAdd.upperShelf" name="radio-inline" value="1" selected>下架</b-form-radio>
           </div>
           <div class="input-group w-50 justify-content-end">
             <b-button variant="primary mr-1 pl-2 pr-2" size="sm">编号</b-button>
-            <input type="number" class="form-control" id="giftCode" placeholder="请输入编号" v-model="d_cashGiftAdd.giftCode">
+            <input type="number" class="form-control" id="giftCode" placeholder="请输入编号"
+                   v-model="d_cashGiftAdd.giftCode">
           </div>
         </div>
         <table class="table table-bordered ">
@@ -587,15 +595,20 @@
             <td>{{item.unitPrice}}</td>
             <td>{{item.number}}</td>
             <td>
-              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px" v-on:click="cashGiftOperate('add','add',item)"></i>
-              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px" @click="cashGiftOperate('add','minus',item,index)"></i>
-              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px" @click="cashGiftOperate('add','del',item,index)"></i>
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px"
+                 v-on:click="cashGiftOperate('add','add',item)"></i>
+              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px"
+                 @click="cashGiftOperate('add','minus',item,index)"></i>
+              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px"
+                 @click="cashGiftOperate('add','del',item,index)"></i>
             </td>
           </tr>
           </tbody>
         </table>
         <div class="input-group w-100 p-2" style="background: #F6F6F6;">
-          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods');d_cashGiftStatus='gift'">添加商品</b-button>
+          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods');d_cashGiftStatus='gift'">
+            添加商品
+          </b-button>
           <b class="text-right" style="flex: 1;text-align: right;">商品总价：￥{{d_cashGiftAdd.sales.toFixed(2)}}</b>
         </div>
       </template>
@@ -632,8 +645,8 @@
             <b-button variant="success mr-1" size="sm">
               <span class="mr-1">销售</span><span class="mr-1">状态</span>
             </b-button>
-            <b-form-radio v-model="d_cashGiftEdit.upperShelf" name="radio-inline" value="上架" >上架</b-form-radio>
-            <b-form-radio v-model="d_cashGiftEdit.upperShelf" name="radio-inline" value="下架" selected>下架</b-form-radio>
+            <b-form-radio v-model="d_cashGiftEdit.upperShelf" name="radio-inline" value="0">上架</b-form-radio>
+            <b-form-radio v-model="d_cashGiftEdit.upperShelf" name="radio-inline" value="1" selected>下架</b-form-radio>
           </div>
           <div class="input-group w-50 justify-content-end">
             <b-button variant="primary mr-1 pl-2 pr-2" size="sm">编号</b-button>
@@ -658,15 +671,20 @@
             <td>{{item.unitPrice}}</td>
             <td>{{item.number}}</td>
             <td>
-              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px" v-on:click="cashGiftOperate('edit','add',item)"></i>
-              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px" @click="cashGiftOperate('edit','minus',item,index)"></i>
-              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px" @click="cashGiftOperate('edit','del',item,index)"></i>
+              <i class="icon iconfont icon iconfont iconziyuan1 mr-3 align-middle" style="font-size: 22px"
+                 v-on:click="cashGiftOperate('edit','add',item)"></i>
+              <i class="icon iconfont iconziyuan mr-3 align-middle" style="font-size: 22px"
+                 @click="cashGiftOperate('edit','minus',item,index)"></i>
+              <i class="icon iconfont iconziyuan1-copy align-middle" style="font-size: 22px"
+                 @click="cashGiftOperate('edit','del',item,index)"></i>
             </td>
           </tr>
           </tbody>
         </table>
         <div class="input-group w-100 p-2" style="background: #F6F6F6;">
-          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods');d_cashGiftStatus='edit'">添加商品</b-button>
+          <b-button variant="success" size="sm" @click="$bvModal.show('modal-gift-goods');d_cashGiftStatus='edit'">
+            添加商品
+          </b-button>
           <b class="text-right" style="flex: 1;text-align: right;">商品总价：￥{{d_cashGiftEdit.sales.toFixed(2)}}</b>
         </div>
       </template>
@@ -691,7 +709,8 @@
       <template slot="default" slot-scope="{ hide }">
         <div class="search mb-2">
           <div class="input-group w-50">
-            <input type="tel" class="form-control" id="giftGoodCode" placeholder="输入条码/自定义编号" v-model="d_cashCodeOperate">
+            <input type="tel" class="form-control" id="giftGoodCode" placeholder="输入条码/自定义编号"
+                   v-model="d_cashCodeOperate">
             <button class="btn btn-info ml-1" @click="cashGiftGoodSearch()">查询</button>
           </div>
         </div>
