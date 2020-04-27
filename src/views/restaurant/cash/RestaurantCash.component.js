@@ -34,7 +34,11 @@ export default {
         val.active = false
       })
       item.active = true
-      this.cashGetDishList(item.goodsTypeCode)
+      if (item.goodsType === -1) {
+       this.cashGetAllDishList();
+      } else {
+        this.cashGetDishList(item.goodsTypeCode)
+      }
     },
     // 根据菜品分类查询菜品数量
     cashGetDishList (type) {
@@ -49,6 +53,18 @@ export default {
         })
         .catch((err) => {
           this.d_cashDishList = []
+        })
+    },
+    // 获取所有菜品
+    cashGetAllDishList () {
+      this.post('/cateringcashier/getallgoodsinfocash', {
+        merchatCode:this.$localStorage.get('merchatCode'),
+        pageNum: '1',
+        pageSize:'10000',
+      })
+        .then((res) => {
+          // console.log(res);
+          this.d_cashDishList = res.data
         })
     },
     // 菜品添加
@@ -160,18 +176,16 @@ export default {
   created () {
     this.post('/cateringmanagement/addgoods/getgoodstype', {})
       .then((res) => {
+        res.data.unshift({
+          active: true,
+          goodsType: -1,
+          goodsTypeName: '全部'
+        })
         res.data.map((val) => {
           val.active = false
         })
         this.d_cashMenuList = res.data
       })
-    this.post('/cateringcashier/getallgoodsinfocash', {
-      merchatCode:this.$localStorage.get('merchatCode'),
-      pageNum: '1',
-      pageSize:'10000',
-    })
-      .then((res) => {
-        this.d_cashDishList = res.data
-      })
+    this.cashGetAllDishList();
   }
 }

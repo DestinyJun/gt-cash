@@ -19,21 +19,22 @@
       </div>
       <div class="desk col-md-10 overflow-auto pr-0 pl-0">
         <div class="dest-dish float-left overflow-auto">
-          <div class="row ml-0 mr-0 pl-2">
-            <div class="dish-select col-sm-12 col-md-4 col-lg-3"
-              v-for="item in d_cashDishList"
-              @click="cashDishClick(item)"
-              style="padding-right: 0;padding-left: 0;">
+          <div style="flex: 16;overflow-y: auto;justify-content: flex-start;text-align: left" class="w-100">
+            <div class="dish-select"
+               v-for="item in d_cashDishList"
+               @click="cashDishClick(item)"
+               style="padding-right: 0;padding-left: 0;width: 194px;display: inline-block;text-align: center">
               <!-- style="border: 1px solid #DFDFDF;cursor: pointer;background:#DC3545;color:white">-->
-              <div class="mr-2 mt-2"
-                 style="border: 1px solid #DFDFDF;cursor: pointer;background:#DC3545;color:white">
+              <div class="mr-2 mt-2" style="border: 1px solid #DFDFDF;cursor: pointer;background:#DC3545;color:white">
                 <!--<img src="@/assets/images/青椒肉丝.png" class="rounded" alt="图片地址无效">-->
                 <p class="title mb-0">{{item.goodsName}}</p>
                 <p class="price mb-0">{{item.unitPrice}}</p>
               </div>
             </div>
             <p class="text-center w-100" v-if="!(d_cashDishList)">此分类暂无菜品，敬请期待！</p>
-            <div class="dish-pagination position-absolute">
+          </div>
+          <div style="flex: 3;justify-content: center;align-items: center">
+            <div class="dish-pagination">
               <b-pagination
                 limit='5'
                 :hide-goto-end-buttons='true'
@@ -85,7 +86,8 @@
         </span>
           </div>
           <div class="footer-btn">
-            <button class="btn btn-primary" @click="cashOrderSure()" :disabled="d_cashOrderList.length === 0">确认收款成功</button>
+            <button class="btn btn-primary" @click="cashOrderSure()" :disabled="d_cashOrderList.length === 0">确认收款成功
+            </button>
           </div>
         </div>
       </div>

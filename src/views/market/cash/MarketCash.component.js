@@ -115,7 +115,7 @@ export default {
                   val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
                 }
               })
-              this.cashCalculateTotal()
+              this.cashCalculateTotal('manual')
             }
             else {
               res.map((val) => {
@@ -124,7 +124,7 @@ export default {
                 val.nowPrice = ((val.unitPrice * val.num) * val.discount).toFixed(2)
                 this.d_cashGoods.push(val)
               })
-              this.cashCalculateTotal()
+              this.cashCalculateTotal('manual')
             }
           }
         })
