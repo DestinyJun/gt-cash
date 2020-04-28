@@ -22,9 +22,10 @@ export default {
         payType: '现金支付',
         date: null
       },
-      rows: 100,
-      perPage: 10,
-      currentPage: 1
+      d_cashRows: 0, // 总条数
+      d_cashPerPage: 10, // 每页显示10条
+      d_cashCurrentPage: 1, // 当前页
+      d_cashPageAction: 'all'
     }
   },
   methods: {
@@ -42,13 +43,15 @@ export default {
     },
     // 根据菜品分类查询菜品数量
     cashGetDishList (type) {
+      this.d_cashPageAction = type;
       this.post('/cateringcashier/getgoodslist', {
-        restaurantType: type,
+        restaurantType: this.d_cashPageAction,
         merchatCode: this.$localStorage.get('merchatCode'),
-        pageNum: '1',
-        pageSize:'10000',
+        pageNum: this.d_cashCurrentPage,
+        pageSize: this.d_cashPerPage,
       })
         .then((res) => {
+          this.d_cashRows = res.totalRecord;
           this.d_cashDishList = res.data
         })
         .catch((err) => {
@@ -57,15 +60,24 @@ export default {
     },
     // 获取所有菜品
     cashGetAllDishList () {
+      this.d_cashPageAction = 'all';
       this.post('/cateringcashier/getallgoodsinfocash', {
         merchatCode:this.$localStorage.get('merchatCode'),
-        pageNum: '1',
-        pageSize:'10000',
+        pageNum: this.d_cashCurrentPage,
+        pageSize: this.d_cashPerPage,
       })
         .then((res) => {
-          // console.log(res);
+          this.d_cashRows = res.totalRecord;
           this.d_cashDishList = res.data
         })
+    },
+    // 分页事件
+    cashPageChange() {
+      if (this.d_cashPageAction === 'all') {
+        this.cashGetAllDishList();
+      } else {
+        this.cashGetDishList(this.d_cashPageAction);
+      }
     },
     // 菜品添加
     cashDishClick (item) {

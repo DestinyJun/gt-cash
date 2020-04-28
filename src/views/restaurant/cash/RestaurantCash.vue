@@ -39,9 +39,10 @@
                 limit='5'
                 :hide-goto-end-buttons='true'
                 :hide-ellipsis='true'
-                v-model="currentPage"
-                :total-rows="rows"
-                :per-page="perPage"
+                v-model="d_cashCurrentPage"
+                :total-rows="d_cashRows"
+                :per-page="d_cashPerPage"
+                @input="cashPageChange()"
               ></b-pagination>
             </div>
           </div>
