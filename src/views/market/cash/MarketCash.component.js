@@ -26,6 +26,7 @@ export default {
         payType: '现金',
         accountsReceivable: 0.00, // 应收金额
         sales: 0.00, // 实收金额
+        money: 0, // 收取现金
         data: []
       },
       d_keybordTxt: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', '00',],
@@ -45,7 +46,6 @@ export default {
         unitPrice: ""
       },
       d_cashDom: null,
-      d_cashMoney: null, // 收取现金
       d_cashChangeMoney: 0, // 应找零钱
       d_cashPage: {
         currentPage: 1, // 当前页
@@ -414,7 +414,7 @@ export default {
         this.d_cashShopInfo.discount = value;
       }
       if (this.d_cashDom.id === 'cashMoney') {
-        this.d_cashMoney = value;
+        this.d_cashPaySure.money = value;
         this.cashChangeMoneyOperate(value);
       }
       if (this.d_cashDom.id === 'cashOrderInfoId') {
@@ -440,7 +440,6 @@ export default {
     cashPaySure () {
       this.post('/supermarketmanagement/supermarketcashier/goods/newPay', this.d_cashPaySure)
         .then((res) => {
-          console.log(res);
           this.$bvModal.msgBoxConfirm(
             '订单支付成功！是否打印小票？',
             {
@@ -474,6 +473,8 @@ export default {
                         res.data.userName,
                         res.data.payTime,
                         res.data.sum,
+                        res.data.money,
+                        res.data.change,
                       ));
                       windowprint.document.close();
                       windowprint.print();

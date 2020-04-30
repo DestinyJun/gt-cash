@@ -230,7 +230,7 @@
               <button class="btn btn-default pl-0" @click="">收取金额：</button>
               <input
                 id="cashMoney" type="number" class="form-control" placeholder="请输入现金" autofocus
-                v-model="d_cashMoney"
+                v-model="d_cashPaySure.money"
                 @focus="cashShopNumFocus($event.target)"
                 @input="cashChangeMoneyOperate($event.target.value)"
               >
@@ -316,7 +316,7 @@
             <span class="icon iconfont iconbackspace-fill" style="font-size: 30px"></span>
           </b-button>
           <b-button
-            :disabled="d_cashMoney === ''"
+            :disabled="d_cashPaySure.money === ''"
             class=" btn-block" size="sm" variant="bg1"
             v-on:click="close();cashPaySure()">
             <span class="d-block mb-2 h6 mt-4">收款</span>

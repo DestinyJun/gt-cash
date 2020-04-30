@@ -61,8 +61,10 @@ export function clone_copy_a (objA,objB) {
  * @param userName 收款人
  * @param payTime  收款时间
  * @param sum  总金额
+ * @param money  收取现金
+ * @param change  找零
  */
-export function print (serverName,merchantName,orderNum,num,arr,userName,payTime,sum) {
+export function print (serverName,merchantName,orderNum,num,arr,userName,payTime,sum,money,change) {
   let goods = '';
   arr.map((item) => {
     goods += `
@@ -108,7 +110,9 @@ export function print (serverName,merchantName,orderNum,num,arr,userName,payTime
           <div style="border-top: 1px dashed red"></div>
           <p>收银人：${userName}</p>
           <p>时间：${payTime}</p>
-          <p>合计：${sum}元</p>
+          <p>合计：${sum}</p>
+          <p>实收：${money}</p>
+          <p>找零：${change}</p>
           <div style="border-top: 1px dashed red"></div>
         </div>
       </body>
