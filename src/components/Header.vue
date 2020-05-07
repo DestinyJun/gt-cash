@@ -10,6 +10,7 @@
       class="rounded-circle float-right" alt="头像"
       @click="dropdownShow($event.target)">
     <div ref="dropdown" class="dropdown position-absolute" v-show="d_dropdownShow">
+      <p class="pb-2 pt-2 mb-0 h6" @click="$bvModal.show('modal-shift')">打印接班小票</p>
       <p class="pb-2 pt-2 mb-0 h6" @click="dropdownOperate('pass')">修改密码</p>
       <p class="pb-2 pt-2 mb-0 h6" @click="dropdownOperate('out')">退出</p>
     </div>
@@ -39,8 +40,44 @@
         </form>
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
-        <b-btn variant="success" class="pl-5 pr-5 mr-5" @click="close();dropdownOperate('update')">确定</b-btn>
+        <b-btn variant="success" class="pl-5 pr-5 mr-5" @click="close(),dropdownOperate('update')">确定</b-btn>
         <b-btn variant="danger" class="pl-5 pr-5" @click="close()">取消</b-btn>
+      </template>
+    </b-modal>
+    <!--打印交班数据-->
+    <b-modal id="modal-shift" centered size="md" no-close-on-backdrop>
+      <template slot="modal-header" slot-scope="{ close }">
+        <div class="w-100">
+          <h6 class="text-center">
+            打印交班小票
+          </h6>
+        </div>
+      </template>
+      <template slot="default" slot-scope="{ hide }">
+        <!--<div class="d-flex border-bottom pb-2">
+          <div class="d-flex" style="flex: 2;align-items: center">
+            <span class="align-middle">接班人所属班次：</span>
+          </div>
+          <div style="flex: 8">
+            <b-form-select class="align-middle" :value="null" :options="d_shiftOptions" @change="shiftSelectChange($event,'select')"></b-form-select>
+          </div>
+        </div>-->
+        <div class="pt-2 border-bottom pb-2">
+          <p class="text-info font-weight-bold">请选择接班人：</p>
+          <b-form-group>
+            <b-form-radio-group
+              v-model="d_printPostData.nextUserId"
+              class="text-left text-dark"
+              :options="d_shiftMemberOptions"
+              stacked>
+            </b-form-radio-group>
+          </b-form-group>
+        </div>
+      </template>
+      <template slot="modal-footer" slot-scope="{ close }">
+        <b-button class="pl-md-4 pr-md-4" size="sm" variant="info"  v-on:click="close()">
+          打印
+        </b-button>
       </template>
     </b-modal>
   </div>
@@ -56,6 +93,20 @@
           userId: this.$localStorage.get('userCode'),
           newPassword: null,
           oldPassword: null,
+        },
+        d_shiftOptions: [
+          { value: null, text: '请选择班别...' },
+        ],
+        d_shiftMemberOptions: [
+          { text: '无交班登陆', value: '-1' },
+        ],
+        d_printPostData: {
+          thisUserId: null, // 当前登录的userId
+          merchatCode: this.$localStorage.get('merchatCode'), // 商户名
+          thisShiftCode: null, // 当前的班次
+          nextUserId: null, // 接班人UserId 如果选择无接班人 传-1
+          nextUserName: null, // 接班人用户名称
+          nextShiftCode: null, // 接班班次 userId 为-1 可以不传
         }
       }
     },
@@ -131,7 +182,11 @@
       }
     },
     created () {
-      document.addEventListener('click',this.testClick,true)
+      this.post('/user/shift/shiftGetUserList',{merchatCode: this.$localStorage.get('merchatCode')})
+      .then((res) => {
+        console.log(res);
+      })
+      document.addEventListener('click',this.testClick,true);
     },
     destroyed () {
       document.removeEventListener('click',this.testClick,true);

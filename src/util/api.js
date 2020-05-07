@@ -3,7 +3,19 @@
  */
 import axios from 'axios'
 import store from '@/store'
-import { EMPTY } from 'rxjs'
+function isSkipUrlAuth(url) {
+  const urls = [
+    '/user/getShiftName',
+    '/user/shift/login',
+    '/user/getSuccessor',
+    '/user/shift/shift',
+    '/user/shift/brokenLineLogin',
+    '/user/shift/shiftGetUserList',
+    '/user/selectmerchatbyuser',
+    '/user/getpermission',
+  ];
+  return urls.includes(url);
+}
 // 判断开发模式
 if (process.env.NODE_ENV === 'development') {
   axios.defaults.baseURL = process.env.VUE_APP_URL;
@@ -33,7 +45,7 @@ axios.interceptors.request.use(
     store.commit('showLoading')
   }
   // 判断那些接口需要添加token，那些接口需要添加请求类型，判断token是否存在
-  if (!(config.url.includes('/login'))) {
+  if (!isSkipUrlAuth(config.url)) {
     config.headers.post['APPKEY'] = localStorage.getItem('APPKEY');
     config.headers.post['userId'] = localStorage.getItem('userCode');
   }

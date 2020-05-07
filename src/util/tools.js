@@ -66,11 +66,12 @@ export function clone_copy_a (objA,objB) {
  */
 export function print (serverName,merchantName,orderNum,num,arr,userName,payTime,sum,money,change) {
   let goods = '';
+  arr.unshift({goodsName: '商品名',number: '数量',unitPrice: '单价'});
   arr.map((item) => {
     goods += `
       <div style="display: flex">
         <span style="flex: 3">${item.goodsName}</span>
-        <span style="margin-left: 15px;margin-right: 15px;flex: 1">x${item.number}</span>
+        <span style="margin-left: 15px;margin-right: 15px;flex: 1">${item.number}</span>
         <span style="flex: 1">${item.unitPrice}</span>
       </div>
     `

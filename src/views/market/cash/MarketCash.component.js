@@ -23,7 +23,7 @@ export default {
         merchatCode: this.$localStorage.get('merchatCode'),
         userId: this.$localStorage.get('userCode'),
         serverId: this.$localStorage.get('serverId'),
-        payType: '现金',
+        payType: '微信',
         accountsReceivable: 0.00, // 应收金额
         sales: 0.00, // 实收金额
         money: 0, // 收取现金

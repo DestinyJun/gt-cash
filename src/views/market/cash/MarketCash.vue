@@ -206,8 +206,7 @@
             <b-button class="float-left" size="sm" variant="outline-info">
               收款确认
             </b-button>
-            <b-button class="float-right" size="sm" variant="outline-danger"
-                      @click="close();d_cashCodeGoods=[];d_cashChangeMoney=0">
+            <b-button class="float-right" size="sm" variant="outline-danger" @click="close();d_cashCodeGoods=[];d_cashChangeMoney=0">
               关闭
             </b-button>
           </h6>
@@ -241,7 +240,7 @@
           </div>
           <div class="pay-way">
             <div class="title w-100 mb-3">
-              <span>请选择支付方式：</span>
+              <span>请选择支付方式<span class="text-danger">（默认微信支付）</span>：</span>
             </div>
             <div class="way w-100">
               <div class="box">
