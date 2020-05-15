@@ -13,21 +13,21 @@ export default {
         merchatCode: '',
         thisUserId: '-1', // 本次交班的code
         thisShiftCode: null, // 上次交班的code
-        nextShiftCode: null, // 本次交班的code
+        nextShiftCode: null // 本次交班的code
       },
       d_loginError: {
         user_error: '',
         password_error: ''
       },
       d_loginOptions: [
-        { merchatCode: null, merchatName: '请选择店铺...' },
+        { merchatCode: null, merchatName: '请选择店铺...' }
       ],
       d_loginShopSelect: '请选择店铺...',
       d_shiftOptions: [
-        { value: null, text: '请选择班别...' },
+        { value: null, text: '请选择班别...' }
       ],
       d_shiftMemberOptions: [
-        { text: '无交班登陆', value: '-1' },
+        { text: '无交班登陆', value: '-1' }
       ]
     }
   },
@@ -45,6 +45,8 @@ export default {
     loginClick (flag) {
       if (!(this.$v.d_loginForm.$error) && this.$v.d_loginForm.$dirty) {
         if (this.d_loginForm.merchatCode) {
+          // 存储交班信息
+          this.$localStorage.set('ShiftCode', this.d_loginForm.thisShiftCode)
           if (flag === 'shift') {
             this.post(`/user/shift/login`, this.d_loginForm)
               .then((res) => {
@@ -59,7 +61,7 @@ export default {
               user: this.d_loginForm.user,
               password: this.d_loginForm.password,
               shiftCode: this.d_loginForm.thisShiftCode,
-              merchatCode: this.d_loginForm.merchatCode,
+              merchatCode: this.d_loginForm.merchatCode
             })
             this.post(`/user/shift/brokenLineLogin`, login)
               .then((res) => {
@@ -93,8 +95,7 @@ export default {
     loginUserChange: debounce(function () {
       const that = this
       this.d_loginOptions = [{ merchatCode: null, merchatName: '请选择店铺...' }]
-      let aTime
-      aTime = setTimeout(() => {
+      setTimeout(() => {
         this.$http.post(`/user/selectmerchatbyuser`, { user: this.d_loginForm.user })
           .then(function (response) {
             const data = response.data.data
@@ -110,7 +111,7 @@ export default {
     shiftSelectChange (item, flag) {
       if (flag === 'select') {
         this.d_shiftMemberOptions = [
-          { text: '无交班登陆', value: '-1' },
+          { text: '无交班登陆', value: '-1' }
         ]
         this.d_loginForm.thisShiftCode = item
         this.post(`/user/getSuccessor`, { merchatCode: this.d_loginForm.merchatCode, shiftCode: item })
@@ -128,5 +129,5 @@ export default {
     this.$localStorage.remove('userCode')
     this.$localStorage.remove('merchatCode')
     this.$localStorage.remove('routers')
-  },
+  }
 }

@@ -7,7 +7,7 @@ import VueLocalStorage from 'vue-localstorage'
 // axios
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-import {get,post} from './util/api'
+import { get, post } from './util/api'
 // vue switch
 import ToggleButton from 'vue-js-toggle-button'
 import PortalVue from 'portal-vue'
@@ -17,17 +17,19 @@ import BootstrapVue from 'bootstrap-vue'
 // vue表单校验
 import Vuelidate from 'vuelidate'
 // tool 自定义工具函数
-import {reset_form,clone_obj,clone_copy,clone_copy_a,print} from './util/tools'
+import { reset_form, clone_obj, clone_copy, clone_copy_a, print, printTicket } from './util/tools'
+
 Vue.config.productionTip = false // 配置在生产环境下不产生各种警告信息
 
-//挂载自定义方法到Vue原型上
-Vue.prototype.get = get;
-Vue.prototype.post = post;
-Vue.prototype.reset_form = reset_form;
-Vue.prototype.clone_obj = clone_obj;
-Vue.prototype.clone_copy = clone_copy;
-Vue.prototype.clone_copy_a = clone_copy_a;
-Vue.prototype.print = print;
+// 挂载自定义方法到Vue原型上
+Vue.prototype.get = get
+Vue.prototype.post = post
+Vue.prototype.reset_form = reset_form
+Vue.prototype.clone_obj = clone_obj
+Vue.prototype.clone_copy = clone_copy
+Vue.prototype.clone_copy_a = clone_copy_a
+Vue.prototype.print = print
+Vue.prototype.printTicket = printTicket
 
 // 使用vue插件
 Vue.use(VueAxios, axios) // axios请求插件
@@ -41,7 +43,7 @@ Vue.use(BootstrapVue) // bootstrap-vue UI插件
 // Vue.component('v-chart', ECharts)
 
 // 定义全局筛选器
-Vue.filter('twoDecimals',(value) => {
+Vue.filter('twoDecimals', (value) => {
   return value.toFixed(2)
 })
 // 定义指令
