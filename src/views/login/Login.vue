@@ -89,8 +89,7 @@
             <span class="align-middle">选择班别：</span>
           </div>
           <div style="flex: 8">
-            <b-form-select class="align-middle" :value="null" :options="d_shiftOptions"
-                           @change="shiftSelectChange($event,'select')"></b-form-select>
+            <b-form-select class="align-middle" :value="null" :options="d_shiftOptions" @change="shiftSelectChange($event,'select')"></b-form-select>
           </div>
         </div>
         <div class="pt-2 border-bottom pb-2">
@@ -114,17 +113,20 @@
         </div>
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
+        <b-button class="pl-md-4 pr-md-4" size="sm" variant="danger" v-on:click="close()">
+          关闭
+        </b-button>
         <b-button class="pl-md-4 pr-md-4" size="sm" variant="info" :disabled="!d_loginForm.thisShiftCode || !d_loginForm.nextShiftCode" v-on:click="close(),loginClick('shift')">
           登陆
         </b-button>
       </template>
     </b-modal>
-    <!--短线登陆弹窗-->
+    <!--断线登陆弹窗-->
     <b-modal id="modal-shift-broken" centered size="md" no-close-on-backdrop>
       <template slot="modal-header" slot-scope="{ close }">
         <div class="w-100">
           <h6 class="text-center">
-            交班登陆
+            断线登陆
           </h6>
         </div>
       </template>
@@ -139,6 +141,9 @@
         </div>
       </template>
       <template slot="modal-footer" slot-scope="{ close }">
+        <b-button class="pl-md-4 pr-md-4" size="sm" variant="danger" v-on:click="close()">
+          关闭
+        </b-button>
         <b-button class="pl-md-4 pr-md-4" size="sm" variant="info" :disabled="!d_loginForm.thisShiftCode" v-on:click="close(),loginClick('broken')">
           登陆
         </b-button>
